@@ -1,0 +1,139 @@
+\documentclass{article}
+
+\usepackage[preprint]{corl_2021} % Use this for the initial submission.
+%\usepackage[final]{corl_2021} % Uncomment for the camera-ready ``final'' version.
+%\usepackage[preprint]{corl_2021} % Uncomment for pre-prints (e.g., arxiv); This is like ``final'', but will remove the CORL footnote.
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{amsmath,units}
+\usepackage{amssymb}
+\usepackage{comment}
+
+\newcommand{\SE}{\mathrm{SE}}
+\newcommand{\SO}{\mathrm{SO}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\bb}{\boldsymbol{b}}
+\newcommand{\bff}{\boldsymbol{f}}
+\newcommand{\bc}{\boldsymbol{c}}
+\newcommand{\bo}{\boldsymbol{o}}
+\newcommand{\bp}{\boldsymbol{p}}
+\newcommand{\bq}{\boldsymbol{q}}
+\newcommand{\bx}{\boldsymbol{x}}
+\newcommand{\bv}{\boldsymbol{v}}
+\newcommand{\by}{\boldsymbol{y}}
+\newcommand{\bt}{\boldsymbol{t}}
+\newcommand{\bR}{\boldsymbol{R}}
+\newcommand{\bH}{\boldsymbol{H}}
+\newcommand{\bS}{\boldsymbol{S}}
+\newcommand{\bV}{\boldsymbol{V}}
+\newcommand{\bU}{\boldsymbol{U}}
+
+\newcommand{\XY}{\mathcal{XY}}
+\newcommand{\YX}{\mathcal{YX}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\T}{\mathcal{T}}
+
+
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\avg}{\mathrm{avg}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\justin}[1]{\textbf{\scriptsize{\color{red}JS: #1}}}
+\newcommand{\vitor}[1]{\textbf{\scriptsize{\color{blue}VG: #1}}}
+\newcommand{\yue}[1]{\textbf{\scriptsize{\color{green}YW: #1}}}
+\newcommand{\tianyuan}[1]{\textbf{\scriptsize{\color{yellow}TYZ: #1}}}
+\newcommand{\changed}[1]{{\color{black}{#1}}}
+
+\newcommand{\name}{DETR3D }
+
+\setlist{noitemsep,leftmargin=*}
+
+% \title{MVDet:\\ Multi-view Object Detection via Set-to-Set Prediction}
+\title{DETR3D：通过3D到2D查询实现多视角图像3D目标检测（3D Object Detection from Multi-view Images via 3D-to-2D Queries）}
+
+% The \author macro works with any number of authors. There are two
+% commands used to separate the names and addresses of multiple
+% authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to
+% break the lines. Using \AND forces a line break at that point. So,
+% if LaTeX puts 3 of 4 authors names on the first line, and the last
+% on the second line, try using \AND instead of \And before the third
+% author name.
+
+% NOTE: authors will be visible only in the camera-ready and preprint versions (i.e., when using the option 'final' or 'preprint'). 
+% 	For the initial submission the authors will be anonymized.
+
+\author{
+  Yue Wang\\
+  Massachusetts Institute of Technology \\
+  \texttt{yuewang@csail.mit.edu} \\
+  %% examples of more authors
+   \And
+  Vitor Guizilini* \\ 
+  Toyota Research Institute \\ 
+  \texttt{vitor.guizilini@tri.global} \\
+  \And 
+  Tianyuan Zhang* \\ 
+  Carnegie Mellon University \\
+  \texttt{tianyuaz@andrew.cmu.edu} \\
+  \And 
+  Yilun Wang \\ 
+  Li Auto \\ 
+  \texttt{yilunw@cs.stanford.edu} \\
+  \And
+  Hang Zhao $\P$ \\ 
+  Tsinghua University \\ 
+  \texttt{hangzhao@mail.tsinghua.edu.cn} \\
+  \And
+  Justin Solomon $\P$ \\
+  Massachusetts Institute of Technology \\
+  \texttt{jsolomon@mit.edu}
+}
+
+
+
+
+% Chinese support (auto-injected)
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK SC}[ItalicFont=AR PL UKai TW MBE]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans CJK SC}
+\raggedbottom
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\refname}{参考文献}
+\begin{document}
+\maketitle
+\let\thefootnote\relax\footnotetext{*: 同等贡献（Equal contribution）。$\P$: 项目共同指导（Co-advise）。}
+
+
+%===============================================================================
+\input{section/abstract}
+\input{section/introduction}
+\input{section/related_work}
+\input{section/method}
+\input{section/experiment}
+\input{section/conclusion}
+%===============================================================================
+
+\clearpage
+% no \bibliographystyle is required, since the corl style is automatically used.
+\bibliography{corl}  % .bib
+
+% \clearpage
+
+% \input{section/supplement}
+
+\end{document}
