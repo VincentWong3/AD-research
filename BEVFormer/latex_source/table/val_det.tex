@@ -1,0 +1,23 @@
+\begin{tabular}{l  c c |c c| c c c c c c  }
+\toprule
+方法 &  模态 & 骨干网络 & NDS$\uparrow$  & mAP$\uparrow$  & mATE$\downarrow$     & mASE$\downarrow$     & mAOE$\downarrow$     & mAVE$\downarrow$    & mAAE$\downarrow$    \\
+\midrule
+
+
+%BEVDet & val & Camera& R101 & 0.389 &0.317 &0.704 &0.273 &0.531 &0.940 &0.250\\
+FCOS3D~\cite{wang2021fcos3d}&  C & R101& 0.415 & 0.343 & 0.725 & 0.263 & 0.422 & 1.292  &\textbf{0.153}  \\
+PGD~\cite{wang2022probabilistic} & C &R101 & 0.428 &0.369 &0.683 &\textbf{0.260}& 0.439 &1.268 &0.185 \\
+DETR3D~\cite{wang2022detr3d}& C& R101 & 0.425 &0.346 &0.773 &0.268 &0.383 &0.842 &0.216\\
+%DETR3D & Camera & 0.434& 0.349 &0.716& 0.268 &0.379 &0.842& 0.200\\
+
+%\midrule
+
+%Lift-Splat* & val & Camera & R101 & 0.397 & 0.348 & 0.784 & 0.284 & 0.537 & 0.938 & 0.229 \\
+%VPN* & val & Camear & R101 & 0.356 & 0.278 & 0.911 & 0.288 & 0.519 &0.886 & 0.227\\
+\rowcolor{gray95}
+BEVFormer-S & C & R101& 0.448 & 0.375 & 0.725 & 0.272 & 0.391 & 0.802 & 0.200\\
+%BEVFormer (Ours)& val  & Camera & R101& 0.490& 0.378 & 0.728 & 0.280 & 0.385 & 0.400 & 0.199\\
+\rowcolor{gray9}
+BEVFormer   & C & R101& \textbf{0.517}& \textbf{0.416} & \textbf{0.673} & 0.274 & \textbf{0.372} & \textbf{0.394} & 0.198 \\
+\bottomrule
+\end{tabular}

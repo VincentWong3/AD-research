@@ -1,0 +1,16 @@
+\begin{tabular}{l |c c c|c c c| c c c |c c c }
+\toprule
+% \multirow{2}{*}{Clean} &\multirow{2}{*}{Mean} &
+\multirow{2}{*}{方法} & \multicolumn{3}{c|}{0-40\% 可见} & \multicolumn{3}{c|}{40-60\% 可见} & \multicolumn{3}{c|}{60-80\% 可见}&\multicolumn{3}{c}{80-100\% 可见} \\
+%\cline{2-13}
+
+	& 召回率 &mATE &mAVE& 召回率 &mATE &mAVE& 召回率 &mATE &mAVE& 召回率 &mATE &mAVE\\
+\midrule
+DETR3D & 0.603 & 1.109 & 0.546 & 0.768 & 0.939 &0.886 & 0.777 & 0.846 &0.626 &0.837 &0.728 &1.001\\
+\rowcolor{gray95}
+BEVFormer-S & 0.610 & 1.043 & 0.636 & 0.766 &0.946&0.895 &0.800 & 0.807 &0.550 &0.855 & 0.698 &0.904\\
+\rowcolor{gray9}
+BEVFormer &\textbf{0.670} & \textbf{0.968} &\textbf{0.368} &\textbf{0.797} & \textbf{0.882} &\textbf{0.428} &\textbf{0.834}&\textbf{0.747} &\textbf{0.300} &\textbf{0.866} &\textbf{0.639} &\textbf{0.426}\\
+\bottomrule
+
+\end{tabular}

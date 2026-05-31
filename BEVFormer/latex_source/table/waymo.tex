@@ -1,0 +1,27 @@
+\begin{tabular}{l| c| c c| c c|c c c c c }
+\toprule
+% \multirow{2}{*}{Clean} &\multirow{2}{*}{Mean} &
+\multirow{3}{*}{方法} &\multirow{3}{*}{模态}  & \multicolumn{4}{c|}{Waymo指标} & \multicolumn{5}{c}{NuScenes指标} \\
+\cline{3-11}
+&  &\multicolumn{2}{c|}{IoU=0.5} & \multicolumn{2}{c|}{IoU=0.7} & 
+\multirow{2}{*}{NDS$^{\text{\textdagger}}$$\uparrow$} &
+\multirow{2}{*}{AP$\uparrow$} & \multirow{2}{*}{ATE$\downarrow$} & 
+\multirow{2}{*}{ASE$\downarrow$} & \multirow{2}{*}{AOE$\downarrow$}\\
+%\cline{3-6}
+&  & L1/APH & L2/APH  & L1/APH & L2/APH  \\
+ \midrule
+ PointPillars~\cite{lang2019pointpillars}& L & 0.866 & 0.801 & 0.638 & 0.557&0.685 & 0.838 & 0.143 & 0.132 & 0.070\\
+ \midrule
+ DETR3D~\cite{wang2022detr3d}&C & 0.220 & 0.216 & 0.055 & 0.051 & 0.394&0.388 & 0.741 & \textbf{0.156} & 0.108\\
+ \rowcolor{gray9}
+ BEVFormer&C & \textbf{0.280} & \textbf{0.241} & \textbf{0.061} & \textbf{0.052}& \textbf{0.426}
+ & \textbf{0.440} & \textbf{0.679} & 0.157 & \textbf{0.101}\\
+\midrule
+%\hline
+CaDNN$^*$~\cite{reading2021categorical}&C & 0.175 & 0.165 & 0.050 & 0.045&-& - &- &- &-\\ 
+\rowcolor{gray9}
+BEVFormer$^*$&C & 0.308 & 0.277 & 0.077 & 0.069 &-&-&-&-&-\\
+%&0.419 &0.417 &0.682 &0.158 &0.06\\
+\bottomrule
+
+\end{tabular}

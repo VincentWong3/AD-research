@@ -1,0 +1,36 @@
+\begin{tabular}{l| c c | c c | c c c c }
+\toprule
+% \multirow{2}{*}{Clean} &\multirow{2}{*}{Mean} &
+\multirow{2}{*}{方法}& \multicolumn{2}{c|}{任务头}
+ & \multicolumn{2}{c|}{3D检测} & \multicolumn{4}{c}{BEV分割 (IoU)} \\
+&检测& 分割& NDS$\uparrow$ &mAP$\uparrow$  & 轿车 & 各类车辆 & 道路 & 车道\\
+%\multirow{2}{*}{Det} & \multirow{2}{*}{Seg} 
+%Method & Modality & NDS& mAP &  IOU$_{\rm Car}$ 
+\midrule
+Lift-Splat$^{\text{\textdagger}}$~\cite{philion2020lift} &\xmark &\cmark &- &-& 32.1 & 32.1 & 72.9 &20.0\\
+FIERY$^{\text{\textdagger}}$~\cite{hu2021fiery}&\xmark &  \cmark& - &-&- & 38.2 & - & -\\
+\midrule
+VPN$^*$~\cite{pan2020cross} & \cmark & \xmark & 0.333 & 0.253   &- & - &- &-\\
+VPN$^*$ &\xmark &\cmark & - & -  & 31.0 & 31.8 &76.9 &19.4 \\
+VPN$^*$ &\cmark & \cmark& 0.334 & 0.257  &36.6 & 37.3 & 76.0 & 18.0\\
+Lift-Splat$^*$& \cmark &\xmark & 0.397 & 0.348  & -&-&-&-\\
+Lift-Splat$^*$ &\xmark &\cmark &- &- &42.1 & 41.7 &77.7 & 20.0 \\
+Lift-Splat$^*$& \cmark & \cmark&  0.410 & 0.344&  43.0 & 42.8 & 73.9 & 18.3\\
+\rowcolor{gray95}
+BEVFormer-S&\cmark & \xmark & 0.448 & 0.375&  -& - & - & -\\
+\rowcolor{gray95}
+BEVFormer-S& \xmark& \cmark  &- &-&43.1  &43.2  &\textbf{80.7} &21.3 \\
+\rowcolor{gray95}
+BEVFormer-S&\cmark & \cmark & 0.453 & 0.380 &  44.3& 44.4 & 77.6 & 19.8\\
+
+\rowcolor{gray9}
+BEVFormer&  \cmark  &\xmark & 0.517 & \textbf{0.416} &- & - & - & -\\
+\rowcolor{gray9}
+BEVFormer&\xmark & \cmark& - &-&44.8 & 44.8 & 80.1 & \textbf{25.7}\\
+\rowcolor{gray9}
+BEVFormer&\cmark & \cmark & \textbf{0.520} & 0.412 & \textbf{46.8} & \textbf{46.7} & 77.5 & 23.9\\
+
+\bottomrule
+
+
+\end{tabular}

@@ -1,0 +1,20 @@
+\begin{tabular}{c| c c c | c c  c|c | c c}
+\toprule
+% \multirow{2}{*}{Clean} &\multirow{2}{*}{Mean} &
+\multirow{2}{*}{方法}&
+%\multirow{2}{*}{MS}&  \multirow{2}{*}{BEV Size} & \multirow{2}{*}{\#Layers}
+\multicolumn{3}{c|}{BEVFormer规模}
+ &  \multicolumn{3}{c|}{延迟 (ms)}&  \multirow{2}{*}{FPS} &\multirow{2}{*}{NDS$\uparrow$} &\multirow{2}{*}{mAP$\uparrow$}\\
+&多尺度&BEV尺寸&层数& 骨干网络 & BEVFormer & 检测头&\\
+%\multirow{2}{*}{Det} & \multirow{2}{*}{Seg}
+%Method & Modality & NDS& mAP &  IOU$_{\rm Car}$
+\midrule
+BEVFormer & \cmark&$200\!\times\!200$ & 6 &391 & 130& 19 &1.7&\textbf{0.517}&\textbf{0.416}\\
+\midrule
+A & \xmark&$200\!\times\!200$ & 6 & 387& 87& 19&1.9&0.511&0.406\\
+B & \cmark&$100\!\times\!100$ & 6 & 391& 53& 18&2.0&0.504&0.402\\
+C & \cmark&$200\!\times\!200$ & 1 & 391& 25& 19&2.1&0.501&0.396\\
+D & \xmark&$100\!\times\!100$ & 1 & 387& \textbf{7}& 18&\textbf{2.3}&0.478&0.374\\
+\bottomrule
+
+\end{tabular}
