@@ -1,0 +1,35 @@
+\begin{table*}[t]
+\caption{开环规划性能。}
+\begin{center}
+\tiny
+% \resizebox{0.9\textwidth}{!}{
+\begin{tabular}{l|cc|cccc|cccc|cc}
+\toprule
+\multirow{2}{*}{方法} &
+\multirow{2}{*}{感知} &
+\multirow{2}{*}{指令} &
+\multicolumn{4}{c|}{L2 (m) $\downarrow$} &
+\multicolumn{4}{c|}{碰撞率 (\%) $\downarrow$} &
+\multirow{2}{*}{延迟 (ms)} &
+\cellcolor{gray!30} \\
+
+&&& 1s & 2s & 3s & \cellcolor{gray!30}平均 & 1s & 2s & 3s & \cellcolor{gray!30}平均 & & \cellcolor{gray!30}\multirow{-2}*{FPS} \\
+\midrule
+NMP$^\dagger$~\cite{zeng2019end} & \Checkmark & \XSolidBrush & - & - & 2.31 & \cellcolor{gray!30}- & - & - & 1.92 & \cellcolor{gray!30}- & - & \cellcolor{gray!30}- \\
+SA-NMP$^\dagger$~\cite{zeng2019end} & \Checkmark & \XSolidBrush& - & - & 2.05 & \cellcolor{gray!30}- & - & - & 1.59 & \cellcolor{gray!30}- & - & \cellcolor{gray!30}- \\
+FF$^\dagger$~\cite{hu2021safe} & \Checkmark & \XSolidBrush& 0.55 & 1.20 & 2.54 & \cellcolor{gray!30}1.43 & 0.06 & 0.17 & 1.07 & \cellcolor{gray!30}0.43 & - & \cellcolor{gray!30}- \\
+EO$^\dagger$~\cite{khurana2022differentiable} & \Checkmark & \XSolidBrush& 0.67 & 1.36 & 2.78 & \cellcolor{gray!30}1.60 & 0.04 & 0.09 & 0.88 & \cellcolor{gray!30}0.33 & - & \cellcolor{gray!30}- \\
+\midrule
+ST-P3~\cite{hu2022st} & \Checkmark & \Checkmark& 1.33 & 2.11 & 2.90 & \cellcolor{gray!30}2.11 & 0.23 & 0.62 & 1.27 & \cellcolor{gray!30}0.71 & 628.3 & \cellcolor{gray!30}1.6 \\
+UniAD~\cite{hu2023planning} & \Checkmark & \Checkmark& 0.48 & 0.96 & 1.65 & \cellcolor{gray!30}1.03 & \textbf{0.05} & \textbf{0.17} & 0.71 & \cellcolor{gray!30}0.31 & 555.6 & \cellcolor{gray!30}1.8 \\
+VAD~\cite{jiang2023vad}& \Checkmark & \Checkmark & 0.17 & 0.34 & 0.60 & \cellcolor{gray!30}0.37 & 0.07 & 0.10 & 0.24 & \cellcolor{gray!30}0.14 & 224.3 & 4.5 \\
+\midrule
+\rowcolor[gray]{.9}  \model& \Checkmark & \Checkmark&&&&&&&&&&\\
+\rowcolor[gray]{.9}  \model-Large& \Checkmark & \Checkmark&&&&&&&&&&\\
+\bottomrule
+\end{tabular}% }
+\end{center}
+% \vspace{2pt}
+
+\label{tab:sota-plan}
+\end{table*}

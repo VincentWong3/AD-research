@@ -1,0 +1,37 @@
+\begin{table}[t]
+\centering
+\caption{nuScenes \texttt{test} 数据集上的3D检测和多目标跟踪结果。}
+\label{tab:det_tracking_test_set}
+\tiny
+\resizebox{\textwidth}{!}{
+% {
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{l|c|c|ccc|l|cccc}
+\toprule
+\textbf{方法}&  \textbf{mAP}$\uparrow$  &\textbf{NDS}$\uparrow$  & \textbf{mATE}$\downarrow$  &\textbf{mAOE}$\downarrow$   &\textbf{mAVE}$\downarrow$ & \textbf{方法}& \textbf{AMOTA}$\uparrow$  & \textbf{AMOTP}$\downarrow$ & \textbf{RECALL}$\uparrow$ & \textbf{IDS}$\downarrow$\\
+\midrule
+\multicolumn{5}{l}{\textit{纯检测方法}}&&\multicolumn{5}{l}{\textit{纯跟踪方法}}\\
+\midrule
+% ResNet101
+StreamPETR\cite{wang2023exploring}   &0.546& 0.633 &0.485&  \underline{0.307}& 0.250                  &DEFT\cite{chaabane2021deft} &0.177 &1.564 &0.338&  6901\\
+PETRv2\cite{liu2023petrv2}         &0.490& 0.582& 0.561& 0.361 &0.343               &QD3DT\cite{hu2022monocular} &0.217& 1.550 &0.375  &6856\\ % PETR Table 1
+BEVFormer \cite{li2022bevformer}    & 0.481& 0.569& 0.582&  0.375& 0.378            & CC-3DT$^*$~\cite{fischer2022cc} &0.410 &1.274 &0.538&3334\\ % BEVFormer Table 4.
+Sparse4D\cite{lin2022sparse4d}  &0.511 & 0.595&0.533&  0.369 &0.317                 &QTrack\cite{yang2022quality}& 0.480 &1.107& 0.569&  1484\\ % PolarDETR Table 1
+SRCN3D\cite{shi2022srcn3d}&0.396 &0.463&0.673 & 0.403& 0.875& SRCN3D\cite{shi2022srcn3d}& 0.398 &1.317 &0.538&-\\
+DORT\cite{qing2023dort}& 0.545& 0.625&\underline{0.440} & 0.370& 0.250 &DORT\cite{qing2023dort}&\underline{ 0.576} &\underline{0.951}&-&-\\
+\midrule
+\multicolumn{7}{l}{\textit{端到端多目标跟踪方法}}\\
+\midrule
+MUTR3D\cite{zhang2022mutr3d}  &-&-&-&-&-& MUTR3D\cite{zhang2022mutr3d} &0.270& 1.494 &0.411& 6018\\
+PF-Track\cite{pang2023standing} &-&-&-&-&- &PF-Track\cite{pang2023standing} &0.434 &1.252 & 0.538&  \textbf{249}\\
+DQTrack\cite{li2023end}&-&-&-&-& -& DQTrack\cite{li2023end} &0.523& 1.096 &  0.622 &1204\\
+Sparse4Dv3\cite{lin2023sparse4d} &\textbf{0.570}& \textbf{0.656}&\textbf{0.412} & 0.312& \textbf{0.210} & Sparse4Dv3\cite{lin2023sparse4d} &0.574& 0.970  &\underline{0.669}  &669\\
+\midrule
+\multicolumn{7}{l}{\textit{端到端自动驾驶方法}}\\
+\midrule
+% UniAD\cite{hu2023planning} &-&-&-	&	-	&-& UniAD\cite{hu2023planning} &- &- &- &-\\
+\rowcolor[gray]{.9}  \model-B& 0.514 & 0.605 &0.505 &0.337 &0.308	& \model-B &0.502 &1.065 &	0.643 &349 \\
+\rowcolor[gray]{.9}  \model-L& \underline{0.566} & \underline{0.648} &0.454 &\textbf{0.288} &\underline{0.237}	& \model-L &\textbf{0.588} &\textbf{0.904} &	\textbf{0.691} &\underline{344} \\
+\bottomrule
+\end{tabular}}
+\end{table}

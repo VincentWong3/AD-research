@@ -1,0 +1,32 @@
+\begin{table*}[t]
+		\caption{SparseAD-B在第三阶段训练中带或不带端到端梯度优化的综合性能对比。B.：骨干网络，P.：稀疏感知，M.：运动规划器，T.Mem：训练内存占用。}
+		\begin{center}
+			\tiny
+			% \renewcommand\arraystretch{1.5}
+			\vspace{-10pt}
+			\resizebox{1\textwidth}{!}
+			{
+				\begin{tabular}{ccc|cc|cc|ccc|cccc|cccc|c}
+					\toprule
+					\multicolumn{3}{c|}{梯度} &
+					\multicolumn{2}{c|}{检测} &
+					\multicolumn{2}{c|}{跟踪} &
+					\multicolumn{3}{c|}{运动预测} &
+					\multicolumn{4}{c|}{规划L2$\downarrow$} &
+					\multicolumn{4}{c|}{规划碰撞率$\downarrow$} &
+					效率 \\
+					B.&P.&M.& mAP$\uparrow$ & NDS$\uparrow$ & AMOTA$\uparrow$&Recall$\uparrow$& minADE$\downarrow$&minFDE$\downarrow$&MR$\downarrow$ &1s &2s &3s &平均&1s&2s&3s &平均&  训练内存 \\
+					\midrule
+					&&\Checkmark& 0.475& 0.578& 0.530& 0.608 & 0.83& 1.58& 0.187&0.15&0.31&0.57& 0.35&0.00&0.06&0.21& 0.09&4.0\\
+					\Checkmark&\Checkmark&\Checkmark&0.455& 0.559& 0.521 & 0.622&0.83&	1.58&	0.180&0.15&0.31&0.56& 0.34 &0.00&0.04&0.15&0.08&18.1\\
+					\midrule
+					\multicolumn{3}{c|}{\textit{差值}} &\textcolor{blue}{-0.020} & \textcolor{blue}{-0.019}& \textcolor{blue}{-0.009} & \textcolor{red}{+0.014} & 0.00 & 0.00 & \textcolor{red}{-0.007}& 0.00&0.00&\textcolor{red}{-0.01}&\textcolor{red}{-0.01}&0.00&\textcolor{red}{-0.02}&\textcolor{red}{-0.06}&\textcolor{red}{-0.01}& \textcolor{blue}{+12.1} \\
+
+					\bottomrule
+				\end{tabular}% }
+			}
+		\end{center}
+		% \vspace{2pt}
+		% \vspace{-20pt}
+		\label{tab:joint-results-gradient}
+	\end{table*}

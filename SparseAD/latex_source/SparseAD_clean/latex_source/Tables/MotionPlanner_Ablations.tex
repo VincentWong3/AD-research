@@ -1,0 +1,32 @@
+\begin{table*}[t]
+	\caption{运动规划模块设计的消融实验。"MQI"表示运动查询初始化；"AMI"表示智能体-记忆交互；"KN"表示自车运动学约束；"EAR"表示自车-智能体关系约束。}
+	\begin{center}
+	\tiny
+	\vspace{-10pt}
+	\resizebox{0.9\textwidth}{!}
+	{
+	\begin{tabular}{l|cccc|ccc|cccc|cccc}
+	\toprule
+	\multirow{2}{*}{编号} &
+	\multirow{2}{*}{\makecell{MQI}} &
+	\multirow{2}{*}{\makecell{AMI}} &
+	\multirow{2}{*}{\makecell{KN}} &
+	\multirow{2}{*}{\makecell{EAR}} &
+
+	\multicolumn{3}{c|}{预测} &
+	\multicolumn{4}{c|}{规划L2(m)} &
+	\multicolumn{4}{c|}{规划碰撞率(\%)} \\
+
+	&&&& & minADE&	minFDE	&MR & 1s & 2s  & 3s&平均 & 1s & 2s  & 3s&平均\\
+	\midrule
+	1&\Checkmark&\Checkmark&\Checkmark&\Checkmark&0.876&	1.654&	0.193&	\textbf{0.35}&\textbf{0.69}&\textbf{\textbf{1.13}}&\textbf{0.72}&0.02& \textbf{0.22} & \textbf{\textbf{0.66}}&\textbf{0.30}\\
+	2&&\Checkmark&\Checkmark&\Checkmark&0.867&	1.660&	0.203	&\textbf{0.35} & 0.70 & 1.14	& 0.73 & 0.05 & 0.29&0.75 & 0.36\\
+	3&\Checkmark&&\Checkmark&\Checkmark& 0.870&1.646&	0.193	&0.39&0.76&1.23&0.79&	0.03&0.45&1.27&0.58\\
+	4&\Checkmark&\Checkmark&&\Checkmark&0.866&	1.646&	0.197	&0.36&0.71&1.15&0.74&	\textbf{\textbf{0.01}}&0.28&0.84&0.38\\
+	5&\Checkmark&\Checkmark&\Checkmark&&0.864&	1.646&0.197&	\textbf{0.35}&\textbf{0.69}&\textbf{1.13}&\textbf{0.72}	&0.03&0.23&0.70&0.32\\
+	\bottomrule
+	\end{tabular}% }
+	}
+	\end{center}
+	\label{tab:motionpalnner-ablations}
+\end{table*}
