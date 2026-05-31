@@ -1,0 +1,23 @@
+\setlength{\tabcolsep}{3pt}
+\setlength{\doublerulesep}{2\arrayrulewidth}
+\renewcommand{\arraystretch}{1.1}
+\begin{table*}[t]
+    \caption{仅使用 BEV 监督（BEV Supervision）与同时使用透视和 BEV 监督（Perspective \& BEV Supervision）的模型在不同训练轮数下的对比。模型在 nuScenes 验证集上评测。所有模型均未使用时序（Temporal）信息训练。}
+    \label{table:long_schedule}
+    \centering
+
+    \begin{tabular}{c|c|c|cc|cccccc}
+        \toprule
+        View Supervision & Backbone & Epoch  & NDS & mAP & mATE & mASE & mAOE & mAVE & mAAE   \\ 
+        \midrule 
+        \multirow{3}{*}{BEV Only} & \multirow{3}{*}{ResNet-50} & 24 & 0.379 & 0.322 & 0.803 & 0.280 & 0.549 & 0.954 & 0.240 \\ 
+         &  & 48 & 0.400 & 0.327 & 0.795 & 0.277 & 0.479 & 0.871 & 0.210 \\ 
+         &  & 72 & 0.410 & 0.335 & 0.771 & 0.280 & 0.458 & 0.848 & 0.216 \\ 
+        \midrule
+        \multirow{3}{*}{Perspective \& BEV} & \multirow{3}{*}{ResNet-50} & 24 &  0.414 & 0.351 & 0.732 & 0.271 & 0.505 & 0.899 & 0.204 \\ 
+         &  & 48 & 0.428 & 0.349 & 0.750 & 0.276 & 0.424 & 0.817 & 0.193 \\ 
+         &  & 72 & 0.428 & 0.351 & 0.741 & 0.279 & 0.419 & 0.835 & 0.196 \\ 
+        \midrule
+        \bottomrule
+    \end{tabular}
+\end{table*}

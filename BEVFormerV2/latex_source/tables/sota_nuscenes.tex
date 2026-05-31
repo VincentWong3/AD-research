@@ -1,0 +1,24 @@
+\setlength{\tabcolsep}{3pt}
+\setlength{\doublerulesep}{2\arrayrulewidth}
+\renewcommand{\arraystretch}{1.1}
+\begin{table*}[t]
+    \caption{BEVFormer v2 与其他当前最优（SOTA）方法在 nuScenes 测试集上的3D检测结果。$^\dagger$ 表示 V2-99 \cite{Vovnet} 在深度估计（Depth Estimation）任务上使用额外数据 \cite{DD3D} 进行了预训练。$^\ddagger$ 表示使用 CBGS 的方法，该方法将1个epoch延长为4.5个epoch。本文仅训练 BEVFormer v2 24个epoch以与先前方法公平比较。}
+    \label{table:sota_nuscenes}
+    \centering
+
+    \begin{tabular}{l|c|c|c|cc|ccccc}
+        \toprule
+        Method & Backbone & Epoch & Image Size & NDS & mAP & mATE & mASE & mAOE & mAVE & mAAE \\ 
+        \midrule
+        BEVFormer~\cite{bevformer} & V2-99$^\dagger$ & 24 & 900 $\times$ 1600 & 0.569 & 0.481 & 0.582 & 0.256 & 0.375 & 0.378 & 0.126 \\
+        PolarFormer~\cite{polarformer} & V2-99$^\dagger$ & 24 & 900 $\times$ 1600 & 0.572 & 0.493 & 0.556 & 0.256 & 0.364 & 0.440 & 0.127 \\
+        PETRv2~\cite{petrv2} & GLOM & 24 & 640 $\times$ 1600 & 0.582 & 0.490 & 0.561 & 0.243 & 0.361 & 0.343 & 0.120 \\
+        BEVDepth~\cite{bevdepth} & V2-99$^\dagger$ & 90$^\ddagger$ & 640 $\times$ 1600 & 0.600 & 0.503 & 0.445 & 0.245 & 0.378 & 0.320 & 0.126 \\
+        BEVStereo~\cite{bevstereo} & V2-99$^\dagger$ & 90$^\ddagger$ & 640 $\times$ 1600 & 0.610 & 0.525 & 0.431 & 0.246 & 0.358 & 0.357 & 0.138 \\
+        \midrule
+        \textbf{BEVFormer v2} & InternImage-B & 24 & 640 $\times$ 1600 & 0.620 & 0.540 & 0.488 & 0.251 & 0.335 & 0.302 & 0.122 \\
+        \textbf{BEVFormer v2} & InternImage-XL & 24 & 640 $\times$ 1600 & 0.634 & 0.556 & 0.456 & 0.248 & 0.317 & 0.293 & 0.123 \\
+        \bottomrule
+    \end{tabular}
+
+\end{table*}

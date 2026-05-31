@@ -1,0 +1,22 @@
+\let\ck\checkmark
+
+\setlength{\tabcolsep}{5pt}
+\setlength{\doublerulesep}{2\arrayrulewidth}
+\renewcommand{\arraystretch}{1.0}
+\begin{table}[ht]
+    \caption{BEVFormer v2 使用其他骨干网络（Backbone）的训练设置。}
+    \label{table:training_setting_other}
+    \centering
+    \begin{tabular}{l|cccc}
+        %\toprule
+        backbone & R50 & DLA34 & R101 & V2-99 \\
+        \hline
+        batch size & \multicolumn{4}{c}{16} \\
+        optimizer & \multicolumn{4}{c}{AdamW} \\
+        base lr & \multicolumn{4}{c}{4e-4} \\
+        backbone lr & 2e-4 & 2e-4 & 4e-5 & 4e-5 \\
+        weight decay & \multicolumn{4}{c}{0.01} \\
+        \hline
+    \end{tabular}
+    
+\end{table}

@@ -1,0 +1,102 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+%%%%%%%%% PAPER TYPE  - PLEASE UPDATE FOR FINAL VERSION
+\usepackage[pagenumbers]{cvpr} % To force page numbers, e.g. for an arXiv version
+
+% Include other packages here, before hyperref.
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage[pagebackref,breaklinks,colorlinks]{hyperref}
+\usepackage{marvosym}
+\usepackage{ifsym}
+
+
+% Support for easy cross-referencing
+\usepackage[capitalize]{cleveref}
+\crefname{figure}{图}{图}
+\Crefname{figure}{图}{图}
+\crefname{table}{表}{表}
+\Crefname{table}{表}{表}
+\crefname{section}{章节}{章节}
+\Crefname{section}{章节}{章节}
+
+
+%%%%%%%%% USER DEFINED MACROS
+\newcommand{\yt}[1]{\textcolor{blue}{[yuntao: #1]}}
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+
+% Chinese support (auto-injected)
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK SC}[ItalicFont=AR PL UKai TW MBE]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans CJK SC}
+\raggedbottom
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\refname}{参考文献}
+\begin{document}
+
+%%%%%%%%% TITLE - PLEASE UPDATE
+\title{BEVFormer v2：通过透视监督将现代图像骨干网络适配到鸟瞰视图识别（Adapting Modern Image Backbones to Bird's-Eye-View Recognition via Perspective Supervision）}
+
+\author{Chenyu Yang\textsuperscript{\rm 1*} ~~ 
+Yuntao Chen\textsuperscript{\rm 2*} ~~ 
+Hao Tian\textsuperscript{\rm 3*} ~~ 
+Chenxin Tao\textsuperscript{\rm 1} ~~ 
+Xizhou Zhu\textsuperscript{\rm 3} ~~ 
+Zhaoxiang Zhang\textsuperscript{\rm 2,4} \\
+Gao Huang\textsuperscript{\rm 1} ~~ 
+Hongyang Li\textsuperscript{\rm 5} ~~
+Yu Qiao\textsuperscript{\rm 5} ~~
+Lewei Lu\textsuperscript{\rm 3} ~~ 
+Jie Zhou\textsuperscript{\rm 1} ~~
+Jifeng Dai\textsuperscript{\rm 1,5\Letter}
+\\ [0.15cm]
+\textsuperscript{\rm 1}Tsinghua University ~~ 
+\textsuperscript{\rm 2}Centre for Artificial Intelligence and Robotics, HKISI\_CAS \\ 
+\textsuperscript{\rm 3}SenseTime Research ~~
+\textsuperscript{\rm 4}Institute of Automation, Chinese Academy of Science (CASIA) \\
+\textsuperscript{\rm 5}Shanghai Artificial Intelligence Laboratory
+\\ [0.15cm]
+{\tt\small \{yangcy19, tcx20\}@mails.tsinghua.edu.cn, chenyuntao08@gmail.com, tianhao2@senseauto.com}\\
+{\tt\small \{zhuwalter, luotto\}@sensetime.com, zhaoxiang.zhang@ia.ac.cn}\\
+{\tt\small \{gaohuang, jzhou, daijifeng\}@tsinghua.edu.cn, \{lihongyang, qiaoyu\}@pjlab.org.cn}
+}
+
+\maketitle
+
+%%%%%%%%% ABSTRACT
+\input{texts/0-abstract}
+\blfootnote{*: 同等贡献（Equal contribution）。}
+\blfootnote{\Letter: 通讯作者（Corresponding author）。}
+
+%%%%%%%%% BODY TEXT
+\input{texts/1-introduction}
+\input{texts/2-related}
+%\input{texts/3a-problem}
+\input{texts/3b-method}
+\input{texts/4-experiment}
+\input{texts/5-conclusion}
+
+%%%%%%%%% REFERENCES
+{\small
+\bibliographystyle{ieee_fullname}
+\bibliography{egbib}
+}
+
+%%%%%%%%% APPENDIX
+\appendix
+\input{texts/6-appendix}
+
+\end{document}

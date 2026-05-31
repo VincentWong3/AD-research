@@ -1,0 +1,20 @@
+\setlength{\tabcolsep}{3pt}
+\setlength{\doublerulesep}{2\arrayrulewidth}
+\renewcommand{\arraystretch}{1.0}
+\begin{table*}[t]
+    \caption{BEVFormer v2 在使用 COCO 预训练和深度预训练（Depth Pre-training）的 VoVNet-99 骨干网络时，在 nuScenes 测试集上的3D检测结果。省略 COCO 预训练的epoch数，因为 COCO 预训练骨干网络广泛可用且两种设置使用相同的 COCO 预训练。}
+    \label{table:depth_pretrain}
+    \centering
+
+    \begin{tabular}{c|c|c|cc|cccccc}
+        \toprule
+        Backbone & Epoch & Pre-train & NDS & mAP & mATE & mASE & mAOE & mAVE & mAAE   \\ 
+        \midrule
+        DLA-34 & 72 & COCO & & & & & & & & \\ 
+        DLA-34 & \small{15M Img + 120 + 24} & \small{COCO $\xrightarrow{}$ DDAD15M $\xrightarrow{}$ nuScenes} & & & & & & & \\ 
+        \midrule
+        VoVNet-99 & 72 & COCO & & & & & & & & \\ 
+        VoVNet-99 & \small{15M Img + 120 + 24} & \small{COCO $\xrightarrow{}$ DDAD15M $\xrightarrow{}$ nuScenes} & & & & & & & \\ 
+        \bottomrule
+    \end{tabular}
+\end{table*}

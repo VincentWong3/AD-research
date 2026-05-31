@@ -1,0 +1,32 @@
+\let\ck\checkmark
+
+\setlength{\tabcolsep}{5pt}
+\setlength{\doublerulesep}{2\arrayrulewidth}
+\renewcommand{\arraystretch}{1.0}
+\begin{table}[ht]
+    \caption{BEVFormer v2 使用 InternImage 骨干网络（Backbone）的主要结果训练设置。}
+    \label{table:training_setting_main}
+    \centering
+    \begin{tabular}{l|cc}
+        %\toprule
+        backbone & InternImage-B & InternImage-XL \\
+        \hline
+        training epochs & 24 & 24 \\
+        batch size & 16 & 32 \\
+        optimizer & AdamW & AdamW \\
+        base learning rate & 4e-4 & 5e-4 \\
+        weight decay & 0.01 & 0.01 \\
+        lr schedule & step decay & step decay\\
+        layer-wise lr decay & 0.96 & 0.94 \\
+        warmup iters & 2000 & 2000  \\
+        warmup schedule & linear & linear \\
+        gradient clip & 35 & 35 \\
+        \hline
+        image size & 640 $\times$ 1600 & 640 $\times$ 1600 \\
+        IDA & \ck & \ck \\
+        temporal interval & 4 seconds & 4 seconds \\
+        bi-directional & \ck & \ck \\
+        \hline
+    \end{tabular}
+    
+\end{table}
