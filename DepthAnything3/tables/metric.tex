@@ -1,0 +1,37 @@
+\begin{table}[tb]
+    \caption{\textbf{与SOTA方法在度量深度估计上的对比。}\textbf{最优}和\underline{次优}结果已突出显示。底部行显示有无教师监督的消融结果。注意消融设置与最终模型在训练分辨率上略有不同，导致性能有微小差异。}
+    \label{tab:metric}
+    \centering
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccccccccc}
+        \toprule
+        \multirow{2}{*}[-4pt]{\textbf{Methods}} 
+        & \multicolumn{2}{c}{\textbf{ NYUv2 }} 
+        & \multicolumn{2}{c}{\textbf{ KITTI }} 
+        & \multicolumn{2}{c}{\textbf{ ETH3D }} 
+        & \multicolumn{2}{c}{\textbf{ SUN-RGBD }} 
+        & \multicolumn{2}{c}{\textbf{ DIODE }} 
+        \\
+        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9} \cmidrule(lr){10-11} 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$  \\
+        \midrule
+        DepthPro~\cite{bochkovskiydepth} & 0.932 & 0.093 & 0.843 & 0.121 & 0.386 & 0.349 & 0.950 & 0.126 & 0.734 & 0.173 \\
+        Metric3D v2~\cite{hu2024metric3d} & \underline{0.971} & 0.067 & \underline{0.976} & \textbf{0.051} & 0.830 & \underline{0.138} & 0.954 & 0.132 & 0.018 & 0.154 \\
+        UniDepthv1~\cite{piccinelli2024unidepth} & \textbf{0.980} & \textbf{0.061} & \textbf{0.978} & \textbf{0.051}
+        & 0.234 & 0.464 & \underline{0.971} & 0.113 & 0.570 & 0.266 \\
+        UniDepthv2~\cite{piccinelli2025unidepthv2} & 0.968 & \underline{0.064} & 0.968 & 0.076 & \underline{0.863} & 0.152 & \textbf{0.977} & \underline{0.111} & \textbf{0.856} & \textbf{0.123} \\
+        \midrule
+        DA3-metric & 0.963 & 0.070 & 0.953 & 0.086 & \textbf{0.917} & \textbf{0.104} & \underline{0.973} & \textbf{0.105} & \underline{0.838} & \underline{0.128} \\  
+        \midrule
+        w/ teacher & 0.966 & 0.073 & 0.947 & 0.086 & 0.906 & 0.105 & 0.973 & 0.104 & 0.824 & 0.132 \\
+        w/o teacher & 0.969 & 0.066 & 0.965 & 0.067 & 0.907 & 0.105 & 0.975 & 0.099 & 0.816 & 0.134 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+

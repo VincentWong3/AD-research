@@ -1,0 +1,27 @@
+\begin{table}[tb]
+    \centering
+    \caption{\textbf{Ablation study.}}
+    \resizebox{0.925\linewidth}{!}{
+    \begin{tabular}{lcccccccccc}
+        \toprule
+        \multirow{2}{*}[-4pt]{\textbf{Methods}} 
+        & \multicolumn{2}{c}{\textbf{ NYUv2 }} 
+        & \multicolumn{2}{c}{\textbf{ KITTI }} 
+        & \multicolumn{2}{c}{\textbf{ ETH3D }} 
+        & \multicolumn{2}{c}{\textbf{ SUN-RGBD }} 
+        & \multicolumn{2}{c}{\textbf{ DIODE }} 
+        \\
+        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9} \cmidrule(lr){10-11} 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$ 
+        & $\delta_1$$\uparrow$ & AbsRel$\downarrow$  \\
+        \midrule
+        w/ teacher & 0.966 & 0.073 & 0.947 & 0.086 & 0.906 & 0.105 & 0.973 & 0.104 & 0.824 & 0.132 \\
+        w/o teacher & 0.969 & 0.066 & 0.965 & 0.067 & 0.907 & 0.105 & 0.975 & 0.099 & 0.816 & 0.134 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \label{tab::metric_ablation}
+\end{table}

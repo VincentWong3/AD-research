@@ -1,0 +1,128 @@
+\documentclass[]{bytedance_seed}
+\setlength{\headheight}{33.04727pt}
+
+
+
+\usepackage[toc,page,header]{appendix}
+
+
+
+
+
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{amsmath,amsfonts,bm}
+\usepackage{xspace}
+\input{commands.tex}
+\input{math_commands.tex}
+
+\definecolor{colorfirst}{rgb}{.866,.945, 0.831}
+\definecolor{colorsecond}{rgb}{1, 0.98, 0.83}
+\definecolor{colorthird}{rgb}{0.76, 0.87, 0.92}
+\definecolor{colorcite}{rgb}{0.212, 0.490, 0.741}
+
+\newcommand{\cellfirst}{\cellcolor{colorfirst}}
+\newcommand{\cellsecond}{\cellcolor{colorsecond}}
+\newcommand{\cellthird}{\cellcolor{colorthird}}
+\newcommand{\cellgray}{\cellcolor{lightgray}}
+
+\newcommand{\textfirst}{\colorbox{colorfirst}}
+\newcommand{\secondtext}{\colorbox{colorsecond}}
+\newcommand{\thirdtext}{\colorbox{colorthird}}
+
+\usepackage{cleveref}
+\crefname{figure}{图}{图}
+\Crefname{figure}{图}{图}
+\crefname{table}{表}{表}
+\Crefname{table}{表}{表}
+\crefname{section}{章节}{章节}
+\Crefname{section}{章节}{章节}
+\crefname{equation}{Eq.}{Eqs.}
+
+
+\title{Depth Anything 3：从任意视角恢复视觉空间}
+
+
+\author[*]{Haotong Lin}
+\author[*]{Sili Chen}
+\author[*]{Jun Hao Liew}
+\author[*]{Donny Y. Chen}
+\author{Zhenyu Li}
+\author{Guang Shi}
+\author{Jiashi Feng}
+\author[*,\dagger]{Bingyi Kang}
+
+
+
+\affiliation[]{ByteDance Seed}
+
+
+\contribution[\dagger]{项目负责人}
+\contribution[*]{同等贡献}
+
+
+
+\abstract{
+本文提出Depth Anything 3（DA3），一个能够从任意数量的视觉输入中预测空间一致几何信息的模型，可在已知或未知相机位姿的条件下运行。在追求极简建模的过程中，DA3带来了两项关键洞察：一个普通的Transformer（如原始DINO编码器）无需架构特化即可胜任骨干网络，且单一的深度-射线预测目标足以替代复杂的多任务学习。通过教师-学生训练范式，该模型达到了与Depth Anything 2（\textit{DA2}）相当的细节水平和泛化能力。我们建立了一个新的视觉几何基准，涵盖相机位姿估计、任意视角几何和视觉渲染。在该基准上，DA3在所有任务上均创下新的最优水平，在相机位姿精度上平均超越此前最优方法\textit{VGGT} 35.7\%，在几何精度上平均超越23.6\%。此外，在单目深度估计方面也优于\textit{DA2}。所有模型均仅使用公开学术数据集训练。
+}
+
+\correspondence{Bingyi Kang}
+
+\checkdata[Project Page]{\url{depth-anything-3.github.io}}
+
+% Chinese support (auto-injected)
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK SC}[ItalicFont=AR PL UKai TW MBE]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans CJK SC}
+\raggedbottom
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\refname}{参考文献}
+\begin{document}
+
+
+\maketitle
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{figs/pdfs/da3_radar.pdf}
+    \label{fig:placeholder}
+    \vspace{-3mm}
+\end{figure}
+
+\footnotetext[1]{``Depth Anything 3''标志着该系列的新一代演进，从单目输入扩展到任意视角输入，这一发展基于我们坚信深度是理解物理世界的基石。}
+
+
+\newpage
+\tableofcontents
+\newpage
+
+\input{figs/texs/teaser}\bigbreak
+
+
+\input{sections/1-introduction}
+\input{sections/2-relatedwork}
+\input{sections/3-approach}
+\input{sections/x-benchmark}
+\input{sections/4-experiments}
+\input{sections/5-conc}
+
+
+
+\clearpage
+
+\bibliographystyle{plainnat}
+\bibliography{main}
+
+\clearpage
+
+\beginappendix
+
+\input{sections/appendix}
+
+\end{document}

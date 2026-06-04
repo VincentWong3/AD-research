@@ -1,0 +1,51 @@
+
+\section{视觉几何基准}
+
+我们进一步引入一个视觉几何基准来评估几何预测模型。它直接评估位姿精度、
+通过重建评估深度精度以及视觉渲染质量。
+
+\subsection{基准流程}
+
+\paragraph{位姿估计.}
+对于每个场景，我们选择所有可用的图像；如果总数超过限制，我们使用固定随机种子随机采样100张图像。选定的图像随后通过前馈模型处理，以生成一致的位姿和深度估计，然后计算位姿精度。
+
+\paragraph{几何估计.} 对于相同的图像集，我们使用预测的位姿和预测的深度进行重建。为了将重建的点云与真值对齐，我们使用evo~\citep{umeyama2002least} 将预测位姿与真值位姿对齐，得到一个将重建映射到真值坐标系的变换。为了提高稳健性，我们采用基于RANSAC的对齐流程。具体来说，我们在随机采样的位姿子集上重复应用evo，并通过统计内点位姿的数量来评估每个候选变换，其中内点定义为平移误差低于整体位姿偏差中位数的位姿。然后选择具有最大内点集的变换，并通过TSDF融合将对齐后的预测点云与预测深度图进行融合。
+最后，通过使用第~\ref{subsection:appendix:reconstruction_metrics} 节描述的指标，将对齐后的重建与真值点云进行比较来评估重建质量。
+
+\paragraph{视觉渲染.}
+对于每个测试场景，图像数量在所有基准数据集中通常为300到400张。我们每隔8张图像采样一张作为目标新视角进行评估。从剩余的视角中，我们使用每个数据集提供的COLMAP相机位姿，并应用最远点采样（同时考虑相机平移和旋转距离），选择12张图像作为输入上下文视角。对于DL3DV，我们使用官方的Benchmark集进行测试。对于Tanks and Temples，除\texttt{Courthouse}外，所有训练数据场景均被包含。对于MegaDepth，我们选择编号从\texttt{5000}到\texttt{5018}的场景，因为这些场景最适合NVS。
+
+\subsection{指标}
+
+\paragraph{位姿指标.} 为了评估位姿估计，我们遵循~\cite{wang2025vggt,wang2023posediffusion} 中引入的评估协议，并使用AUC报告结果。该指标由两个分项推导得出：相对旋转精度（RRA）和相对平移精度（RTA）。RRA和RTA分别量化了两张图像之间旋转和平移的角偏差。将每个误差与一组阈值进行比较以获得精度值。AUC则计算为精度-阈值曲线的积分，其中曲线由每个阈值下RRA和RTA中较小的一个决定。为了展示在不同容差水平下的性能，我们主要报告阈值3和30下的结果。
+
+\paragraph{重建指标.}
+\label{subsection:appendix:reconstruction_metrics}
+设 $\mathcal{G}$ 表示真值点集，$\mathcal{R}$ 表示待评估的重建点集。我们使用 $\text{dist}(\mathcal{R}\rightarrow \mathcal{G})$ 衡量精度，使用 $\text{dist}(\mathcal{G}\rightarrow \mathcal{R})$ 衡量完整度，遵循~\cite{aanaes2016dtu}。然后，倒角距离（CD）定义为这两项的平均值。基于这些距离，我们定义重建 $\mathcal{R}$ 相对于距离阈值 $d$ 的精确率和召回率。精确率由 $\frac{1}{|\mathcal{R}|}\sum \big[\text{dist}(\mathcal{R}_i \rightarrow \mathcal{G}) < d \big]$ 给出，召回率由 $\frac{1}{|\mathcal{G}|}\sum \big[\text{dist}(\mathcal{G}_i \rightarrow \mathcal{R}) < d \big]$ 给出，其中 $\left[\cdot \right]$ 表示艾弗森括号~\cite{knapitsch2017tnt}。为了联合捕捉这两个度量，我们报告F1分数，计算为 $\text{F1} = \frac{2\times \text{精确率}\times \text{召回率}}{\text{精确率}+\text{召回率}}$。
+
+\subsection{数据集}
+
+我们的基准建立在五个数据集上：HiRoom~\citep{SVLightVerse2025}、ETH3D~\citep{schops2017eth3d}、DTU~\citep{aanaes2016dtu}、7Scenes~\citep{shotton2013sevenscene} 和 ScanNet++~\citep{yeshwanth2023scannet++}。它们共同涵盖了从以物体为中心的采集到复杂室内外环境的多样化场景，并在先前的研究中被广泛采用。下面，我们提供关于数据集准备过程的更多细节。
+
+\textbf{HiRoom} 是一个使用Blender渲染的合成数据集，包含由专业艺术家创建的30个室内生活场景。
+我们在F1重建指标计算中使用阈值 $d$ 为0.05m。
+对于TSDF融合，我们将体素大小参数设置为0.007m。
+
+\textbf{ETH3D} 提供高分辨率室内外图像，以及来自激光传感器的真值深度。我们通过TSDF融合聚合真值深度图以获取真值3D形状。我们选择了11个场景：\texttt{courtyard}、\texttt{electro}、\texttt{kicker}、\texttt{pipes}、\texttt{relief}、\texttt{delivery area}、\texttt{facade}、\texttt{office}、\texttt{playground}、\texttt{relief 2}、\texttt{terrains} 用于基准测试。所有帧均用于评估。
+我们在F1重建指标计算中使用阈值 $d$ 为0.25。
+对于TSDF融合，我们将体素大小参数设置为0.039m。
+
+\textbf{DTU} 是一个室内数据集，包含124个不同的物体，每个场景从49个视角记录。它提供了在良好受控条件下收集的真值点云。我们按照~\cite{yao2018mvsnet} 的方法，在DTU数据集的22个评估扫描上评估模型。我们采用RMBG 2.0~\cite{BiRefNet} 去除无意义的背景像素，并使用 \cite{zhang2023geomvsnet} 中提出的默认深度融合策略。所有帧均用于评估。
+
+\textbf{7Scenes} 是一个具有挑战性的真实世界数据集，包含低分辨率图像，具有严重的运动模糊，用于室内场景。我们遵循~\cite{zhu2024nicerslam} 的实现，使用TSDF融合融合RGBD图像并准备真值3D形状。
+我们将每个场景的帧数按11倍下采样以方便评估。
+我们在F1重建指标计算中使用阈值 $d$ 为0.05m。
+对于TSDF融合，我们将体素大小参数设置为0.007m。
+
+\textbf{ScanNet++} 是一个大规模的室内数据集，提供高分辨率图像、来自iPhone LiDAR的深度图以及从激光扫描重建中采样的高分辨率深度图。我们选择了20个场景用于基准测试。由于来自iPhone LiDAR的深度图缺乏无效真值指示符，我们默认使用从激光扫描重建中采样的深度图作为真值深度。我们通过TSDF融合聚合真值深度图以获取真值3D形状。我们将每个场景的帧数按5倍下采样以方便评估。我们在F1重建指标计算中使用阈值 $d$ 为0.05m。
+对于TSDF融合，我们将体素大小参数设置为0.02m。
+
+\paragraph{视觉渲染质量.} \label{sec:bm_ffnvs}
+我们在多样化的大规模场景上评估视觉渲染质量。
+我们引入了一个新的NVS基准，由三个数据集构建，包括140个场景的DL3DV~\citep{ling2024dl3dv}、6个场景的Tanks and Temples~\citep{knapitsch2017tanks} 和19个场景的MegaDepth~\citep{li2018megadepth}，每个场景约300个采样帧。直接使用通过COLMAP估计的真值相机位姿，以确保在不同模型间进行准确和公平的比较。
+我们报告在给定相机位姿下渲染的新视角上的PSNR、SSIM和LPIPS指标。

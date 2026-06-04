@@ -1,0 +1,23 @@
+\section{相关工作}
+
+
+\paragraph{多视角视觉几何估计。}
+传统系统~\citep{schoenberger2016sfm, schoenberger2016mvs}将重建分解为特征检测与匹配、鲁棒相对位姿估计、带光束法平差的增量式或全局式SfM，以及用于逐视图深度和融合点云的密集多视图立体视觉。这些方法在纹理良好的场景中仍然表现强劲，但其模块化和脆弱的对应关系在低纹理、高光或大视角变化条件下难以保证鲁棒性。
+早期的学习方法在组件层面注入了鲁棒性：
+学习型检测器~\citep{detone2018superpoint}、用于匹配的描述子~\citep{dusmanu2019d2}，以及可微优化层，将位姿/深度更新暴露给梯度流~\citep{he2024detector,guo2025multi,pan2024global}。
+在密集重建方面，用于MVS的代价体网络~\citep{yao2018mvsnet,xu2023iterative}用3D CNN取代了手工设计的正则化方法，与经典的PatchMatch相比，在大基线和薄结构上提高了深度精度。
+早期的端到端方法~\citep{teed2018deepv2d,wang2024vggsfm}超越了模块化的SfM/MVS流水线，直接从图像对回归相机位姿和每幅图像的深度。
+这些方法降低了工程复杂度，并证明了学习型联合深度位姿估计的可行性，但它们往往在可扩展性、泛化性和处理任意输入基数方面存在困难。
+
+一个转折点出现在DUSt3R~\citep{dust3r}，它利用Transformer直接在两个视图之间预测点图，并以纯前馈方式计算深度和相对位姿。这项工作为后续旨在大规模统一多视图几何估计的基于Transformer的方法奠定了基础。后续模型将这一范式扩展到多视图输入~\citep{fast3r,cut3r,Mv-dust3r+,must3r}、视频输入~\citep{monst3r,cut3r,murai2025mast3r,deng2025vggtlong}、鲁棒对应关系建模~\citep{mast3r}、相机参数注入~\citep{jang2025pow3r,keetha2025mapanything}、大规模SfM~\citep{deng2025sailrecon}、SLAM应用~\citep{maggio2025vggtslam}，以及使用3D高斯的视图合成~\citep{flare,smart2024splatt3r,charatan2024pixelsplat,chen2024mvsplat,jiang2025anysplat,xu2025depthsplat}。其中，\cite{wang2025vggt}通过大规模训练、多阶段架构和冗余设计将精度提升到了新水平。相比之下，我们专注于围绕单一、简单的Transformer构建的极简建模策略。
+
+\paragraph{单目深度估计。}
+早期的单目深度估计方法依赖于在单领域数据集上的全监督学习，这通常产生专门针对室内房间~\citep{silberman2012indoor}或室外驾驶场景~\citep{geiger2013vision}的模型。这些早期的深度模型在训练领域内取得了良好的精度，但难以泛化到新环境，凸显了跨域深度预测的挑战。
+现代的通用方法~\citep{yang2024depth,yang2024depthv2,wang2025moge,bochkovskii2024depth,yin2023metric3d,ke2024repurposing}通过利用大规模多数据集训练和先进的架构（如视觉Transformer~\citep{ranftl2021vision}或DiT~\citep{peebles2023scalable}）体现了这一趋势。
+在数百万张图像上训练后，它们学习了广泛的视觉线索，并结合了仿射不变深度归一化等技术。
+相比之下，我们的方法主要设计用于统一的视觉几何估计任务，但仍然展示了具有竞争力的单目深度性能。
+
+
+\paragraph{前馈新视角合成}
+
+新视角合成（NVS）长期以来一直是计算机视觉和图形学的核心问题~\cite{levoy1996light,heigl1999plenoptic,buehler2001unstructured}，并且随着神经渲染的兴起而受到更多关注~\cite{sitzmann2019scene,sitzmann2021light,mildenhall2020nerf,kerbl20233d,govindarajan2025radiant}。一个特别有前景的方向是前馈NVS，它通过图像到3D的网络单次前向传播生成3D表示，避免了繁琐的逐场景优化。早期方法采用NeRF作为底层3D表示~\cite{yu2021pixelnerf,chen2021mvsnerf,lin2022efficient,chen2025explicit,hong2024lrm,xu2024murf}，但近期工作已大幅转向3DGS，因其显式的结构和实时渲染能力。代表性方法通过几何先验改进图像到3D网络，例如，极线注意力~\cite{charatan2024pixelsplat}、代价体~\cite{chen2024mvsplat}和深度先验~\cite{xu2024murf}。最近，多视图几何基础模型~\cite{dust3r,Mv-dust3r+,fast3r,wang2025vggt}被集成进来以提高建模能力，特别是在无位姿设定下，然而基于此类模型构建的方法通常依赖单一选定的基础模型进行评估~\cite{smart2024splatt3r,ye2024no,jiang2025anysplat}。在此，我们系统地评估了不同几何基础模型对NVS的贡献，并提出了更好地利用它们的策略，使前馈3DGS能够处理有位姿和无位姿输入、可变数量的视图以及任意分辨率。

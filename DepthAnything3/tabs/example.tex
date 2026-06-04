@@ -1,0 +1,67 @@
+
+
+
+
+
+
+\vspace{0.5em}
+
+\begin{table}[t]
+    \caption{
+        \textbf{Comparisons with SOTA methods on pose estimation accuracy (AUC3/AUC30 $\uparrow$).} 
+    }
+    \begin{center}
+    \resizebox{0.85\linewidth}{!}{
+        \begin{tabular}{l|ccccc}
+            \toprule
+            Method & \picodataset & ETH3D & DTU & 7Scenes & ScanNet++* \\
+            \midrule
+            Ours & \textbf{81.7}~/~\textbf{96.4} & \textbf{39.3}~/~\textbf{90.6} & \textbf{85.6}~/~94.9 & \textbf{29.2}~/~\textbf{86.8} & \textbf{83.2}~/~\textbf{98.0} \\
+            VGGT & 49.1~/~88.0 & 26.3~/~80.8 & 79.2~/~\textbf{99.8} & 23.9~/~85.0 & 62.6~/~95.1 \\
+            MapAnything & 17.9~/~82.8 & 19.2/~77.4 & 6.5~/~72.7 & 12.6~/~79.7 & 20.2~/~84.1 \\
+            Pi3 & 67.0~/~94.8 & 35.2~/~87.3 & 62.5~/~94.9 & 25.5~/~86.3 & 50.7~/~92.1 \\
+            Fast3R & 25.9~/~77.0 & 8.10~/~44.4 & 9.50~/~79.1 & 19.0~/~78.6 & 17.9~/~72.5 \\
+            Dust3R & 17.6~/~54.3 & 4.30~/~27.3 & 4.00~/~74.3 & 6.90~/~61.6 & 8.10~/~33.9 \\
+            MV-Dust3R & 11.3~/~78.4 & 0.10~/~12.5 & 2.30~/~66.7 & 0.80~/~48.3 & 0.30~/~54.2 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \end{center}
+    \label{tab:pose_auc_slash}
+\end{table}
+
+
+
+
+
+\begin{table}[t]
+    \caption{
+        \textbf{Ablations for Depth-Anything-3.} 
+        We report \textbf{Pose/Recon} accuracy for all benchmark datasets (AUC3 for pose; Chamfer Distance for DTU reconstruction; and F-Score for reconstruction on the other datasets). Methods* denote using groundtruth pose for fusion.
+    }
+    \begin{center}
+    \resizebox{0.95\linewidth}{!}{
+        \begin{tabular}{l|ccccc}
+            \toprule
+            Method & \picodataset & ETH3D & DTU & 7Scenes & ScanNet++* \\
+            \midrule
+            a. Ours & 19.6~/~15.7 & 18.9~/~57.3 & -/~3.06 & 25.1~/~48.6 & 46.8~/~58.9 \\
+            b. VGGT style \\
+            c. All alt.  \\
+            \midrule
+            e. w/o DualDptHead & \\
+            e. w/o Rayhead (pointmap head) & \\
+            f. w/o Teacher Depth [Done] & \\
+            \midrule
+            g. Giant (1.1B)  & 81.7~/~89.3 & 39.3~/~74.4 & 85.6~/~1.92 & 29.2~/~52.1 & 83.2~/~76.4 \\
+            h. Large (0.3B) & 19.6~/~15.7 & 18.9~/~57.3 & 58.4~/~3.06 & 25.1~/~48.6 & 46.8~/~58.9 \\
+            i. Base  ~(0.09B) & 12.8~/~18.6 & 13.5~/~52.8 &  31.3~/~5.14 & 17.2~/~37.7 & 16.1~/~39.6 \\
+            \midrule
+            j. Ours w/ Pose Cond* & -~/~85.9 & -~/~79.1 & -~/~2.48 & -~/~48.7 & -~/~72.9 \\
+            k. Ours w/o Pose Cond* & -~/~41.8 & -~/~68.8 & -~/~4.02 & -~/~56.1 & -~/~70.8 \\
+            \bottomrule
+        \end{tabular}
+    }
+    \end{center}
+    \label{tab:recon_acc}
+\end{table}

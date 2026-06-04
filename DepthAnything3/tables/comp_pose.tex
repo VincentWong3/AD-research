@@ -1,0 +1,44 @@
+\begin{table}[t]
+  \caption{
+      \textbf{与SOTA方法在位姿精度上的对比。}报告Auc3 $\uparrow$和Auc30 $\uparrow$指标。前三名结果高亮为\textfirst{第一}、\secondtext{第二}和\thirdtext{第三}。
+}
+  \label{tab:comp_pose}
+  \begin{center}
+  \resizebox{\linewidth}{!}{
+  \begin{tabular}{lccccccccccc}
+      \toprule
+      \multirow{2}{*}[-4pt]{\textbf{Methods}} 
+      & \multirow{2}{*}[-4pt]{\textbf{Params}} 
+      & \multicolumn{2}{c}{\textbf{ \picodataset }} 
+      & \multicolumn{2}{c}{\textbf{ ETH3D }} 
+      & \multicolumn{2}{c}{\textbf{ DTU }} 
+      & \multicolumn{2}{c}{\textbf{ 7Scenes }} 
+      & \multicolumn{2}{c}{\textbf{ ScanNet++ }} 
+      \\
+      \cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8} \cmidrule(lr){9-10} \cmidrule(lr){11-12} 
+      & 
+      & Auc3 & Auc30
+      & Auc3 & Auc30
+      & Auc3 & Auc30
+      & Auc3 & Auc30
+      & Auc3 & Auc30
+        \\
+      \midrule
+      DUSt3R      & 0.57B & 17.6 & 54.3 & 4.30 & 27.3 & 4.00 & 74.3 & 6.90 & 61.6 & 8.10 & 33.9 \\
+      Fast3R      & 0.65B & 25.9 & 77.0 & 8.10 & 44.4 & 9.50 & 79.1 & 19.0 & 78.6 & 17.9 & 72.5 \\
+      MapAnything & 0.56B & 17.9 & 82.8 & 19.2 & 77.4 & 6.50 & 72.7 & 12.6 & 79.7 & 20.2 & 84.1 \\ 
+      Pi3         & 0.96B & \cellsecond{67.0} & \cellsecond{94.8} & \cellsecond{35.2} & \cellsecond{87.3} &62.5 & 94.9 & \cellthird{25.5} & \cellthird{86.3} & 50.7 & 92.1 \\ 
+      VGGT        & 1.19B & 49.1 & 88.0 & 26.3 & 80.8 & \cellsecond{79.2} & \cellfirst{99.8} & 23.9 & 85.0 & \cellsecond{62.6} & \cellsecond{95.1} \\ 
+      \midrule
+      DA3-Giant   & 1.10B & \cellfirst{80.3} & \cellfirst{95.9} & \cellfirst{48.4} & \cellfirst{91.2} & \cellfirst{94.1} & \cellthird{99.4} & \cellsecond{28.5} & \cellfirst{86.8} & \cellfirst{85.0} & \cellfirst{98.1} \\ 
+      DA3-Large   & 0.36B & \cellthird{58.7} & \cellthird{94.2} & \cellthird{32.2} & \cellthird{86.9} & \cellthird{70.2} & \cellsecond{96.7} & \cellfirst{29.2} & \cellsecond{86.6} & \cellthird{60.2} & \cellthird{94.7} \\ 
+      DA3-Base    & 0.11B & 19.0 & 83.2 & 15.1 & 74.6 & 60.1 & 95.9 & 20.1 & 82.9 & 25.1 & 83.4 \\ 
+      DA3-Small   & 0.03B & 9.49 & 75.2 & 8.59 & 62.1 & 30.6 & 91.2 & 14.0 & 78.7 & 10.9 & 71.9 \\ 
+      \bottomrule
+  \end{tabular}
+  }
+  \end{center}
+\end{table}
+
+
+

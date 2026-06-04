@@ -1,0 +1,28 @@
+\begin{table}[t]
+    \caption{
+        \textbf{模型参数与运行速度对比。}最大图像数量在80 GB A100 GPU上测试。若将部分中间令牌存储于CPU内存，则可处理更多图像。运行速度在A100 GPU上以32张图像的场景测量，报告每张图像的平均速度。图像分辨率为$504\times336$。
+    }
+    \small
+    \begin{center}
+    \resizebox{0.95\linewidth}{!}{
+    \begin{tabular}{l c ccc c}
+        \toprule
+        \multirow{2}{*}[-4pt]{\textbf{Model}} 
+        & \multirow{2}{*}[-4pt]{\textbf{Max \# of Images}} 
+        & \multicolumn{3}{c}{\textbf{Parameters}} 
+        & \multirow{2}{*}[-4pt]{\textbf{Running Speed}} \\
+        \cmidrule(lr){3-5} 
+        &  & Backbone & DualDPT & CameraHead &  \\
+        \midrule
+        VGGT(Reference) & 400-500 & 0.91B   & 0.064B & 0.22B  & 34.1 FPS \\
+        \midrule
+        DA3-Giant & 900-1000 & 1.130B   & 0.050B & 0.018B  & 37.6 FPS \\
+        DA3-Large & 1500-1600  & 0.300B    & 0.047B  & 0.008B  & 78.37 FPS  \\
+        DA3-Base & 2100-2200  &  0.086B   & 0.015B  & 0.004B  & 126.5 FPS  \\
+        DA3-Small & 4000-4100 & 0.022B      & 0.003B  & 0.001B  & 160.5 FPS  \\
+        \bottomrule
+    \end{tabular}
+    }
+    \end{center}
+    \label{tab:analysis}
+\end{table}

@@ -1,0 +1,10 @@
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{figs/pdfs/pipeline.png}
+        \caption{\textbf{Pipeline of Depth Anything 3.} 
+        Depth Anything 3 employs a single transformer (vanilla DINOv2 model) without any architectural modifications. To enable cross-view reasoning, an input-adaptive cross-view self-attention mechanism is introduced. A dual-DPT head is used to predict depth and ray maps from visual tokens.
+        Camera parameters, if available, are encoded as camera tokens and concatenated with patch tokens, participating in all attention operations.  
+        }
+        \label{fig:pipeline}
+    \end{center}
+\end{figure}

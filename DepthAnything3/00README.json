@@ -1,0 +1,69 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "paper.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "figs/pdfs/da3_pipeline.pdf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "figs/texs/teaser_small.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "natbib.sty"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "paper.toc"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "please_readme.txt"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/0-abstract.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "sections/metric.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "seed/ByteSans-Bold.ttf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "seed/ByteSans-Medium.ttf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "seed/bytesans.tfm"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "seed/bytesansmedium.tfm"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "tables/ablation_app.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "tables/metric_ablation.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "tabs/example.tex"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

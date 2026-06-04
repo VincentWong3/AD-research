@@ -1,0 +1,62 @@
+\begin{table}[tb]
+    \caption{
+        \textbf{单一Transformer的更多消融实验。}评估双DPT头、教师标签监督和位姿条件模块的效果。标记”*”的方法使用真值位姿融合进行评估。
+    }
+    \vspace{-2mm}
+    \label{tab:abl_dav3_app}
+    \begin{center}
+    \resizebox{0.925\linewidth}{!}{
+    \begin{tabular}{lcccccccccc}
+        \toprule
+        \multirow{2}{*}[-4pt]{\textbf{Methods}} 
+        & \multicolumn{2}{c}{\textbf{ \picodataset }} 
+        & \multicolumn{2}{c}{\textbf{ ETH3D }} 
+        & \multicolumn{2}{c}{\textbf{ DTU }} 
+        & \multicolumn{2}{c}{\textbf{ 7Scenes }} 
+        & \multicolumn{2}{c}{\textbf{ ScanNet++ }} 
+        \\
+        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9} \cmidrule(lr){10-11} 
+        & Auc3$\uparrow$ & F1$\uparrow$ 
+        & Auc3$\uparrow$ & F1$\uparrow$ 
+        & Auc3$\uparrow$ & CD$\downarrow$ 
+        & Auc3$\uparrow$ & F1$\uparrow$ 
+        & Auc3$\uparrow$ & F1$\uparrow$  \\
+        \midrule
+        a. Full Model      
+        & 39.2 & 47.0 
+        & 21.0 & 55.4 
+        & 45.8 & 3.82 
+        & 26.2 & 47.6 
+        & 30.3 & 51.1 \\
+        \midrule
+        d. w/o Dual DPT    
+        & 5.59 & 11.5 
+        & 13.6 & 33.4 
+        & 21.7 & 5.14 
+        & 14.2 & 49.4 
+        & 26.5 & 46.6 \\
+        e. w/o Teacher     
+        & 11.2 & 16.0 
+        & 16.2 & 57.6 
+        & 52.5 & 3.29 
+        & 23.3 & 40.3 
+        & 26.2 & 47.7 \\
+        \midrule
+        f. w/o Pose Cond.*
+        &  & 65.8
+        &  & 63.2
+        &  & 3.65
+        &  & 58.4
+        &  & 62.8 \\
+        g. w/ Pose Cond.*
+        &  & 73.8
+        &  & 70.9
+        &  & 2.14
+        &  & 46.0
+        &  & 65.7 \\
+        \bottomrule
+    \end{tabular}
+    }
+    \end{center}
+\end{table}
+

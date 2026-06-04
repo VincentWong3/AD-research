@@ -1,0 +1,20 @@
+
+\subsection{度量深度估计}
+
+我们训练了一个度量深度估计模型。遵循Metric3Dv2~[]，我们应用规范相机空间变换来解决由不同焦距引起的深度歧义。具体来说，我们使用比率 $f^c/f$ 对真值深度进行重新缩放，其中 $f^c$ 和 $f$ 分别表示规范焦距和相机焦距。为了确保细节清晰，我们使用Depth-Anything-3-Teacher（第xx节）模型的预测来监督度量深度模型的训练。我们将教师模型预测深度的尺度和偏移与真值度量深度标签对齐以进行监督。我们在13个数据集上训练了我们的度量深度模型，包括Taskonomy~[]、DIML（室外）~[]、DDAD~[]、Argoverse~[]、Lyft~[]、Pandaset~[]、Waymo~[]、ScanNet++~[]、ARKitScenes~[]、Map-free~[]、DSEC~[]、Driving Stereo~[] 和 Cityscapes~[] 数据集。对于立体数据集，我们利用FoundationStereo~[] 的预测作为训练标签。训练目标是深度损失 $\mathcal{L}_{depth}$、$\mathcal{L}_{grad}$ 和天空掩码损失 $\mathcal{L}_{sky}$ 的加权和。
+
+\noindent \textbf{实现细节.} 训练大体上遵循单目Depth-Anything-3-Teacher模型的训练方式。所有图像以基础分辨率504进行训练，具有不同的宽高比（1:1、1:2、16:9、9:16、3:4、1:1.5、1.5:1、1:1.8）。我们使用AdamW优化器，并将编码器和解码器的学习率分别设置为5e-6和5e-5。我们应用随机旋转增强，训练图像以5\%的概率旋转90度或270度。我们将规范焦距 $f^c$ 设为300。我们使用Depth-Anything-3-Teacher的对齐预测作为监督。以20\%的概率，我们使用原始真值标签进行训练。我们以批大小64训练160K次迭代。
+
+\input{tables/metric.tex}
+
+\noindent \textbf{结果.}
+我们与最先进的度量深度估计方法（包括UniDepthV1~[]、UniDepthV2~[]、Metric3Dv2~[]、DepthPro~[] 和 MoGe-2~[]）在5个基准上进行比较，即NYU-D~[]、KITTI、ETH3D、SUNRGBD和DIODE（室内）。如表~\ref{tab:metric} 所示，我们的方法在ETH3D上优于其他工作，同时在其它基准上性能相当。
+
+\textbf{消融实验.} 我们还消融了引入Depth-Anything-3-Teacher进行监督的设计。如表~\ref{tab:metric} 所示，移除Depth-Anything-3-Teacher在定量上不会降低性能。然而，如图~\ref{fig:metric-abl} 所示，清晰度得到了极大提升，证明了Depth-Anything-3-Teacher在改善清晰度方面的有效性。
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figs/pdfs/metric-abl.pdf}
+    \caption{\textbf{Depth-Anything-3-Teacher 用于监督度量深度估计的有效性.} 引入Depth-Anything-3-Teacher进行监督显著提升了度量深度的清晰度。}
+    \label{fig:metric-abl}
+\end{figure}
