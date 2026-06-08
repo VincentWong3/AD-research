@@ -1,3 +1,0 @@
-\begin{abstract}
-本文提出了一种带有透视监督（Perspective Supervision）的鸟瞰视图（BEV）检测器，收敛速度快且更适合现代图像骨干网络（Image Backbone）。现有当前最优（SOTA）的BEV检测器通常依赖于特定深度预训练的骨干网络（如 VoVNet），阻碍了蓬勃发展的图像骨干网络与BEV检测器之间的协同。为解决此限制，本文通过引入透视监督简化BEV检测器的优化。为此，本文提出一个两阶段（Two-stage）BEV检测器，将透视图头（Perspective Head）生成的提议（Proposals）送入鸟瞰视图头（BEV Head）进行最终预测。为评估模型有效性，本文开展了广泛的消融实验（Ablation Study），聚焦于监督形式及所提检测器的泛化性。该方法在多种传统与现代图像骨干网络上得到验证，并在大规模nuScenes数据集上取得新的SOTA结果。代码将很快开源。
-\end{abstract}
