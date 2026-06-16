@@ -1,0 +1,361 @@
+
+\section{相关工作}
+\label{sec:related_works}
+
+以下相关工作在各种类型延迟存在时为折扣回报情形提供了理论和实践解决方案，奖励收集延迟除外（\Cref{subsec:reward_delay_related}主要关注平均奖励）。
+首先描述文献中解决常值状态观测或动作执行延迟的三种主要方法。
+分别是增广状态方法（\Cref{subsec:augmented_related}）、无记忆方法（\Cref{subsec:memoryless}）和基于模型方法（\Cref{subsec:model_based_related_works}）。
+然后，将综述范围扩展至更广泛的延迟（仍涉及动作执行和状态观测）；\Cref{subsec:stochastic_related}介绍随机延迟研究，\Cref{subsec:non_int_related}介绍非整数延迟研究。
+最后，在\Cref{subsec:reward_delay_related}中讨论奖励收集延迟。
+
+\subsection{常值延迟的增广状态方法}
+\label{subsec:augmented_related}
+
+\subsubsection{增广状态的定义}
+\label{subsubsec:theory_augmented_space}
+本节引入了常值状态观测和动作执行延迟的重要概念。
+\cite{bertsekas1987dynamic}和\cite{altman1992closed}分别指出，在动作执行延迟和状态观测延迟情形下，可以通过如下方式增广状态空间将\gls{dmdp}简化为\gls{mdp}。考虑动作执行或状态观测延迟$\delay$；令$(a_1,\dots,a_{\delay})$为智能体已选择但由于延迟尚未观测到结果的最近$\delay$个动作；令$s$为智能体最近观测到的状态。
+则增广状态（augmented state）$x=(s,a_1,\dots,a_\delay)$包含该时刻智能体可能收集到的全部信息。
+在底层\gls{mdp}的马尔可夫性质下，任何进一步的信息都是冗余的。
+\cite{bertsekas1987dynamic,altman1992closed}证明，通过增广状态得到的新过程确实是一个\gls{mdp}。
+其新状态空间为$\augmentedstatespace=\statespace\times\actionspace^\delay$。
+注意对延迟的指数依赖。
+记$\delayedpolicyspace$为依赖于增广状态或增广状态历史的策略集合。
+换言之，$\delayedpolicyspace$包含$\policyspace$中任何不依赖比增广状态所含信息更新信息的策略。
+增广状态及策略基于增广状态的方式如图\Cref{fig:state_obs_delayed_mdp}和\Cref{fig:action_exec_delayed_mdp}所示。
+下面刻画这一过程。对于增广状态$x,x'\in\augmentedstatespace$，满足$x=(s,a_1,\dots,a_{\delay})$和$x'=(s',a_1',\dots,a_{\delay}')$，对于动作$a\in\actionspace$，新的转移函数为\footnote{记号"~~$\widetilde{}$~~"将用于指代延迟量。}
+\begin{align*}
+    \augmentedtransitionfunction(x'\vert x,a) = p(s'\vert s,a_1)\delta_a(a_{\delay}')\prod_{i=1}^{\delay-1}\delta_{a_{i+1}}(a_{i}'),
+\end{align*}
+其中Dirac函数的乘积确保动作序列正确地从上一个增广状态传递到下一个。
+奖励函数为
+\begin{align}
+\label{eq:delayed_reward_deterministic}
+    \augmentedexpectedrewardfunction(x,a) = r(s,a_1).
+\end{align}
+如\cite[Lemma~1]{katsikopoulos2003markov}所示，等价形式为
+\begin{align}
+\label{eq:delayed_reward_expected}
+    \augmentedexpectedrewardfunction(x,a) = \expectedvalue_{z\sim \augmentedbelief(\cdot\vert x)} [r(z,a)],
+\end{align}
+其中$\augmentedbelief$为已知增广状态$x$时当前未知状态$z$的概率。将此概率称为信念（belief），因其与\gls{pomdp}文献中的信念概念相似。
+直观上，由于给定动作序列和最近观测状态就能完全确定当前未观测状态的分布，第一个过程在延迟$\delay$步后最终将与第二个过程在期望意义下收集相同奖励。
+因此，两个过程中的最优策略对应。
+但注意，由于\Cref{subsec:delay_init}讨论的延迟初始化偏移，两个过程可能具有不同的回报。
+
+为完整起见，给出已知增广状态$x=(s_1,a_1,\dots.a_\delay)$时未观测当前状态$s_{\delay+1}$的信念表达式，
+\begin{align}
+\label{eq:belief_def}
+    \augmentedbelief(s_{\delay+1}\vert x)=\int_{\statespace^{\delay-1}}p(s_{\delay+1}\vert s_\delay,a_\delay)\prod_{i=2}^\delay p(s_i|s_{i-1},a_{i-1})\de s_{2:\delay}.
+\end{align}
+
+\subsubsection{动作执行延迟与状态观测延迟的等价性}
+\label{subsubsec:equiv_action_state_delays}
+常值动作执行延迟和状态观测延迟的另一个重要结果归功于\cite{katsikopoulos2003markov}。
+该结果指出这两类延迟是同一枚硬币的两面。
+
+\begin{prop}[状态观测延迟与动作执行延迟的等价性，\cite{katsikopoulos2003markov}的结论~1]
+    具有常值动作执行延迟$\delay^a$和常值状态观测延迟$\delay^s$的\gls{dmdp}可以通过用最近$\delay^s+\delay^a$个动作增广状态简化为\gls{mdp}。
+\end{prop}
+
+\subsubsection{实际应用}
+一条相对直接的研究路线是将\gls{rl}算法直接应用于增广状态\gls{mdp}。
+该方法可追溯至\cite{brooks1972markov}。
+理论也支持该方法将问题还原为无延迟\gls{mdp}，智能体可在原始\gls{dmdp}中获得最优回报。
+但存在一个障碍：增广状态空间随延迟呈指数增长，因为$\lvert\augmentedstatespace\rvert= \lvert\statespace\rvert\lvert\actionspace\rvert^\delay$\cite{walsh2009learning}。
+这可能会显著影响学习速度。
+然而，较新的工作提出重新审视该方法以加速学习。
+例如，可以修改增广状态中动作缓冲区的动作，模拟应用不同策略的效果，而无需在环境中额外采样。
+这一巧妙技术由\cite{bouteiller2020reinforcement}提出，提供了更好的样本效率。
+其算法Delay-Correcting Actor-Critic（DCAC）在\gls{sac}\cite{haarnoja2018soft}的基础上增加了上述思想。
+实验结果清晰地展示了该方法的效率。
+\gls{sac}算法似乎特别适合延迟问题，其核心概念也被纳入其他方法，如RTAC \cite{ramstedt2019real}——一种使用增广状态作为输入的actor-critic算法。
+
+增广状态方法也用于实时强化学习（real-time \gls{rl}）。
+在\cite{xiao2020thinking}中，作者推导了考虑动作选择所需时间的连续时间\gls{rl}的理论结果。
+在此设定中，增广状态同样恢复了连续时间无延迟\glspl{mdp}的性质。
+有趣的是，实证研究表明，增广状态中不需要（因而理论上也不必要）的额外信息反而提供了更高的回报。
+换言之，额外信息虽然在理论上冗余，但可能从学习角度使问题更简单。
+
+\subsection{常值延迟的无记忆方法}
+\label{subsec:memoryless}
+受\gls{pomdp}文献启发，第二条研究路线关注将\gls{rl}算法应用于无记忆（memoryless）过程。
+该方法仅考虑最近观测到的状态，丢弃增广状态中动作序列可能包含的信息。
+但注意，该方法仍能以某种方式考虑延迟，如dSARSA算法\cite{schuitema2010control}。
+有趣的是，作者受SARSA算法在\glspl{pomdp}问题上取得良好结果的启发\cite{loch1998using}，将该SARSA变体\cite{rummery1994line}应用于无记忆状态。
+dSARSA算法在TD更新中考虑延迟。令$t$为当前时间。
+传统SARSA将时间$t$收集的奖励分配给最近选择的动作$a_t$和最近观测的状态$s_{t-\delay}$，而dSARSA则将同一奖励分配给同一最近观测状态，但与增广状态中最旧的动作$s_{t-\delay}$相关联。
+实际上，这才是施加于$s_{t-\delay}$的动作。
+这一修改恢复了\Cref{eq:delayed_reward_expected}中奖励的定义。
+\cite{schuitema2010control}提供的实验表明，dSARSA在实践中表现良好。
+
+在实时\gls{rl}文献中，\cite{hester2013texplore}考虑使用蒙特卡洛树搜索（Monte Carlo Tree Search）根据最近观测状态进行轨迹规划。
+注意，该算法通过将动作选择与模型学习阶段分离，专门设计用于减少动作选择中的延迟。
+实际上，实时\gls{rl}文献与延迟\gls{rl}的一个重要区别在于，修改用于学习策略的在线算法可以减少由策略计算导致的延迟\cite{hester2012rtmba,caarls2015parallel,ramstedt2019real}。
+而在本文中，认为延迟是环境的固有特征，智能体无法对其施加影响。
+
+\subsection{常值延迟的基于模型方法}
+\label{subsec:model_based_related_works}
+文献中最后一种方法称为基于模型（model-based）方法。
+其思路是解决状态空间对延迟$\delay$的指数依赖所引入的计算成本。为降低这一成本，这些方法从增广状态计算当前未观测状态的某种替代量，并用作策略的输入。
+这种预测未来（或者说未观测的现在）的方式相对自然。
+如\cite{firoiu2018human}引用实验心理学结果所指出的，大脑通过外推运动物体的未来位置来考虑观测与执行之间的潜在延迟\cite{nijhawan1994motion}。
+前述状态替代量的维度通常远小于增广状态。
+它可以是当前状态的任意统计量，例如期望值或众数。
+基于模型这一名称源于这些方法学习环境动态模型，以递归模拟缓冲区中动作的效果并获取对当前状态的预测。
+
+相关工作评估了学习最可能当前状态\cite{walsh2009learning}作为策略输入的方法。在确定性\gls{mdp}情形下，假设模型完美，智能体可以计算精确的当前状态并应用最优无延迟策略。
+因此，所得延迟策略将与无延迟策略性能匹配。
+在延迟文献中，众所周知的事实是：确定性\glspl{mdp}诱导的\glspl{dmdp}具有相同的最优回报。
+底层\gls{mdp}的随机性导致延迟情况下最优性能较弱。
+随机性与延迟的联合效应在\cite[Remark 3.1]{derman2021acting}中有很好的阐述。
+在\cite{walsh2009learning}中，作者将算法扩展到轻度随机\glspl{mdp}（mildly stochastic \glspl{mdp}），即存在$0\le\epsilon<1$使得$\forall (s,a)\in\statespace\times\actionspace, \exists s', p(s'\vert s,a)\geq 1-\epsilon$。
+在此假设下，延迟策略的期望折扣价值函数$\widetilde{V}^{\pi}$与其所基于的无延迟策略$V^{\pi}$之间满足如下保证：
+\begin{align*}
+    \lVert \widetilde{V}^{\pi}-V^{\pi}\rVert_{\infty}\leq \frac{\gamma\epsilon \maximumreward}{(1-\gamma)^2},
+\end{align*}
+其中$\maximumreward$为最大绝对奖励。
+注意到轻度随机\gls{mdp}的假设相当强，且边界随有效视界$\textstyle\frac{1}{1-\gamma}$二次增长。
+
+较新的方法尝试使用\glspl{nn}学习当前状态，包括线性层\cite{derman2021acting}或循环层\cite{firoiu2018human}。
+后者的工作训练环境模型逐分量预测当前状态，对连续元素使用$L2$损失，对离散元素使用交叉熵。
+因此，模型学习预测连续元素的期望值。
+预测结果随后输入无延迟\gls{rl}算法IMPALA\cite{espeholt2018impala}。
+在\cite{derman2021acting}中，预测状态用作Q学习\cite{watkins1989learning}的输入。
+
+同样使用Q函数的\cite{agarwal2021blind}方法以有趣的方式区别于前述方法。
+作者提出选择在未观测当前状态的分布上最大化某个无延迟Q函数期望值的动作。
+该分布由信念给出，信念从增广状态获得（如\Cref{eq:belief_def}所示）。
+该算法称为期望最大化Q学习（Expectation Maximization Q-Learning, EMQL），显然受限于Q函数是针对无延迟策略计算的，且所得延迟策略能否收集相同奖励尚未可知。
+然而，作者提供了理论结果，表明在增广状态$x\in\augmentedstatespace$下，延迟策略$\delayedpolicy$的价值函数$\delayedvaluefunction$满足以下下界保证：
+\begin{align*}
+    \delayedvaluefunction^\delayedpolicy(x) \ge \expectedvalue_{s\sim \augmentedbelief(\cdot\vert x)}\left[V^{*}(s)\right] - \frac{\maximumreward}{(1-\gamma)^2}\left(1-\frac{1}{\cardinal{\actionspace}}\right),
+\end{align*}
+其中$V^{*}$为最优无延迟策略的价值函数。
+
+进一步，\cite{firoiu2018human}指出，学习模型可以更好地利用，例如，在未观测当前状态之外进行规划。
+这正是\cite{chen2021delay}所实现的内容。
+在其方法DATS（Delay-Aware Trajectory Sampling）中，
+\gls{mdp}模型被学习为由概率神经网络表示的高斯分布集成。
+然后查询模型以采样未观测的当前状态，并进一步采样当前状态之后的若干步，以规划动作序列。
+该方法基于PETS（probabilistic ensemble with trajectory sampling）\cite{chua2018deep}，这是一种基于模型的方法，其性能优于\gls{ppo}等无模型方法。
+PETS在延迟场景中的优势更为明显。
+
+\subsection{随机延迟}
+\label{subsec:stochastic_related}
+虽然上述大多数工作假设常值延迟，但也有些工作处理随机延迟。
+\cite{agarwal2021blind}考虑服从几何分布的延迟。
+这意味着较新的观测可能先于较旧的观测到达。
+因此，当已有更新的信息时，较旧的观测可能被收集。
+这可能带来问题，因为智能体会丢失最新观测的计数而使用较旧的信息。
+这一现象将导致匿名延迟问题。
+为避免此问题，\cite{agarwal2021blind}为智能体提供观测的时间戳以恢复非匿名性。
+随机延迟也在\cite{bouteiller2020reinforcement}中研究，其中状态和动作延迟服从有界离散分布。
+作为解决方案，作者提出增广状态以将问题还原为\gls{mdp}，类似于常值延迟情形。
+但不仅需要用最近$\delay^a+\delay^s$个动作增广状态（以考虑总等效延迟），还需要用状态延迟和动作延迟的当前值进行增广。
+虽然该信息在常值延迟情形下无用，但在这里智能体可以用它来学习延迟过程。
+其DCAC算法在WiFi通信导致的逼真随机延迟测试中取得了优异的实证结果。
+
+\subsection{非整数延迟}
+\label{subsec:non_int_related}
+据我们所知，\gls{rl}文献中只有一项工作考虑了非整数延迟问题。
+在\cite{schuitema2010control}（前文已在无记忆方法中讨论过）中，作者展示了如何调整其算法以适应此问题。
+作者结果的一个重要假设是，连续时间过程的转移可以在任何状态$s$和任何动作$a$处线性化，即存在矩阵$B$和$C$使得
+\begin{align*}
+    \dot{s}(t)=Bs(t) + Ca(t).
+\end{align*}
+对于延迟$\delay\in(0,1)$，在时间$t$，动作$a_{t-1}$仍在执行，而智能体在$t$选择的动作将在$t+\delay$时开始执行。
+那么，在线性化假设下，时间$t$到$t+1$之间的有效动作为$\hat{a}_t = \delay a_t + (1-\delay) a_{t+1}$。
+因此，\cite{schuitema2010control}提出在此情形下更新状态-动作对$(s_t,\hat{a}_t)$的Q函数。
+实验结果表明，该修改帮助dSARSA比SARSA（即使SARSA使用增广状态）更快地学习到达目标状态。
+
+\subsection{奖励收集延迟}
+\label{subsec:reward_delay_related}
+如\Cref{subsec:delay_in_this_thesis}所述，延迟奖励收集问题不在本文讨论范围之内，但为感兴趣的读者提供一些参考文献。
+延迟奖励主要在学习阶段的性能方面产生影响。
+相反，若只关心智能体的最终性能，只要延迟非匿名，延迟奖励并不十分重要。
+奖励最终会被归因到正确的转换。
+所有实用的离线\gls{rl}算法都不会受此问题影响。
+
+因此，奖励收集延迟主要在在线学习（online learning）文献中讨论也是自然的。
+该领域考虑一个必须在$K$个臂之间反复选择的智能体。
+每个臂为智能体提供奖励，奖励可以是随机生成或对抗性生成。
+环境无状态，智能体可随时从$K$个臂中选择。
+该框架可表示为单状态的\gls{mdp}，即$\cardinal{\statespace}=1$。
+当智能体只能观测其所选臂的奖励而无法观测其他$K-1$个臂的奖励时，该设定称为多臂赌博机（multi-armed bandit）\cite{lattimore2020bandit}。
+当奖励随机时，称为随机赌博机（stochastic bandit）；奖励对抗性时，称为对抗性赌博机（adversarial bandit）。
+在该领域，一个重要概念是遗憾（regret），即学习智能体收集的奖励与事后最优策略之间的期望差异。
+
+在赌博机文献中，\cite{joulani2013online}指出，在其期望值有限的条件下，延迟在随机赌博机设定中对遗憾产生加性效应，在对抗性赌博机设定中产生乘性效应。
+他们的解决方案基于著名的上置信界（Upper Confidence Bounds, UCB）\cite{auer2002finite}，简单地忽略尚未收集的奖励即可扩展该方法。
+此后衍生出许多有趣的方向。
+例如，\cite{lancewicki2021stochastic}研究随机赌博机中延迟依赖于当前奖励的效应。
+作者考虑了可能无界支撑集和期望分布的情形，推导了一种算法，其遗憾中有一个依赖于延迟分位数的加性惩罚项。
+该界也接近作者证明的下界。
+在其解决方案中，\cite{lancewicki2021stochastic}使用连续消除（successive elimination）算法，一旦确信某臂是次优的，就将其消除。有趣的是，他们证明该算法在应用于延迟时比UCB类算法具有更强的保证。
+在\cite{romano2022multi}中，提出了一种新的延迟设定。
+拉臂获得的奖励可以分散（即延迟）到未来多个步骤。
+作者将这一性质称为时间分区奖励（temporally-partitioned rewards）。
+因此，智能体在每一步观测到来自多个历史拉臂的分批奖励（或称轮次奖励）。
+注意，\cite{romano2022multi}考虑的是智能体知道每个分批奖励来自哪个臂的情形。
+换言之，该设定为无匿名延迟。
+为处理时间分区奖励，作者假设存在最大延迟，并认为奖励在最大延迟之前各步中平滑分布。
+他们提出的方案构建了臂期望奖励估计的上置信界，其中估计器对未观测结果假设零轮次奖励。
+
+关注学习阶段算法遗憾的\gls{rl}分支——理论\gls{rl}——更近期才关注延迟奖励收集问题。
+\cite{howson2021delayed}展示了UCRL\cite{auer2008near}等经典算法在随机\glspl{mdp}中的结果。
+有趣的是，与\cite{joulani2013online}类似，他们证明在大多数情况下遗憾具有与延迟成比例的加性项。
+在\cite{campbell2016multiple}中，作者使用Q学习处理泊松分布奖励的问题。
+其思路是学习多个Q函数，每个对应延迟分布均值$\lambda$的一个可能取值。
+这样，每次收集到新奖励时，所有Q值都可以按照奖励来自对应均值分布的方式更新。
+这些Q函数可视为将输入增广了$\lambda$值的单个Q函数。
+通过这种方式，智能体在选择最大化该特定Q值的动作之前，先对所有$\lambda$取最大值来选择下一步动作。
+作者证明了该算法的收敛性。
+
+\subsection{匿名延迟}
+\label{subsec:anonymous_delay_related}
+
+首先讨论匿名奖励收集延迟。
+在赌博机文献中，\cite{pike2018bandits}研究了随机赌博机设定中具有挑战性的匿名延迟问题。
+若延迟期望已知，作者提出了一种算法，其延迟加性项还依赖于视界$H$的对数。
+有趣的是，若延迟有界，\cite{pike2018bandits}证明了与\cite{joulani2013online}匹配的界。
+他们的解决方案在时间段内重复选择同一臂，从而增加新奖励来自该臂的概率。
+通过精心选择时间段长度，\cite{pike2018bandits}能够推导臂期望奖励的置信区间。
+这使次优臂的消除成为可能。
+
+如\Cref{subsec:reward_delay}所述，文献中的延迟奖励可能指信用分配问题，即将所有奖励分配给单个转换以简化环境设计。
+作为示例，引用\cite{gong2019decentralized}中交通拥堵缓解问题。
+在该问题中，为单个交通灯对交通拥堵的影响定义每步奖励是复杂的。
+然而，使用平均行驶时间作为奖励更容易，但该奖励只能在最后一步获得。
+这些信用分配问题可视为匿名延迟的实例，因为单步奖励不明确，最终只提供一个聚合奖励。
+文献中有许多工作处理此问题，例如\cite{arjona2019rudder}或\cite{han2022off}。
+但据我们所知，\gls{rl}文献中尚无工作考虑具有良好定义的单步奖励但存在匿名延迟的问题。
+
+最后，关于\gls{rl}中的状态观测或动作执行延迟，据我们所知尚无相关工作。
+这确实可以构成一个有趣的研究方向。
+
+\subsection{强化学习中延迟的综述}
+在\Cref{tab:delay_bestiary}中给出状态观测和动作执行延迟文献的综述。
+在\Cref{tab:delay_related}中提供类似表格，但聚焦于已考虑的方法及其应用的延迟类型。
+这有助于发现缺失的研究结果。
+
+\begin{figure}[t]
+% 灵感来自 https://tex.stackexchange.com/questions/78938/tables-in-latex-with-diagonal-first-row
+% 和 https://superuser.com/questions/1148690/how-can-i-create-a-sophisticated-table-like-the-one-attached
+    \centering
+    \begin{tikzpicture}[remember picture]
+    \node[inner xsep=-\pgflinewidth,inner ysep=-\pgflinewidth] at (0,0) (mytable){%
+    \begin{tabular}{L{c00}|T{c0}T{c1}T{c2}T{c3}T{c4}T{c5}T{c6}T{c7}T{c8}||T{c9}T{c10}}
+        \cline{1-11}\\
+        \cite{brooks1972markov} & \checkmark &-& \checkmark &-& $1$ & \checkmark &-&-&\checkmark&A\\
+        \cite{walsh2009learning} & \checkmark &-& \checkmark &-& $1-20$ & \checkmark &-&-&\checkmark&Mo\\
+        \cite{schuitema2010control} & \checkmark &-& \checkmark &-& $0-2$ & \checkmark &\checkmark&-&\checkmark&Me\\
+        \cite{hester2013texplore} & \checkmark &-& \checkmark &-& $2$ & \checkmark &-&-&\checkmark&Me\\
+        \cite{firoiu2018human}& \checkmark &-& \checkmark &-& $1-7$ & \checkmark &-&-&\checkmark&Mo\\
+        \cite{ramstedt2019real} & \checkmark &-& \checkmark &-& $1$ & \checkmark &-&-&\checkmark&A\\
+        \cite{bouteiller2020reinforcement} & \checkmark &-& \checkmark&\checkmark& $1-5$ & \checkmark &-&-&\checkmark&A\\
+        \cite{agarwal2021blind} & \checkmark &-& \checkmark &\checkmark& $2-4$ & \checkmark &-&-&\checkmark&Mo\\
+        \cite{derman2021acting} & \checkmark &-& \checkmark &-& $1-25$ & \checkmark &-&-&\checkmark&Mo\\
+        %\cite{liotet2021learning} & \checkmark &-& \checkmark &-& $3-15$ & \checkmark &-&-&\checkmark&Mo\\
+        \cite{chen2021delay} & \checkmark &-& \checkmark &-& $1-16$ & \checkmark &-&-&\checkmark&Mo\\
+        %\cite{liotet2022delayed} & \checkmark &-& \checkmark &-& $0-20$ & \checkmark & \checkmark &-&\checkmark&\\
+    \end{tabular}
+    };
+
+    % 对角线分隔
+    \coordinate (A) at ($(c8)+(1mm,0)$);
+    \draw (mytable.north-|c1) --++ (60:3cm);
+    \draw (mytable.north-|c3) --++ (60:3cm);
+    \draw (mytable.north-|c4) --++ (60:3cm);
+    \draw (mytable.north-|c6) --++ (60:3cm);
+    \draw (mytable.north-|c8) --++ (60:3cm);
+    \draw (mytable.north-|A) --++ (60:3cm);
+
+    % 列名
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c00)!0.5!(mytable.north-|c0)$) {状态/动作};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c0)!0.5!(mytable.north-|c1)$) {奖励};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c1)!0.5!(mytable.north-|c2)$) {常值};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c2)!0.5!(mytable.north-|c3)$) {随机};
+
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c3)!0.5!(mytable.north-|c4)$) {延迟量};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c4)!0.5!(mytable.north-|c5)$) {整数};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c5)!0.5!(mytable.north-|c6)$) {非整数};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c6)!0.5!(mytable.north-|c7)$) {匿名};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c7)!0.5!(mytable.north-|c8)$) {非匿名};
+    \node[rotate=60,anchor=west] at ($(mytable.north-|c8)!0.5!(mytable.north-|c9)$) {方法};
+
+    \end{tikzpicture}
+    \captionof{table}{相关文献及其考虑的延迟类型。
+    排序按发表时间。
+    延迟量对应实验中考虑的延迟范围。
+    对于随机延迟，仅给出平均延迟，因为延迟可能无限。
+    不同方法标注为：$\textbf{A}$为增广方法，$\textbf{Me}$为无记忆方法，$\textbf{Mo}$为基于模型方法。}
+    \label{tab:delay_bestiary}
+\end{figure}
+
+
+\begin{table}[t]
+\begin{tabular}{lll||>{\raggedright\arraybackslash}p{2.1cm}|>{\raggedright\arraybackslash}p{2.1cm}|>{\raggedright\arraybackslash}p{2.1cm}}
+
+ \multicolumn{3}{c||}{延迟类型}&  增广 & 无记忆 & 基于模型 \\
+ \hline\hline
+常值 & 整数 & 非匿名&  {\footnotesize\cite{brooks1972markov}\cite{ramstedt2019real}\cite{bouteiller2020reinforcement}} &  {\footnotesize\cite{schuitema2010control}\cite{hester2013texplore}} & {\footnotesize\cite{walsh2009learning}\cite{firoiu2018human}\cite{agarwal2021blind}\cite{derman2021acting} \cite{chen2021delay}}\\
+ \hline
+随机 & 整数 & 非匿名& {\footnotesize\cite{bouteiller2020reinforcement}} &  & {\footnotesize\cite{agarwal2021blind}}  \\
+&&&&&\\
+ &&&&&\\
+\hline
+常值 & 非整数 & 非匿名&  & {\footnotesize\cite{schuitema2010control}} &  \\
+&&&&&\\
+&&&&&\\
+ \hline
+常值 & 非整数 & 非匿名&  &  &  \\
+&&&&&\\
+&&&&&\\
+\end{tabular}
+\caption{文献如何处理不同类型的状态观测和动作执行延迟概述。}
+\label{tab:delay_related}
+\end{table}
+
+\subsection{控制理论中的延迟}
+\label{subsec:control_theory}
+以我们认为重要的文献综述扩展结束本节。
+控制理论与\gls{rl}有许多共同之处，两者都考虑决策过程，控制理论也如\Cref{sec:why_delay_ns}所述考虑延迟问题。
+因此，利用该框架的结果和思路以应用于\gls{rl}可能是有益的。
+尤其因为控制理论历史悠久，其所考虑的延迟类型通常更为多样。
+例如，延迟虽然常值，但环境状态的每个维度都不同\cite{alevisakis1973extension, altman1999congestion}。
+有趣的是，在此情形下，如同在\gls{rl}中一样，状态观测延迟和动作执行延迟已被证明是等价的。
+另一种延迟类型是分布延迟（distributed delay），当系统依赖于连续区间上的历史状态时出现\cite{gu2003survey}。
+在控制理论中，使用连续时间系统比在\gls{rl}中更为常见。
+对于经典常值延迟，如同在\gls{rl}中一样，可以增广状态以将延迟系统还原为无延迟系统\cite{kwon2003simple}。
+常值延迟的另一种方法是Smith Predictor模型\cite{smith1957closer}。
+它提出学习无延迟过程的模型，并利用该模型将问题还原为无延迟问题。
+可以建立这种方法与前述\gls{rl}中常值延迟的基于模型方法之间的联系。
+
+通过考虑多智能体框架中的延迟，可以增加另一层复杂性，即多个智能体可以同时（或不同时）在环境中行动。
+问题于是变为分散式（decentralized），由于每个智能体可能独立，各自可能有不同的延迟。
+控制文献中此类系统的一个模型是延迟共享信息模式（delayed sharing information pattern）。
+如\cite{witsenhausen1971separation}所定义的，该问题考虑一组$K$个智能体，每个具有状态$s_t^k$，共同组成环境在时刻$t$的状态$\boldsymbol s_t$。
+每个智能体选择动作$a_t^k$，组成施加于环境的全局动作$\boldsymbol a_t$。
+如同在\gls{pomdp}（\Cref{subsec:pomdp}）中，智能体不直接观测环境状态，仅观测其部分信息$\boldsymbol o_t = (o_t^k)_{1\le k \le K}$。
+每个智能体是$n$延迟的，即它接收其他智能体的信息有$n$步延迟，而对其自身状态的访问无延迟。
+因此，在时刻$t$，智能体$k$观测到$h\le t$时的$o_h^k$，但对于$j\ne k$，仅观测到$h\le t-n$时的$o_h^j$。
+该框架的两个关键概念是：时刻$t$所有智能体共享的信息
+\begin{align*}
+    A_t = \left\{ (\boldsymbol o_h, \boldsymbol a_h)\vert h\le t-n \right\},
+\end{align*}
+以及时刻$t$智能体$k$可用的额外信息
+\begin{align*}
+    B_t^k = \left\{ ( o_h^k,  a_h^k)\vert t-n<h\le t-1 \right\} \cup \{ o_t^k\}.
+\end{align*}
+注意在时刻$t$智能体无法获取动作$a_t^k$，因此上式中最后一项为$o_t^k$。
+\cite{witsenhausen1971separation}猜想，并非考虑所有基于$(A_t,B_t^1,\dots,B_t^k)$信息的策略，而是存在一种最优策略，其中基于$A_t$对当前状态$\boldsymbol s_t$的信念将替代之前信息结构中的$A_t$项。
+这与基于模型的延迟\gls{rl}算法类似。
+在控制理论中，对于大于1的延迟，该猜想已被\cite{varaiya1978delayed}证明不正确。
+在\gls{rl}中，类似结果成立，如\Cref{sec:th_analysis_belief}所示。
+与延迟\gls{rl}的另一个相似性如下。
+当$n=0$（即状态本身可观测）时，问题可表述为\gls{mdp}，并且如同增广状态方法，已证明1步延迟共享信息模式问题可以通过用延迟动作增广状态还原为\gls{mdp}\cite{hsu1982decentralized}。
+然而，与延迟\gls{rl}相反，一些结果表明并非所有历史都是设计最优策略所必需的，可以使用仅由不随时间增长的统计量组成的简化信息结构\cite{altman2009stochastic,nayyar2010optimal}。
+
+尽管控制理论与\gls{rl}具有相似性，但控制理论文献中考虑的延迟问题通常更为复杂，因此从理论角度来看更为深入。
+而\gls{rl}框架及其\gls{mdp}过程提供了一个更简单的框架，可以更容易地推导结构性结果。

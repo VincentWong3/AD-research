@@ -1,0 +1,169 @@
+
+
+
+%=============================================
+% Others
+%---------------------------------------------
+\usepackage{fancyhdr}
+\usepackage{color}
+\usepackage{array}
+\usepackage{mdwmath}
+\usepackage{mdwtab}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+%\usepackage{subfig}
+\usepackage{booktabs}
+%\usepackage{latexsym}
+\usepackage{color}
+\usepackage{url}
+\usepackage{bnf}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{phdtitle}
+\usepackage{paralist}
+\usepackage{bibentry}
+\usepackage{lscape}
+\usepackage{longtable}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin1]{inputenc}
+% Commented out: fontenc and inputenc are incompatible with XeLaTeX
+%% \hyphenation{} is used to force the 
+\hyphenation{}
+\usepackage{amsthm}
+
+%=============================================
+% Algotihms pseudo-code
+%---------------------------------------------
+\usepackage{algorithm}
+\usepackage{algorithmic}
+% \usepackage[noend]{algpseudocode}
+% \usepackage[algochapter]{algorithm2e}
+% Attempt to make hyperref and algorithmic work together better:
+%\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+%=============================================
+% Latex Tables
+%---------------------------------------------
+\usepackage{makecell} % To skip line inside cell https://tex.stackexchange.com/questions/2441/how-to-add-a-forced-line-break-inside-a-table-cell
+
+
+%=============================================
+% Latex Commands
+%---------------------------------------------
+\usepackage{xparse} % to get more than one default argument, https://tex.stackexchange.com/questions/29973/more-than-one-optional-argument-for-newcommand
+
+
+%=============================================
+% References
+%---------------------------------------------
+\usepackage{cite}
+% \usepackage[bookmarks=true,bookmarksopen=true,pdfborder={0,0,0}]{hyperref}
+% Otherwise problem on arXiv, source: https://www.overleaf.com/learn/how-to/LaTeX_checklist_for_arXiv_submissions
+\usepackage[bookmarks=true,bookmarksopen=true,]{hyperref}
+\usepackage{cleveref} 
+%\usepackage{natbib}
+
+%=============================================
+% Tikz
+%---------------------------------------------
+\usepackage{pgfplotstable} % https://tex.stackexchange.com/questions/270712/fill-pattern-for-time-series-with-bounds-tikz-pgfplots
+
+
+%=============================================
+% For captions 
+%---------------------------------------------
+\usepackage{caption}
+\usepackage{subcaption}
+
+
+
+%=============================================
+% Code to check if file for a plot exists
+%---------------------------------------------
+% https://tex.stackexchange.com/questions/412891/does-latex-have-error-catching-capabilities
+\usepackage{xparse}
+\ExplSyntaxOn
+\NewDocumentCommand { \includemyplot } { m }
+    {
+        \file_if_exist:nTF { #1 }
+            {
+                \input{#1}
+            }
+            {
+                % maybe issue a warning in the log
+            }
+    }
+\ExplSyntaxOff
+
+
+%=============================================
+% Reference to a page in plot project
+%---------------------------------------------
+% https://tex.stackexchange.com/questions/31485/includegraphicspage-pageref-possible-how-to-set-page-to-a-variable
+\usepackage[xr]{zref}
+%\usepackage{xr-hyper}
+\zexternaldocument[tikz:]{img/output}
+\zexternaldocument[belief:]{img/output_belief}
+\zexternaldocument[imitation:]{img/output_imitation}
+\zexternaldocument[lifelong:]{img/output_lifelong}
+\zexternaldocument[lifelongvasicek:]{img/output_lifelong_vasicek}
+\zexternaldocument[lifelongtrading:]{img/output_lifelong_trading}
+\zexternaldocument[lifelongtradingtwo:]{img/output_lifelong_trading_2}
+\zexternaldocument[imitationtrading:]{img/output_imitation_trading}
+\zexternaldocument[mtdstates:]{img/output_mtd_states}
+\zexternaldocument[mtd:]{img/output_mtd}
+\makeatletter
+\define@key{Gin}{bylabel}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{tikz:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labelbelief}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{belief:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labelimitation}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{imitation:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labellifelong}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{lifelong:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labellifelongvasicek}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{lifelongvasicek:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labellifelongtrading}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{lifelongtrading:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labellifelongtradingtwo}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{lifelongtradingtwo:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labelimitationtrading}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{imitationtrading:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labelmtd}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{mtd:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\define@key{Gin}{labelmtdstates}{%
+    \edef\@tempa{{Gin}{page=\zref@extract{mtdstates:#1}{page}}}%
+    \expandafter\setkeys\@tempa
+}
+\makeatother
+
+
+%=============================================
+% Glossary
+%---------------------------------------------
+\usepackage[toc,acronym,nomain,nonumberlist]{glossaries} % nonumberlist to remove number after entries
+\newglossarystyle{thesisglossay}{%
+\setglossarystyle{long}% base this style on the long style
+\renewcommand*{\glsgroupheading}[1]{%
+\textbf{\glsgetgrouptitle{##1}}\\}
+}
+\setglossarystyle{thesisglossay}

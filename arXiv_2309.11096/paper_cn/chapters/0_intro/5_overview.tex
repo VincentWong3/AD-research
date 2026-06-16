@@ -1,0 +1,21 @@
+\section{论文概述}
+
+本论文前两章专注于介绍和定义\gls{rl}的整体概念以及延迟文献中的特定概念。
+
+\begin{itemize}
+    \item \Cref{chap:prelim} 介绍后续章节使用的主要数学工具和算法素材。特别地，介绍\gls{mdp}模型和\gls{rl}的一般框架。
+    \item \Cref{chap:delay} 深入探讨作为第一章所述原始\gls{rl}框架扩展的延迟问题。引入相关符号和术语。随后详尽列举文献和实际应用中遇到的延迟类型。最后讨论\gls{rl}及相关领域的延迟文献。
+\end{itemize}
+
+\noindent 这些介绍性章节之后是四个章节，展示本论文的原创贡献。每章结构相同：第一部分正式介绍问题并详述提出的解决方案；第二部分提供理论分析以更好理解问题特性和解决方案的性质；第三部分通过彻底的实证分析支持前两部分的论断。
+
+\begin{itemize}
+    \item \Cref{chap:belief_based} 聚焦状态观测和动作执行中的常值延迟。提出一种称为\emph{信念表征网络（Belief Representation Network）}的概率方法，其中智能体预测近期未来以应对延迟。理论分析将提供对这类延迟问题及其对性能负面影响的理解。本章内容见 \cite{liotet2021learning}。
+    \item \Cref{chap:imitation_undelayed} 与前一章处于相同框架。提出一个简单解决方案——{DIDA}——延迟智能体学习模仿无延迟专家行为。尽管简单，但证明了 DIDA 在平滑环境中的强大理论保证。该解决方案扩展到新框架，包括非整数和随机延迟。本章内容源自 \cite{liotet2022delayed}。
+    \item \Cref{chap:lifelong} 同样设定在常值延迟框架中，提出另一种方法。解决方案考虑无记忆智能体，即对延迟不可见。从智能体角度看，过程变为非平稳，因此设计非平稳策略以适应演化动态。通过优化智能体未来性能的估计来实现，称该方法为 POLIS。本章通过研究未来性能估计器的偏差和方差为 POLIS 设计提供理论基础。本章内容取自 \cite{liotet2022lifelong}。
+    \item \Cref{chap:multi_action_delay} 考虑包含常值延迟的延迟框架。其中，一个动作的执行可延伸至多个未来步骤，从而产生多动作延迟（multiple action delay）。深入分析新框架的性质，特别关注理解延迟分布对智能体最佳性能的影响。本章材料尚未在其他地方发表。
+\end{itemize}
+
+最后，\Cref{chap:conclusion} 总结论文的主要成果和要点以及局限性。重要的是，每个结果都将引导读者到论文中呈现该结果的部分。本章还将讨论潜在研究方向。
+
+更多证明、实验细节和实证结果见附录 \Cref{app:proofs_results}。

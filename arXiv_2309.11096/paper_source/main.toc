@@ -1,0 +1,177 @@
+\babel@toc {english}{}
+\babel@toc {english}{}
+\babel@toc {english}{}
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}The Reinforcement Learning Paradigm}{2}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Delays in Reinforcement Learning}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Original Contribution}{4}{section.1.3}%
+\contentsline {subsubsection}{Unifying Framework for Delays}{4}{section.1.3}%
+\contentsline {subsubsection}{Theoretical Understanding of Delays}{4}{section.1.3}%
+\contentsline {subsubsection}{Algorithms for Delayed Reinforcement Learning}{5}{section.1.3}%
+\contentsline {subsubsection}{Extensive Empirical Evaluation}{6}{section.1.3}%
+\contentsline {subsubsection}{Reference to Publications}{6}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Overview}{6}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Preliminaries}{9}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Introduction}{9}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Markov Chains}{9}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Higher-Order Markov Chains}{10}{subsection.2.2.1}%
+\contentsline {section}{\numberline {2.3}Markov Decision Processes}{11}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Policies}{11}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Objective}{12}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}State-Action Occupancy Measure and Distribution}{12}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Value Functions}{13}{subsection.2.3.4}%
+\contentsline {subsection}{\numberline {2.3.5}Bellman Equations}{14}{subsection.2.3.5}%
+\contentsline {subsection}{\numberline {2.3.6}Smooth Markov Decision Process}{15}{subsection.2.3.6}%
+\contentsline {subsection}{\numberline {2.3.7}POMDP}{17}{subsection.2.3.7}%
+\contentsline {section}{\numberline {2.4}Reinforcement Learning}{17}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Value-Based}{18}{subsection.2.4.1}%
+\contentsline {subsubsection}{Q-Learning}{18}{subsection.2.4.1}%
+\contentsline {subsubsection}{SARSA}{18}{equation.2.4.14}%
+\contentsline {subsubsection}{Deep Q network}{19}{equation.2.4.14}%
+\contentsline {subsection}{\numberline {2.4.2}Policy-Based}{19}{subsection.2.4.2}%
+\contentsline {subsubsection}{REINFORCE}{20}{thm.2.4.1}%
+\contentsline {subsubsection}{Policy Gradient Theorem}{20}{thm.2.4.1}%
+\contentsline {subsubsection}{Trust Region Policy Optimisation}{21}{equation.2.4.17}%
+\contentsline {subsubsection}{Proximal Policy Optimisation}{21}{lemma.2.4.1}%
+\contentsline {subsubsection}{Parameter-based Optimisation}{21}{lemma.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.3}Actor-Critic}{22}{subsection.2.4.3}%
+\contentsline {subsubsection}{Soft Actor Critic}{22}{equation.2.4.20}%
+\contentsline {subsection}{\numberline {2.4.4}Imitation Learning}{23}{subsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.4.5}Theoretical Reinforcement Learning}{24}{subsection.2.4.5}%
+\contentsline {section}{\numberline {2.5}Further Preliminaries}{25}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Importance Sampling}{25}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Divergences}{26}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Neural Networks}{27}{subsection.2.5.3}%
+\contentsline {subsubsection}{Transformers}{27}{subsection.2.5.3}%
+\contentsline {subsubsection}{Flow-Based Models}{28}{subsection.2.5.3}%
+\contentsline {chapter}{\numberline {3}Delayed Reinforcement Learning}{29}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{29}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Notations}{30}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Nature of Delays}{30}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Constant and Stochastic Delays}{30}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}State Observation and Action Execution Delays}{31}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Reward Collection Delays}{32}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Anonymous and Non-Anonymous Delays}{33}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Non-Integer Delays}{33}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.6}State-Dependent and Action-Dependent Delays}{34}{subsection.3.3.6}%
+\contentsline {subsection}{\numberline {3.3.7}On the Initialisation of Delayed Process}{34}{subsection.3.3.7}%
+\contentsline {section}{\numberline {3.4}Related Works}{35}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Augmented State Approaches for Constant Delays}{35}{subsection.3.4.1}%
+\contentsline {subsubsection}{Definition of an Augmented State}{35}{subsection.3.4.1}%
+\contentsline {subsubsection}{Equivalence of Action Execution and State Observation Delays}{36}{equation.3.4.4}%
+\contentsline {subsubsection}{Practical Applications}{36}{prop.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Memoryless Approaches for Constant Delays}{37}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Model-Based Approaches for Constant Delays}{37}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Stochastic Delays}{39}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}Non-Integer Delays}{39}{subsection.3.4.5}%
+\contentsline {subsection}{\numberline {3.4.6}Reward Collection Delays}{40}{subsection.3.4.6}%
+\contentsline {subsection}{\numberline {3.4.7}Anonymous Delays}{41}{subsection.3.4.7}%
+\contentsline {subsection}{\numberline {3.4.8}Overview of Delays in Reinforcement Learning}{41}{subsection.3.4.8}%
+\contentsline {subsection}{\numberline {3.4.9}Delays in Control Theory}{41}{subsection.3.4.9}%
+\contentsline {section}{\numberline {3.5}The Delay in this Dissertation}{44}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Belief-Based Approach}{45}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Introduction}{45}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Learning a Belief Representation}{46}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Belief Representation Network}{46}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Learning Multiple Delays at Once}{47}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Theoretical Analysis}{49}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Effect of the Delay on the Performance}{49}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}On the Complexity of Constant Delays}{52}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Counter Example for Model-Based Approaches}{52}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Experimental Evaluation}{54}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Setting}{55}{subsection.4.4.1}%
+\contentsline {subsubsection}{Tasks}{55}{subsection.4.4.1}%
+\contentsline {subsubsection}{Baselines}{56}{table.caption.13}%
+\contentsline {subsubsection}{Setting for D-TRPO}{56}{table.caption.13}%
+\contentsline {subsection}{\numberline {4.4.2}Results}{56}{subsection.4.4.2}%
+\contentsline {section}{\numberline {4.5}Conclusion}{57}{section.4.5}%
+\contentsline {chapter}{\numberline {5}Imitation of Undelayed Policies}{63}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Introduction}{63}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Imitation Learning of An Undelayed Policy}{64}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Duality of Trajectories}{64}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Delayed Imitation with Dataset Aggregation (DIDA)}{65}{subsection.5.2.2}%
+\contentsline {subsubsection}{General Algorithm}{65}{subsection.5.2.2}%
+\contentsline {subsubsection}{DIDA Without Undelayed Environment}{65}{subsection.5.2.2}%
+\contentsline {subsubsection}{Policy Learnt by DIDA}{65}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Non-integer Delays}{66}{subsection.5.2.3}%
+\contentsline {subsubsection}{Theory of Non-integer Delays}{67}{subsection.5.2.3}%
+\contentsline {subsubsection}{DIDA for Non-integer Delays}{69}{prop.5.2.2}%
+\contentsline {subsubsection}{Time-Lipschitzness for Non-integer Delays}{69}{remark.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.4}DIDA for Learning Multiple Delays at Once}{70}{subsection.5.2.4}%
+\contentsline {section}{\numberline {5.3}Theoretical Analysis of DIDA}{70}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}On the Comparison of Delayed and Undelayed Performance}{70}{subsection.5.3.1}%
+\contentsline {subsubsection}{Comparison in Mildly Stochastic Markov Decision Processes}{70}{subsection.5.3.1}%
+\contentsline {subsubsection}{Comparison Under Belief Distribution}{71}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Upper Bound on the Performance Loss for Constant Delays}{71}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Lower Bound on the Performance Loss for Constant Delays}{75}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Implications for Constant Delays}{76}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Bounds on the Performance Loss for Stochastic Delays}{77}{subsection.5.3.5}%
+\contentsline {section}{\numberline {5.4}Experimental Evaluation}{80}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Setting}{80}{subsection.5.4.1}%
+\contentsline {subsubsection}{Tasks}{80}{subsection.5.4.1}%
+\contentsline {subsubsection}{Baselines}{81}{subsection.5.4.1}%
+\contentsline {subsubsection}{Setting for DIDA}{81}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Results}{82}{subsection.5.4.2}%
+\contentsline {section}{\numberline {5.5}Conclusion}{84}{section.5.5}%
+\contentsline {chapter}{\numberline {6}Non-stationary Reinforcement Learning for Delays}{89}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Introduction}{89}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Non-stationary Reinforcement Learning}{91}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}The Non-stationarity in Reinforcement Learning}{91}{subsection.6.2.1}%
+\contentsline {subsubsection}{Nature of Non-stationarity}{91}{subsection.6.2.1}%
+\contentsline {subsubsection}{Drivers of Non-stationarity}{91}{subsection.6.2.1}%
+\contentsline {subsubsection}{Formalisation of Lifelong Reinforcement Learning}{92}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Related Works in Reinforcement Learning for Non-stationarity}{93}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Parameter-Based Non-Stationary Policy Optimisation for Delays}{94}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Lifelong Parameter-Based Policy Optimisation}{94}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Lifelong Parameter-Based PO via Multiple Importance Sampling}{95}{subsection.6.3.2}%
+\contentsline {subsubsection}{$\beta $-Step Ahead Expected Return Estimator}{95}{subsection.6.3.2}%
+\contentsline {subsubsection}{Bias Analysis}{96}{equation.6.3.4}%
+\contentsline {subsubsection}{Variance Analysis}{97}{lemma.6.3.1}%
+\contentsline {subsubsection}{Surrogate Objective}{100}{lemma.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.3}Adaptation to delays}{101}{subsection.6.3.3}%
+\contentsline {section}{\numberline {6.4}Experimental Evaluation}{102}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Setting}{103}{subsection.6.4.1}%
+\contentsline {subsubsection}{Tasks}{103}{subsection.6.4.1}%
+\contentsline {subsubsection}{Baselines}{104}{subsection.6.4.1}%
+\contentsline {subsubsection}{Setting for POLIS}{105}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Results}{106}{subsection.6.4.2}%
+\contentsline {section}{\numberline {6.5}Conclusion}{109}{section.6.5}%
+\contentsline {chapter}{\numberline {7}Multiple Action Delays}{111}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Introduction}{111}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Formalisation of the Problem}{112}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}Definitions}{112}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}Objective and Assumptions}{114}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Notations}{114}{subsection.7.2.3}%
+\contentsline {section}{\numberline {7.3}Theoretical Analysis}{115}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}From MTD-MDPs back to MDPs}{116}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Analysis of PSM-MDP and PMM-MDP}{118}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Analysis of ISM-MDP}{119}{subsection.7.3.3}%
+\contentsline {subsection}{\numberline {7.3.4}Learning in an ISM-MDP}{123}{subsection.7.3.4}%
+\contentsline {section}{\numberline {7.4}Experimental Evaluation}{125}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Setting}{126}{subsection.7.4.1}%
+\contentsline {subsubsection}{Tasks}{126}{subsection.7.4.1}%
+\contentsline {subsection}{\numberline {7.4.2}Results}{126}{subsection.7.4.2}%
+\contentsline {section}{\numberline {7.5}Conclusion}{127}{section.7.5}%
+\contentsline {chapter}{\numberline {8}Conclusion}{131}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Discussion and Key Results}{131}{section.8.1}%
+\contentsline {subsubsection}{Unifying Framework for Delays}{131}{section.8.1}%
+\contentsline {subsubsection}{Theoretical Understanding of Delays}{132}{section.8.1}%
+\contentsline {subsubsection}{Algorithms for Delayed Reinforcement Learning}{132}{section.8.1}%
+\contentsline {subsubsection}{Extensive Empirical Evaluation}{134}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Future Research Directions}{134}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Final Word}{134}{section.8.3}%
+\contentsline {chapter}{\numberline {A}Additional Results and Proofs}{135}{chapter.1}%
+\contentsline {section}{\numberline {A.1}Additional results for \Cref {chap:imitation_undelayed}}{135}{section.1.1}%
+\contentsline {subsection}{\numberline {A.1.1}Bounds Involving the Wasserstein Distance}{135}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {A.1.2}Bounding $\sigma _b^{\rho }$}{138}{subsection.1.1.2}%
+\contentsline {section}{\numberline {A.2}Additional results for \Cref {chap:lifelong}}{140}{section.1.2}%
+\contentsline {subsection}{\numberline {A.2.1}Bias Analysis}{140}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {A.2.2}On the Variational Bounds of R\'{e}nyi Divergence between Mixture of Distributions}{143}{subsection.1.2.2}%
+\contentsline {subsubsection}{Direct Convex Optimisation}{144}{equation.1.2.20}%
+\contentsline {subsubsection}{Two Steps Minimisation}{144}{equation.1.2.20}%
+\contentsline {subsubsection}{One Step then Uniform}{146}{prop.1.2.4}%
+\contentsline {subsubsection}{Comparison of the Bounds}{149}{prop.1.2.9}%
+\contentsline {subsection}{\numberline {A.2.3}Experimental Details}{150}{subsection.1.2.3}%
+\contentsline {subsubsection}{Datasets}{150}{subsection.1.2.3}%
+\contentsline {chapter}{Bibliography}{163}{section*.50}%

@@ -1,0 +1,118 @@
+\section{非平稳强化学习}
+
+本节中，我们形式化非平稳性的概念。
+然后介绍处理非平稳性的相关方法，特别是在终身学习的背景下。
+
+
+\subsection{强化学习中的非平稳性}
+\label{subsec:nature_ns}
+\subsubsection{非平稳性的性质}
+在 \gls{rl} 中，定义过程的五个 \gls{mdp} 元素中有四个可能引发非平稳性。
+显然，奖励函数和转移函数可能依赖于时间。
+更偶尔地，状态空间或动作空间本身也可能随时间变化。
+另一个区别在于非平稳性存在于回合之间还是可能发生在回合内部。
+我们将前者称为 \emph{回合间}非平稳性。
+它可以被视为一组任务，每个回合从中选择一个任务。
+我们将第二种类型称为 \emph{回合内}非平稳性。
+在这种情况下，任务的概念不太清晰，因为 \gls{mdp} 的动态可能在每个决策步骤发生变化。
+因此，对过去数据的估计和分析必须更加谨慎。
+最后，通常认为非平稳性可以是 \emph{平滑}的（当动态随时间具有一定规律性演化时），也可以是 \emph{突变}的（当动态通常变化较少但行为转变更明显时）。
+
+关于延迟引发的非平稳性这一特殊情况，由于上述无记忆方法导致的部分可观测性，转移动态和奖励将成为
+非平稳性的来源。
+当然，状态空间和动作空间将保持平稳。
+非平稳性本质上是回合内的，因为动态将依赖于增广状态内部未观测的动作缓冲区。
+最后，非平稳性将是平滑的，因为增广状态的动作缓冲区与后续增广状态共享许多动作。
+注意，由于过程被划分为离散时间步，即使平滑的非平稳性在时间步之间也可以被视为突变的。
+我们将在 \Cref{subsec:bias_analysis} 中更形式化地定义离散过程的平滑性。
+
+
+\subsubsection{非平稳性的驱动因素}
+上一节中提到的非平稳性可能有不同原因。我们按照 \cite{khetarpal2020towards} 的分类法介绍其中三种。\\
+\noindent\textbf{多任务设定.}\indent 可以说是非平稳 \gls{rl} 文献中最常见的设定，该设定考虑一组 $(\markovdecisionprocess_i)_{i\in\naturalnumbers}$ 的平稳 \glspl{mdp}（或任务），其中环境可能在学习和测试阶段定期从一个任务切换到另一个任务。
+\\
+\noindent\textbf{被动非平稳性.}\indent 该设定考虑一种与智能体动作无关的非平稳性。
+\\
+\noindent\textbf{主动非平稳性.}\indent 与上一设定不同，在此智能体可能影响环境的非平稳性。
+
+延迟引发主动非平稳性，因为正是智能体选择了重放缓冲区中的动作，而忽略这些动作所导致的局部知识引起了非平稳性。
+
+\subsubsection{终身学习的形式化}
+在本小节中，我们形式化我们将关注的终身 \gls{rl} 框架。
+它基于一个非平稳 \gls{mdp} $\markovdecisionprocess$，具有转移函数 $(\transitionfunction_t)_{t \in \naturalnumbers}$ 和奖励函数
+$(\rewardfunction_t)_{t \in \naturalnumbers}$，期望值为 $(\expectedrewardfunction_t)_{t \in \naturalnumbers}$。
+这些函数定义了每个决策步骤 $t \in \naturalnumbers$ 的转移和奖励。
+我们假设对任意 $t\in\naturalnumbers$ 有 $\lVert r_t\rVert_{\infty} \le \maximumreward < \infty$，并考虑折扣因子 $\gamma \in [0,1]$。
+然后定义一个非平稳策略 $\pi = (\pi_t)_{t \in \naturalnumbers}$，它定义了智能体在每个决策步骤 $t\in\naturalnumbers$ 遵循的策略。
+
+终身 \gls{rl} 的目标与传统 \gls{rl} 不同，因为底层过程无法重新初始化。
+环境一次性初始化，智能体无法收集超过一条轨迹的经验。
+例如，考虑交易问题，显然完全相同的市场条件永远不会重复出现两次。
+没有准确的市场模拟器，智能体无法回到过去尝试另一种策略。
+相反，传统 \gls{rl} 的一个例子是国际象棋。
+智能体可以多次对弈，总是从相同的初始状态分布开始，因此可以收集关于相似环境条件的更多信息。
+在终身 \gls{rl} 中，期望未来回报因此依赖于智能体的当前状态。
+这引出了以下称为 \emph{$\beta$ 步前视期望回报}的目标。
+令 $T \in \naturalnumbers$ 为当前时间，$\beta \in \naturalnumbers$，{\emph{$\beta$ 步前视期望回报}} 定义为：
+\begin{align}\label{eq:beta_steps_ahead_return}
+    \expectedreturn[T,\beta][](\pi) =\sum_{t = T+1}^{T+\beta} \widehat{\gamma}^t \expectedvalue_t^\pi [\expectedrewardfunction_{t}(s_t,a_t)],
+\end{align}
+其中 $\widehat{\gamma}^t = \gamma^{t-T-1}$，$\mathbb{E}_t^\pi$ 是在非平稳策略 $\pi$ 诱导的状态-动作分布下经过 $t$ 步后的期望。
+为简化符号，后续我们将从符号中移除奖励对 $(s_t,a_t)$ 的依赖。
+
+最后，如同经典 \glspl{mdp}，我们说策略 $\optimalpolicy$ 在时间 $T$ 是 $\beta$ 步前视最优的，如果
+\begin{align*}
+    \optimalpolicy\in \argmax_{\pi \in \Pi^{\text{HR}}} \expectedreturn[T,\beta][](\pi),
+\end{align*}
+其中 $\Pi^{\text{HR}}$ 是如 \Cref{subsec:policies} 中定义的非平稳策略集合。
+
+我们可以进行类比，说经典 \gls{rl} 的目标是最大化 $\expectedreturn[0,H][]$，其中 $H$ 是（可能无限的）视界。
+然而，在这种情况下，智能体可以多次重启过程以收集同一过程的不同回合。
+相反，终身学习智能体关注的是在经历了单条轨迹的恰好 $T$ 次转移后最大化
+$\expectedreturn[T,\infty][]$。
+
+
+\subsection{非平稳强化学习中的相关工作}
+\label{subsec:related_worls_lifelong}
+
+将 \gls{rl} 适应非平稳 \glspl{mdp} 已在文献中得到广泛研究~\cite{garcia2000solving, ghate2013linear, lesner2015nonstationary}。
+为了适应新任务，智能体必须学习整个问题的结构。
+例如，智能体可以使用函数组合将问题分解为更小的子问题 \cite{griffiths2019subtasks}，或学习环境的低维抽象表示 \cite{zhang2018decoupling, Francois-Lavet2019abstract}。
+另一种相关方法是关注问题中与任务无关的底层动态，而非特定于任务的动态，以学习高效的通用策略。
+这可以通过构建辅助任务（如奖励预测 \cite{jaderberg2017rew-pred}）或逆动态预测 \cite{Shelhamer2017dyn-pred} 来实现。
+
+虽然本质上是平稳的，但元 \gls{rl} 可以适应非平稳过程。
+元 \gls{rl} 的解决方案可能很有趣，因为它们利用先前经验高效学习新技能。
+基本上，将这些算法适应非平稳过程包括将问题重新转化为平稳问题。
+例如，任务序列可以建模为马尔可夫链 \cite{al-shedivat2018continuous}，可以使用任务的经验回放缓冲区使过程 "更平稳" \cite{riemer2018learning}（如通常 \gls{rl} 中所做的 \cite{mnih2013playing}），或者可以学习任务序列的隐变量模型 \cite{poiani2021meta}。
+
+先前的工作通常适用于回合间非平稳性。
+我们现在研究回合内非平稳性问题，其中动态可以在回合内部发生变化，例如在终身 \gls{rl} 中。
+在有限视界设定中，经过一些修改，理论 \gls{rl} 解决方案即使在环境变化时也能提供保证 \cite{hallak2015contextual,ortner2020uclr2}。
+在无限视界设定中，即终身学习，可以使用来自随机过程和时间序列文献的不同统计工具。
+在动态突变变化的假设下，可以使用变化检测 \cite{daSilva2006context, hadoux2014sequential}。
+当假设环境可能在已知数量的平稳动态之间切换时，可以使用隐状态模型来描述任务序列 \cite{choi2000hidden}。
+如果平稳动态的数量未知，一种解决方案是学习策略的因子化表示 \cite{mendez2020lifelong}。
+在提出的解决方案中，策略的第一个因子在所有任务上
+共享，因此被训练为在迄今观测到的任务分布上表现良好。第二个因子是任务特定的，将策略适应当前任务。
+凭借这种结构，算法 LPG-FTW 可以快速适应新任务，同时避免灾难性遗忘。
+更深入的综述可以在 \cite{padakandla2021survey}（关于 \gls{rl} 中的非平稳性）和 \cite{khetarpal2020towards}（关于终身/持续 \gls{rl}）中找到。
+
+我们通过更深入地研究一种与我们的 POLIS 算法更相似的方法来结束本综述，突出它们之间的相似性和差异。
+\cite{chandak2020optimizing} 采用了相当直接但高效的方法，直接优化未来预测性能。
+对于给定的策略参数集 $\boldsymbol\theta\in\Theta$，策略 $\pi_{\boldsymbol\theta}$ 的过去性能通过重要性采样估计。
+这些过去性能随后被用于回归算法内部，可用于预测未来性能。
+如果所有这些步骤都是可微的，那么通过梯度上升优化 $\Theta$ 上的未来预测性能是可行的。
+作者提出了两种实用算法，Pro-OLS 和 Pro-WLS，它们分别使用普通最小二乘回归和加权最小二乘来预测性能。
+后者建立在加权最小二乘回归与加权重要性采样之间的联系之上 \cite{hachiya2012importance,mahmood2014weighted}，以减少由于重要性采样导致的估计方差，但代价是增加一些偏差。
+我们现在深入探讨与我们的方法的差异。
+\\
+\noindent\textbf{设定.}\indent 一个主要区别是 \cite{chandak2020optimizing} 为具有回合间非平稳性的回合制 RL 设计了解决方案。我们考虑的是一个真正的终身学习框架，具有回合内非平稳性。
+\\
+\noindent\textbf{目标.}\indent 我们也使用重要性采样来估计未来性能，尽管我们的目标有很大不同。
+我们增加了一个新的折扣参数来控制由于非平稳性导致的偏差，并且我们在目标中增加了另外两项：过去性能的估计量和方差正则化项。
+\\
+\noindent\textbf{随时性.}\indent 我们的方法可以在终身回合中的任何时间重新训练。如果检测到动态的重大变化，我们的策略优化可以立即应用以适应该新动态。
+当非平稳性从过去高度可预测时，算法也可以减少更新频率。这使得我们的算法成为一种随时算法。相比之下，\cite{chandak2020optimizing} 的方法可以在回合之间训练策略，但在回合内部保持策略不变。
+\\
+\noindent\textbf{基于参数.}\indent 与 \cite{chandak2020optimizing} 的基于动作的策略优化设定相比，我们考虑基于参数的策略优化设定。\\

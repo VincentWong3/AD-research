@@ -1,0 +1,127 @@
+\section{Further Preliminaries}
+\label{sec:futher_prelim}
+In this section, we present additional statistical and \gls{ml} concepts that we will encounter throughout the thesis. 
+
+
+\subsection{Importance Sampling}
+\label{subsec:importance_sampling}
+
+\Glspl{is}~\cite{mcbook} is a statistical tool to estimate the expectation $\mu = \expectedvalue_{x \sim P}[f(x)]$ of some function $f:X\mapsto \realnumbers$ under a \emph{target} distribution $P$ while having access only to samples collected with another distribution $Q$ --the \emph{behavioural} distribution. 
+We note $p$ and $q$ the density functions of $P$ and $Q$, respectively.
+If $P$ is absolutely continuous \wrt $Q$, which we note $P \ll Q$, then importance sampling builds an unbiased estimator of $\mu$ in the following way,
+\begin{align*}
+    \widehat{\mu} = \frac{1}{N}\sum_{i=1}^{N} \frac{p(x_{i})}{q(x_{i})}f(x_{i})
+\end{align*}
+where $\{x_{i}\}_{i=1}^{N} \sim Q$. 
+
+To go further, {\glspl{mis}} considers a set of behavioural distributions $(Q_j)_{j\in[\![1,J]\!]}$ instead of the unique distribution $Q$. 
+We note $(q_j)_{j\in[\![1,J]\!]}$ the density functions of $(Q_j)_{j\in[\![1,J]\!]}$.
+We note $N$ be the total number of samples and $N_j$ the ones sampled by $Q_j$, which therefore satisfy $\textstyle N=\sum\nolimits_{j=1}^{J} N_j$. 
+If $P \ll Q_j$ for all $j\in[\![1,J]\!]$, then the unbiased \gls{mis} estimator reads,
+\begin{align*}
+	\widehat{\mu} = \sum_{j=1}^J \frac{1}{N_j}\sum_{i=1}^{N_j} \beta_j(x_{ij})\frac{p(x_{ij})}{q_j(x_{ij})}f(x_{ij}),
+\end{align*}
+where $\{x_{ij}\}_{i=1}^{N_j} \sim Q_j$ and $(\beta_j(x))_{j\in[\![1,J]\!]}$
+are a partition of the unit for every $x \in X$.
+The choice of this partition is free, but a common choice is the \emph{balance heuristic} (BH)~\cite{veach1995monte}, which sets
+\begin{align*}
+    \beta_j(x)=\frac{N_j q_j(x)}{\sum_{k=1}^J N_k q_k(x)}.
+\end{align*}
+BH can be seen as casting the estimator back to the classic importance sampling estimator, where the samples can be regarded as coming from the mixture:
+\begin{align*}
+    \Phi = \sum_{k=1}^J\frac{N_k}{N}Q_k.
+\end{align*} 
+
+
+\subsection{Divergences}
+The divergence in statistics defines a notion of distance between probability distributions. 
+We define two such divergences, which we use in this work.
+
+\noindent\textbf{Kullback-Leibler divergence~\cite[Section~2.3]{cover1991information}.}\indent 
+For two probability distributions $P$ and $Q$ on the same probability space and such that $P \ll Q$, the Kullback-Leibler divergence between them is defined as,
+\begin{align*}
+    \kullbackleiblerdivergence(P\Vert Q)=\int_{\Omega} p(\omega) \log \frac{p(\omega)}{q(\omega)} \de \omega.
+\end{align*}
+
+\noindent\textbf{\Renyi divergence~\cite{renyi1961measures}.}\indent The $\alpha$-\Renyi divergence between two probability distributions $P$ and $Q$ such that $P \ll Q$ is defined for $\alpha \in [0,\infty]$ as:
+\begin{align}
+\label{eq:renyi_div}
+	\renyidivergence[\alpha](P\Vert Q) = \frac{1}{\alpha-1}\log \int_{\Omega} p(\omega)^\alpha q(\omega)^{1-\alpha} \de \omega.
+\end{align}
+We note $\exponentialrenyidivergence[\alpha](P\Vert Q) = \exp\{\renyidivergence[\alpha](P\Vert Q)\}$ the exponential $\alpha$-\Renyi divergence.
+The \Renyi divergence is interesting as it is related to the $\alpha$-moment of the importance weight in the following way,
+\begin{align*}
+    \expectedvalue_{x\sim Q}\left[\left(\frac{p(x)}{q(x)}\right)^{\alpha}\right] = \exponentialrenyidivergence[\alpha](P\Vert Q)^{\alpha-1}.
+\end{align*}
+Note that the 1-\Renyi divergence, which is not defined by \Cref{eq:renyi_div} but obtained by continuity \cite{van2014renyi}, corresponds to the Kullback-Leibler divergence.
+In this work, we will always consider the 2-\Renyi divergence, and for simplicity, we will drop the exponent in the notation, $\renyidivergence[2]=\renyidivergence$.
+
+
+
+\subsection{Neural Networks}
+A \gls{nn} is a parameterised function $f$ that results from the stacking of affine mappings combined with point-wise non-linear functions. 
+The latter plays a central role in the ability of a neural network to approximate complex functions. They are called \emph{activation functions}. 
+Common activation functions are the sigmoid or rectified linear unit (ReLU). 
+Numerous architectures for neural networks have been proposed over the years, from simpler \emph{fully-connected} networks (known as well as dense, linear or feedforward networks) to more complex deep neural networks \cite{goodfellow2016deep} with more intricate structure and/or more layers and parameters.
+The fully connected network consists of a matrix of parameters $W\in\realnumbers^{n\times m}$, also called \emph{weights}, and an activation function $\sigma$.
+When applied to some input $x\in\realnumbers^m$, the network outputs $y=\sigma(Wx)\in\realnumbers^n$.
+If only a single combination of linear and non-linear functions is applied, the network is actually called a \emph{layer}. 
+Another network can be obtained by stacking several such layers. 
+A second ubiquitous type of layer is \emph{convolution}. 
+A convolution scans through the input--in one, two, or even more dimensions--by recursively applying a kernel to only a subset of this input. 
+The size of the kernel is referred to as the \emph{receptive field}. 
+Because the kernel is fixed, this operation is akin to the mathematical definition of the convolution, hence its name. 
+The great advantages of convolutions over fully-connected layers are the reduced number of weights and the structured mapping of the input. 
+This explains the great empirical success of convolutions \cite{krizhevsky2017imagenet}. 
+When applied to \emph{time series}--sequences indexed by time--convolution can proceed in a way that preserves causality and is referred to as \emph{temporal convolutions}~\cite{oord2016wavenet, liotet2020deep}.
+We now delve into two more complex networks that will be used later in this dissertation.
+
+
+\subsubsection{Transformers}
+\label{subsubsec:transformer}
+The \emph{Transformer} \cite{vaswani2017attention} is a network that has been introduced for sequence-to-sequence tasks, that is, encoding a sequence to then decode it into another sequence. 
+The Transformer uses the principle of attention \cite{bahdanau2014neural} coupled with feed-forward layers to encode or decode a sequence.
+On top of its better performance, one main advantage of the Transformer compared to previous approaches for sequence-to-sequence tasks is its computational cost. 
+Previous approaches relied on \emph{recurrent neural networks} that process the input sequentially and perform \emph{back-propagation through time}, which greatly slows the process.
+Another useful property of Transformers is that they can be implemented in a way that preserves the causality of the input sequence.  
+Before concluding this short presentation, we focus on one specific layer inside the Transformer, the \emph{positional encoding}.
+It will be particularly useful later on.
+Positional encoding is an early layer of the Transformer that allows one to add information on the position of an element inside the sequence.
+It computes a vectorial representation of the index of this element as a set of sinusoidal transformations applied to this index. 
+An interesting property of this representation is that, however large the value of the index can be, the representation's output is sinusoidal and is therefore bounded.
+Moreover, the size of the vectorial representation can be controlled by the network designer.
+
+
+\subsubsection{Flow-Based Models}
+\label{subsubsec:maf}
+
+Flow-based models are a type of \emph{generative model}, such as Generative Adversarial Networks (GAN) \cite{goodfellow2014generative}. Generative models are \glspl{nn} trained on a dataset $\mathcal{D}$ to generate new data points with the same statistics as $\mathcal{D}$.
+However, contrarily to GANs and most generative models, flow-based ones not only learn this generative model, but also learn the original probability $p$ used to generate $\mathcal{D}$. 
+This property, together with the great empirical results of flow-based approaches \cite{oord2016wavenet,kingma2018glow}, is why we will use them in this dissertation.
+
+In particular, we will present the \gls{maf} \cite{papamakarios2017masked} network. It combines two ideas,  \emph{normalizing flow}~\cite{rezende2015variational} and \emph{autoregressive density estimation}~\cite{uria2016neural}.
+The idea of autoregressive density estimation methods such as Masked Autoencoder Distribution Estimator (MADE)~\cite{germain2015made} on which MAF is based is to generate a sample recursively, dimension after dimension. 
+Practically, to sample a vector $\vectorialform{x}\in\realnumbers^n$ from a probability distribution $p$, autoregressive density estimation rewrites $\textstyle p(x)=\prod\nolimits_{i=1}^{n}p(x_i\vert x_{1:i-1})$ and each conditional $p(x_i\vert x_{1:i-1})$ can be approximated by a \gls{nn}.
+Normalising flows instead learn to generate a sample $\vectorialform{x}\sim p$ by applying some invertible function $f$ to a vector $\vectorialform{u}\in\realnumbers^m$ sampled from a base distribution $\rho$. 
+This base distribution is usually simple, such as a normal distribution.
+The probability obtained can be expressed as
+\begin{align}
+\label{eq:p_inverted_maf}
+    p(\vectorialform{x}) = \rho(f^{-1}(\vectorialform{x})) \left\lvert \det\left(\frac{\partial f^{-1}}{\partial \vectorialform{x}}\right)\right\rvert.
+\end{align}
+MAF combines these approaches and generates a sample $\vectorialform{x}$ dimension-wise as,
+\begin{align}
+\label{eq:sampling_maf}
+    x_i = u_i \exp(\alpha_i) + \mu_i 
+\end{align}
+where $\mu_i=f_{\mu_i}(x_{1:i-1})$ and $\alpha_i=f_{\alpha_i}(x_{1:i-1})$ are modelled by neural networks and $u_i\sim\mathcal{N}(0,1)$.
+
+As anticipated, MAF learns the density of a data point $\vectorialform{x}$, and it is possible to access it using \Cref{eq:p_inverted_maf}. 
+Due to the recursive structure of the generating process, the inverse function in this equation has a simple expression: $\textstyle\exp\left(\sum\nolimits_{i=1}^n\alpha_i\right)$\cite{papamakarios2017masked}.
+Normalising flow layers can be stacked to approximate more complex probabilities; the same idea can be applied to MAF.
+
+Calling $p_{\vectorialform{\theta}}$ the probability it has learnt, the MAF network is trained to minimise the Kullback-Leibler divergence $\kullbackleiblerdivergence(p,p_{\vectorialform{\theta}})$ which is estimated using samples from the training set $\mathcal{D}$. 
+In practice, the network is thus trained on the following objective,
+\begin{align*}
+    \underset{\vectorialform{\theta}}{\text{maximise}}   \sum_{\vectorialform{x}\in\mathcal{D}}\log p_{\vectorialform{\theta}} (\vectorialform{x}).
+\end{align*}

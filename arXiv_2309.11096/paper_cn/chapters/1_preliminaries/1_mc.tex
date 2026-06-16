@@ -1,0 +1,107 @@
+\section{马尔可夫链}
+\label{sec:markov_chain}
+\glsfirst{mc}（马尔可夫链）\cite{levin2017markov} 是一种离散时间随机过程，描述状态在空间 $\augmentedstatespace$（称为状态空间）内的演化过程。每一步从状态 $x\in\augmentedstatespace$ 转移到状态 $y\in\augmentedstatespace$ 的概率由转移函数 $\markovchaintransition$ 给出，记为 $\markovchaintransition(y\vert x)$。
+
+文献中对 \glspl{mc} 的性质已有广泛研究，但这些内容超出本文范围。本文仅给出以下三个对本文有用的定义。在下述定义中，用 $X_t$ 表示当前状态的随机变量。
+
+
+\begin{defi}[常返状态]
+    状态 $x\in\augmentedstatespace$ 是常返的，若
+    \begin{align*}
+        \probability(\min\{t\ge1: X_t=x\}<\infty\vert X_0=x)=1
+    \end{align*}
+\end{defi}
+
+\begin{defi}[暂态]
+    非$\!$常返的状态 $x\in\augmentedstatespace$ 称为暂态。
+\end{defi}
+
+\begin{defi}[单链 \gls{mc}]
+\label{def:unichain_mc}
+    有限状态 \gls{mc} 称为单链，若它包含唯一一个常返类，但可包含任意数量的暂态。
+\end{defi}
+
+\glspl{mc} 框架涵盖了许多实际过程。然而，在某些情况下，可能需要表达当前转移对一组更早状态的依赖关系，这正是高阶马尔可夫链（或称带记忆的马尔可夫链）所允许的。在此框架中，转移可依赖于多个过去的状态。
+
+\subsection{高阶马尔可夫链}
+阶数为 $l$ 的 \gls{mc} 根据最近 $l$ 个状态 $(x_{t-l},\dots,x_{t-1})$ 的信息定义到状态 $x_t$ 的转移：
+\begin{align*}
+    \probability(X_t = x_t\vert X_{t-l}=x_{t-l},\dots,X_{t-1}=x_{t-1})=P(x_t\vert x_{t-l},\dots,x_{t-1}).
+\end{align*}
+
+然而，该模型需要大量参数来构造转移概率。实际上，对于大小为 $\cardinal{\augmentedstatespace}=m$ 的状态空间，集合 $(x_{t-l},\dots,x_{t-1})$ 可取 $m^l$ 个不同值，因此概率 $P$ 需要 $m^l(m-1)$ 个独立参数来定义 \cite{berchtold2002mixture}。\cite{raftery1985model} 则提出了一种仅需 $m(m-1) + (l-1)$ 个独立参数的模型，该模型在实践中保持良好的建模能力，称为 \gls{mtd}（混合转移分布），如下所示。
+
+\begin{defi}[\Glsfirst{mtd} {\cite{raftery1985model}}]
+\label{def:mixture_transition_distribution}
+    混合转移分布（\gls{mtd}）是阶数为 $l\in\naturalnumbers$、状态空间为 $\augmentedstatespace=\{1,\dots,m\}$ 的 $l$ 阶 \gls{mc}，具有以下性质。
+    \begin{align*}
+        \probability(X_t = x_t\vert X_{t-l}=x_{t-l},\dots,X_{t-1}=x_{t-1})
+        &= \sum_{g=1}^l \lambda_g \probability(X_t=x_t\vert X_{t-1}=x_{t-g})
+        \\
+        &= \sum_{g=1}^l \lambda_g \markovchaintransition(x_t\vert x_{t-g}),
+    \end{align*}
+    其中概率 $\markovchaintransition(x_t\vert x_{t-g})$ 定义为某个一阶 \gls{mc} 的转移，且
+    \begin{align*}
+        \sum_{g=1}^l \lambda_g &=1,
+        \\
+        \lambda_g &\ge 0.
+    \end{align*}
+\end{defi}
+
+该模型可通过引入额外独立参数来增强建模能力。这一新模型具有 $lm(m-1) + (l-1)$ 个独立参数，定义如下。
+
+\begin{defi}[\Glsfirst{mtdg} {\cite{raftery1985new,berchtold1996modelisation}}]
+\label{def:multimatrix_mixture_transistion_distribution}
+    多矩阵混合转移分布（\gls{mtdg}）是转移矩阵经过修改的 \gls{mtd} 模型：
+    \begin{align*}
+        \probability(X_t = x_t\vert X_{t-l}=x_{t-l},\dots,X_{t-1}=x_{t-1})
+        &= \sum_{g=1}^l \lambda_g \probability(X_t=x_t\vert X_{t-g}=x_{t-g})
+        \\
+        &= \sum_{g=1}^l \lambda_g \markovchaintransition^{(g)}(x_t\vert x_{t-g}),
+    \end{align*}
+    其中转移概率 $(\markovchaintransition^{(g)})_{g\in[\![1,l]\!]}$ 来自 $l$ 个不同一阶 \glspl{mc} 的转移概率。
+\end{defi}
+
+然而，已有研究表明 \gls{mtdg} 模型过参数化 \cite{lebre2008algorithm}。事实上，两组不同的参数集可能定义出相同的 \gls{mtdg} 模型。
+%\cite{lebre2008algorithm} propose a new %parameter set whose dimension is lower. It stems %from the straightforward remark that the %$l^{\text{nd}}$-order \gls{mtdg} model satisfies %the following proposition.
+%
+%\begin{prop}[{\cite[Proposition~1]{lebre2008algo%rithm}}]
+%    Transition probabilities of a %$l^{\text{nd}}$-order \gls{mtdg} model %satisfy
+%    \begin{align*}
+%        \forall %&i_m,\dots,i_g,\dots,i_1,i_0,i_g'\in\sta%tespace
+%        \\
+%        &\probability(i_0\vert %i_m,\dots,i_g,\dots,i_1)-\probability(i_%0\vert i_m,\dots,i_g',\dots,i_1) = %\lambda_g \left[ q_{i_gi_0}^{(g)} - %q_{i_g'i_0}^{(g)} \right].
+%    \end{align*}
+%\end{prop}
+%
+%This proposition gives rives to a following %proposition.
+%
+%\begin{prop}[{\cite[Proposition~2]{lebre2008algo%rithm}}]
+%    For any arbitrary $u$ element of %$\statespace$, the transition probabilities %of a mth-order \gls{mtdg} model satisfy:
+%    \begin{align*}
+%        &\forall i_m,\dots,i_0\in\statespace
+%        \\
+%        & \probability(i_0\vert %i_m,\dots,i_g,\dots,i_1) = \sum_{g=0}^l %\left[ p_u(i_0\vert i_g,g) - %\frac{l-1}{l} p_u(i_0)\right],
+%    \end{align*}
+%    where $p_u(j\vert i,g)=\probability(j\vert %u,\dots,i,\dots,u)$, with $u\dots uiu\dots %u$ is the $l$-letter word whose letter in %position $g$ (from right to left) is $i$ and %$p_u(j)$ is the value of $p_u(i\vert u,g)$, %whatever $g$.
+%\end{prop}
+%
+%An \gls{mtdg} distribution can be parameterized %by a vector $\theta_u$ from the %$(m-1)[1+l(m-1)]$-dimensional
+%set $\bar{\Theta}_u$,
+%\begin{align*}
+%    \bar{\Theta}_u =& \left\{(p_u(j\vert %i,g))_{0\le g\le l, i,j\in\statespace} \quad %\text{s.t.} \quad \forall g\in %\{1,\dots,l\}\forall i\in \statespace %\sum_{j\in\statespace}p(j\vert i,g)=1 %\right.
+%    \\
+%    & \left.\vphantom{\sum_{j\in\statespace}}\te%xt{ and } \forall g,g'\in \{1,\dots,l\}, %p_u(j\vert u,g)=p_u(j\vert u,g') \right\}.
+%\end{align*}
+%
+%
+%
+%\begin{prop}[Inspired from %{\cite[Proposition~2]{lebre2008algorithm}}]
+%    For arbitrary $u=(u_1,\dots,u_m)$ element of %$\statespace^m$, the transition %probabilities of a mth-order \gls{mtdg} %model satisfy:
+%    \begin{align*}
+%        &\forall i_m,\dots,i_0\in\statespace
+%        \\
+%        & \probability(i_0\vert %i_m,\dots,i_g,\dots,i_1) = \sum_{g=0}^l %\left[ p_u(i_0\vert i_g,g) - %\frac{l-1}{l} p_u(i_0)\right],
+%    \end{align*}
+%    where $p_u(j\vert i,g)=\probability(j\vert %u_0,\dots,i,\dots,u_m)$, with $u_0\dots %u_{g-1}iu_{g+1}\dots u_m$ is the $l$-letter %word whose letter in position $g$ (from %right to left) is $i$ and $p_u(j)$ is the %probability to reach $j$ from sequence $u$.
+%\end{prop}

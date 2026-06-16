@@ -1,0 +1,100 @@
+
+
+
+% To place above and left with different values:
+% https://tex.stackexchange.com/questions/16231/node-below-and-left-of-another-node-in-tikz#:~:text=Building%20on%20%40Seamus,end%7Bdocument%7D
+% Example: \node[latentnode, above left= \verticalnodedistance*\nodedistance and \horizontalnodedistance*\nodedistance of s0] (s11) {};
+%=============================================
+% pgfplots
+%---------------------------------------------
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\tikzstyle{every picture}+=[remember picture]
+\tikzstyle{na} = [baseline=-.5ex]
+\everymath{\displaystyle}
+\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{positioning}
+\usetikzlibrary{matrix}
+
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns.meta}
+\usetikzlibrary{arrows,fit,positioning,shapes}  
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{bayesnet}
+\usetikzlibrary{shapes.misc,shapes.geometric}
+\usetikzlibrary{fit,backgrounds}
+\usetikzlibrary{calligraphy}
+
+
+
+%=============================================
+% Create layers
+%---------------------------------------------
+\pgfdeclarelayer{back}
+\pgfdeclarelayer{front}
+\pgfsetlayers{back,main,front}
+\makeatletter
+\pgfkeys{%
+  /tikz/on layer/.code={
+    \pgfonlayer{#1}\begingroup
+    \aftergroup\endpgfonlayer
+    \aftergroup\endgroup
+  },
+  /tikz/node on layer/.code={
+    \gdef\node@@on@layer{%
+      \setbox\tikz@tempbox=\hbox\bgroup\pgfonlayer{#1}\unhbox\tikz@tempbox\endpgfonlayer\egroup}
+    \aftergroup\node@on@layer
+  },
+  /tikz/end node on layer/.code={
+    \endpgfonlayer\endgroup\endgroup
+  }
+}
+\def\node@on@layer{\aftergroup\node@@on@layer}
+
+
+
+%=============================================
+% Define block styles
+%---------------------------------------------
+\tikzset{
+  latentnode/.style  ={draw,minimum width=3em, shape=circle,thick, black, fill=white, anchor=base, text height=2ex, text depth=0.75ex, },
+  line/.style={draw, -latex'},
+  line2/.style={draw, -latex', dotted},
+  jump left/.style={draw=none, inner xsep=0pt},
+  jump line/.style={line, shorten <=5pt}
+}
+
+\tikzset{fontscale/.style = {font=\relsize{#1}}
+    }
+
+
+
+%=============================================
+% Add symbols
+%---------------------------------------------
+\def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;} % Checkmark
+
+%=============================================
+% Define layers
+%---------------------------------------------
+\pgfdeclarelayer{foreground} 
+\pgfdeclarelayer{background}
+   \pgfsetlayers{background,%
+                 main,%
+                 foreground%
+                 }
+                 
+% Create table where it is written at 45° 
+% https://tex.stackexchange.com/questions/78938/tables-in-latex-with-diagonal-first-row
+\newcommand{\tikzmark}[1]{\tikz[remember picture,overlay]\coordinate (#1);}
+\newcolumntype{T}[1]{@{\hspace{\tabcolsep}}c@{\hspace{\tabcolsep}\tikzmark{#1}}}
+\newcolumntype{L}[1]{@{\hspace{\tabcolsep}}l@{\hspace{\tabcolsep}\tikzmark{#1}}}
+
+
+%=============================================
+% Pgfplot
+%---------------------------------------------
+\usepgfplotslibrary{fillbetween} % confidence interval, https://tex.stackexchange.com/questions/596613/how-to-add-confidence-regions-around-a-graph-from-a-table
+\usepgfplotslibrary{groupplots} % several plots in an image https://tex.stackexchange.com/questions/243976/get-caption-subcaption-every-plot-using-groupplot-pgf-tikz
+

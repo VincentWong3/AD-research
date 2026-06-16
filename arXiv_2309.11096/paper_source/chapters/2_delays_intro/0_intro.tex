@@ -1,0 +1,55 @@
+\chapter{Delayed Reinforcement Learning}
+\label{chap:delay}
+
+\section{Introduction}
+\label{sec:delay_intro}
+
+Despite their generality, \glspl{mdp} cannot grasp the complexity of many sequential decision-making problems. 
+This is, for example, the case of \gls{pomdp}.
+In this chapter, we are interested in extending the original framework to include a notion of delay. 
+This delay can arise in the observation of the state, in the execution of the action, or in the collection of rewards.
+A state observation delay means that the agent sees a state which is not its current state but an older state of the environment.
+Nonetheless, it must select an action that will be applied to the current unobserved state. 
+In the case of action execution delays\footnote{We borrow the denomination from \cite{derman2021acting}.}, the agent selects an action that will be applied to a state in the future. 
+Instead, the action that applies to the current state will be an action the agent had selected in the past. 
+As we will see later, these two first types of delay are similar. However, the last type of delay, reward collection delay, is slightly different. 
+Reward collection delay means that the agent gets the reward for a given transition only some steps after this transition has occurred. 
+It is especially important to take it into account to assign a reward to the correct transition.
+This type of delay can therefore involve a credit assignment problem and is mostly studied in online approaches where it is important to learn efficiently as the rewards are collected. 
+
+Delays are ubiquitous in applications of \gls{rl} and are generally not accounted for, which can lead to sub-optimal behaviour. 
+Notably, training on simulations for testing on real-life problems is a typical setting where delays can be harmful. 
+It is common to overlook delays introduced by physical sensors or actuators in simulation. 
+Yet, they may be a source of performance drop when going from simulation to reality. 
+
+In this chapter, we first propose a notation to unify the problem of delay in \gls{rl}.  
+We define delayed \glspl{mdp}, an extension of the \gls{mdp} framework that introduces delays in the sequential decision process. 
+Then, we present a collection of the main types of delays encountered in the literature and in practice.
+Finally, we discuss the literature in delayed \gls{rl} and related areas.
+This overview of the literature is lacking, and overlapping results are common in previous work.  
+
+
+\section{Notations}
+\label{subsec:delay_notation}
+We now provide a general definition of delayed \gls{mdp} which includes most of the types of delay encountered in the literature as particular cases. 
+We note \gls{dmdp} a delayed \gls{mdp}\footnote{The notation DMDP may seem more relevant, but it has been used extensively already in the literature to refer to, for example, deterministic \glspl{mdp} or discounted \glspl{mdp}. 
+The acronym is also justified by the notation of the delay used in this work.}.
+A \gls{dmdp} stems from an \gls{mdp} endowed with three sequences of variables: action execution delays $(\delay_t^a)_{t\in\naturalnumbers}$; state observation delays $(\delay_t^s)_{t\in\naturalnumbers}$; reward collection delays $(\delay_t^r)_{t\in\naturalnumbers}$. 
+Note how this notation highlights the potential time dependence of the delay.
+In the literature, the delay is usually assumed to be a Markovian process, that is, $\delay_t \sim P(\cdot\vert \delay_{t-1}, s_{t-1}, a_{t-1})$. 
+Note that this definition
+includes state-dependent delays when $\delay_t \sim P(\cdot\vert s_{t-1})$,
+Markov chain delays when $\delay_t \sim P(\cdot\vert\delay_{t-1})$ and stochastic
+delays when $(\delay_t)_{t\in\naturalnumbers}$ are i.i.d.
+
+
+
+
+
+
+
+
+
+\input{chapters/2_delays_intro/1_nature_delays}
+\input{chapters/2_delays_intro/2_related_works}
+\input{chapters/2_delays_intro/3_delay_dissertation}

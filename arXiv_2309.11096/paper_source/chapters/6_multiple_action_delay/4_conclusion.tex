@@ -1,0 +1,27 @@
+\section{Conclusion}
+
+In this chapter, we have proposed to extend the framework of constant delay in action execution.
+More precisely, we have considered the possibility that an action's effect may spread over several future steps.
+Leveraging previous literature on \gls{mc} of higher order, we have proposed adapting the \gls{mtd} and \gls{mtdg} models to \glspl{mdp} in order to obtain \glspl{mtdmdp}.
+This choice was made for the great modelling capacity of \glspl{mtd} and their low parameter dimensionality. 
+This new model of higher-order \glspl{mdp} offers exactly the possibility of observing the effect of an action over several future timesteps. 
+Four variations of the process have been presented, depending on whether it is based upon \gls{mtd} or \gls{mtdg} and depending on the state in which the actions are applied. 
+The processes are \glspl{ismmdp}, \glspl{immmdp}, \glspl{psmmdp} and \glspl{pmmmdp}.
+
+We then conducted a theoretical analysis of their properties.
+First, we have shown that the \glspl{mtdmdp} can be cast back to \glspl{mdp} by augmentation of the state, as in the constantly delayed case.
+We have then focused on learning optimal policies for these models. 
+Considering \glspl{psmmdp} and \glspl{pmmmdp}, we showed that an undelayed policy yields the same average reward in these processes as in the underlying undelayed \gls{mdp}.
+Then, we have studied the more interesting model of \gls{ismmdp} which contains constant delays as a particular case.
+First, the peculiarities of the model have been studied, highlighting how the choice of a delay vector $\boldsymbol\lambda$ acts on the average reward and state distribution of the agent.
+A conjecture has been made on the effect of $\boldsymbol\lambda$ on the aforementioned criterion with some supporting arguments.
+Then, the effect of the delay on the variance of these quantities has been studied for constantly delayed \gls{dmdp}. 
+Finally, we have studied how the properties of the underlying \gls{mdp} might be passed to the \gls{ismmdp}.
+These results are of interest to rule out algorithms from the theoretical \gls{rl} literature that cannot be readily applied to \gls{ismmdp}. 
+For an algorithm that can be applied to them, UCRL2, we have provided experiments with varying $\boldsymbol\lambda$ to show its effects on the average reward.
+In the same idea, we provided another experiment with expected discounted return as an objective to highlight the effect of $\boldsymbol\lambda$ in this case.
+
+Finally, \gls{immmdp} have been left aside for future works.
+Considering other future directions, one possibility would be to improve the theoretical \gls{rl} algorithms applied to \gls{mtdmdp} by leveraging the peculiarities of the estimation of the parameters of an \gls{mtd} model \cite{berchtold2002mixture}.
+Moreover, our setting is reminiscent of \cite{romano2022multi}, which considers temporally-partitioned rewards, which could be seen as a form of multiple reward delays. 
+Studying the connections between these settings might yield better guarantees for theoretical approaches.

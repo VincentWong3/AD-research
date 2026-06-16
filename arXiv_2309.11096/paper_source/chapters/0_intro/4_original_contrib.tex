@@ -1,0 +1,98 @@
+\section{Original Contribution}
+
+The dissertation focuses on two types of delay that are peculiar to the \gls{rl} setting: state observation delay and action execution delay. 
+Our goal is to broaden the understanding of such delays, as well as to provide efficient solutions. 
+A particular focus is placed on constant delays that are ubiquitous in the literature and are a good approximation of the real delay in many cases.
+However, we will repeatedly study the theoretical and empirical impact of extending the framework to more original types of delay.
+The contributions of this thesis follow four objectives: providing a unifying framework for delays in \gls{rl}; giving a theoretical ground for better understanding delays; designing theoretically grounded and efficient algorithms to tackle delayed environments and providing an extensive empirical evaluation of the proposed algorithms, as well as algorithms from the literature.
+In the following, the contributions for each of these objectives will be detailed before referring the reader to the publications that I have co-authored and where these contributions can be found.
+
+\subsubsection{Unifying Framework for Delays}
+In this dissertation, we provide an extensive review of the literature on delays, in \gls{rl} and related fields.
+The focus is on state observation and action execution delay in \gls{rl} but other types of delay are also discussed.
+Notably, we gather algorithms from the literature into three categories.
+The first category is the \emph{augmented state} approach. 
+The idea is to augment the last observed state with the sequence of actions that have been selected by the agent, but whose outcome has not been observed yet.
+Using this new state allows one to cast the delayed problem back to the traditional undelayed \gls{mdp} framework.
+The second category is the \emph{memoryless} approach, where the agent ignores the delay and uses only information about the last observed state.
+The idea is simple, yet it can be efficient in practice.
+Finally, the \emph{model-based} approach learns a model of the environment to predict the state of the environment at which the actions will apply.
+To the best of our knowledge, there are no previous works providing an overview of delays in \gls{rl}. 
+We believe that providing this information is beneficial for the field, as it is not uncommon to find overlapping results in the literature.
+
+In addition, we propose a unified mathematical framework for the problem of delay.
+This proposition follows the same line of thought that the delayed literature would benefit from more structure.
+Our framework contains all the most common types of delay as a particular case and naturally interlocks with the \gls{mdp} model.
+
+\subsubsection{Theoretical Understanding of Delays}
+First, we analyse the theoretical effect of delayed state observation or action execution on the \gls{mdp}.
+Our first result is a formal demonstration of a seemingly evident, yet left unproved, result: the longer the delay, the lower the maximum attainable cumulative reward--or return.
+In the same vein, we show how the delay affects the variability of returns that the set of policies can achieve. 
+A longer delay reduces the range of return that the agent can get, but also reduces the variance of its return against repeated learning of the same task. 
+Then, we extend the constant delay framework to a multiple-action delay one, where a single action can impact several transitions in the future. 
+This framework is interesting from a theoretical perspective, as it contains the constantly delayed process as a particular case. 
+Moreover, it naturally extends the higher order \glspl{mc} model to \glspl{mdp}.
+We show that multiple action-delayed processes can be cast back to an \gls{mdp} by state augmentation, similarly to constantly delayed processes. 
+Then we study the properties and peculiarities of this framework with respect to the traditional \gls{mdp}. 
+In particular, this allows us to underline the connection between \gls{mdp} of higher order and \gls{mdp} with delay.
+Notably, some properties, such as being unichain, are shown to not transfer from the underlying \gls{mdp} to the delayed process built on it, while others do, such as communicating. 
+
+Second, we shift the focus to delayed \gls{rl} algorithms and study their guarantees. 
+We analyse the approaches to delays, which are the augmented state, the memoryless, and the model-based approaches.
+It is known that the augmented state approach allows one to find the optimal policy for the delayed problem. 
+Instead, we show that the model-based approach can be too restrictive and discard the optimal policy.
+However, in the context of a smooth \gls{mdp}--concept that will be defined in the dissertation--we demonstrate that model-based approaches provide a nearly optimal policy.
+We extend the previous guarantees to non-integer delays. 
+Non-integer delays are reminiscent of the asynchronous environment hypothesis of real-time \gls{rl}. 
+The agent sees the state at a given frequency, whereas it can only act with a phase change. 
+Finally, we derive performance bounds for the case where the model-based policy has been trained on a constant delay while it is tested on stochastic delays.
+
+\subsubsection{Algorithms for Delayed Reinforcement Learning}
+On the algorithmic side, we first explore model-based approaches, where we design an algorithm capable of learning a vectorial representation of the probability distribution--or belief--of the current state.
+To learn a representation of the belief, a first neural network, a Transformer, processes the augmented state and produces a representation for each future state up to the undelayed one.
+This representation is trained to correspond to the belief by another network that fits the distribution, a normalising flow network. 
+This representation can be plugged into an \gls{rl} algorithm to increase performance and boost learning speed compared to using the augmented state directly.
+The effect is even clearer in stochastic environments.
+Moreover, we provide a straightforward approach for utilising this algorithm, which has been pre-trained on a specific delay, to adapt to shorter delays.
+
+
+Then we explore a different approach to learn a policy by imitating the behaviour of an undelayed expert. 
+Practically, the delayed agent is trained to replicate the actions selected by the undelayed agent given the current state, but using delayed information only--the augmented state.
+We show how to take advantage of the theoretical guarantees obtained for smooth \glspl{mdp} together with the theoretical results from imitation learning to guide the design of the algorithm.
+We show empirically that this approach yields state-of-the-art performance and is versatile enough to apply to constant, non-integer and stochastic delays. 
+
+As a third approach, we explore memoryless approaches.
+In this case, the problem becomes inherently non-stationary. 
+Therefore, we design a theory on how to adapt to future non-stationarity by optimising a probabilistic lower bound of the estimation of future performance.
+This estimation of the future performance is based on multiple importance sampling to account for the variety of past dynamics due to non-stationarity.
+Under smooth non-stationary, the bias of this estimator can be bounded.
+To further account for the stochasticity of the process, a lower bound of the estimation is obtained using a concentration inequality. 
+This involves an upper bound of the variance of the previous estimator. 
+Interestingly, controlling for the variance of the estimator indirectly constrains the non-stationarity of the policy.
+This prevents overfitting past non-stationary dynamics and better generalisation on future ones.
+The algorithm in practice is implemented as a hyper-policy taking time as input and outputting the policy to be queried at each time.
+Experiments show how this algorithm learns about the non-stationarity of the process to adapt to it, including when the non-stationarity is caused by delays.
+
+\subsubsection{Extensive Empirical Evaluation}
+Our last contribution is an extensive empirical evaluation of the algorithms proposed in this dissertation, as well as algorithms from the literature.
+We design a wide range of test tasks, from balancing a pendulum to trading currency rates.
+In these tasks, we vary the delay in length and nature to study the robustness of the algorithms. 
+We consider constant, non-integer, stochastic, and multiple action delays. 
+These empirical evaluations are useful for understanding the peculiarities of the algorithms and their preferred settings.
+
+
+\subsubsection{Reference to Publications}
+The aforementioned contributions can be found in the following papers. 
+In \cite{liotet2021learning}, we present the model-based approach and analyse how model-based approaches may be too restrictive. 
+For this work, I designed the approach, performed the theoretical analysis, and conducted most of the experimental analysis.
+The imitation learning approach and analysis of the delay in smooth \glspl{mdp} can be found in \cite{liotet2022delayed}.
+I have done part of the theoretical analysis for constant delays and done the extension to non-integer and stochastic delays. I have also conducted most of the experimental analysis.
+The non-stationary memoryless approach comes from \cite{liotet2022lifelong}.
+In this work, I conducted most of the theoretical analysis, part of the design of the approach, and all the empirical study. 
+Finally, the results concerning the extension to multiple action delay and the analysis of the impact of changing the delay's distribution on the performance of the agent are the ground for a paper to be submitted. 
+For this work, I have done all the theoretical and empirical analyses.
+
+
+
+
+

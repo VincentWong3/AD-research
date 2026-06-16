@@ -1,0 +1,46 @@
+\section{Delays in Reinforcement Learning}
+\label{sec:why_delay_ns}
+
+As we have previously stated, \gls{rl} and its \gls{mdp} model are a great framework for sequential decision-making.
+However, as the reader knows, models are a simplification of real processes and have their own limits.
+Looking at the literature on real-world applications of \gls{rl} gives hints on where the limit could fall.
+Considering a real-world robot, \cite{mahmood2018setting} discovered that from a set of candidates, the two main obstacles to learning were the choice of an action space and the delay in state observation or action execution.
+These delays affect the agent-environment interaction by either providing outdated information to the agent or postponing the agent's control on the environment.
+This is a great argument to advocate for the study of delays.
+
+We claim that delays are inherent to any sequential problem. 
+The most ubiquitous type of delay faced by humans is the time required for the brain to process information coming from the body's sensors. 
+For example, the time taken by motion information to communicate from photoreceptors to the higher-level visual area of the brain was estimated at about 100 ms \cite{de1991vernier}. 
+In \gls{rl}, this delay is akin to the delay induced by the sensor acquisition time. 
+The delay can also come from the time required for the agent to compute its next action given an observation of the environment.
+For instance, the delay is exacerbated by using more complex policies such as \emph{deep neural networks}, a phenomenon observed in active flow control \cite{ren2021applying,mao2022active}.
+Another example where delay naturally arises is trading. There, the speed at which information is collected, and trades are transmitted is incredibly important. 
+In practice, the information takes different routes through the optical fibre, which results in asynchronous arrival times at distinct locations. 
+These delays can be exploited to make a profit \cite{lewis2014flash}.
+Moreover, by abstracting away the other agents on the market, the return of a single trading agent is negatively impacted by the delay \cite{wilcox1993effect}.
+Experiments on foreign exchange (FX) using \gls{rl} agents confirm the performance drop after the introduction of delay \cite{liotet2022delayed}.
+Other examples of delay impact include emergency breaking time of a tractor with a semitrailer \cite{bayan2010brake}; information available to computing nodes in parallel computing \cite{hannah2018unbounded}; control of a robotic arm \cite{mahmood2018setting}.
+Even when the environment seemingly acts in a synchronous way, such as in the game of go, the delay still hides somewhere. 
+In the documentary released on the journey to building AlphaGo \cite{silver2016mastering}, the algorithm that played against the world champion Mr. Lee Sedol, it took more than 30 seconds for AlphaGo to compute its first move. 
+The game has an overall limited time, and too long an action computation could be harmful. 
+In this case, the delay was not harmful as AlphaGo still had plenty of time left and eventually won against Mr. Lee Sedol.
+
+In the simulation, the delay could be artificially removed, yet it may take away a great element of realism.
+In a game such as Atari 2600, the delay drastically impacts the performance of \gls{rl} agents \cite{firoiu2018human}. 
+A solution could be to simply remove the delay by pausing the environment while the agent selects its action.
+However, \cite{firoiu2018human} argue that since most games show images at a frequency of 60Hz and since studies have found that the reaction time of some human populations can average 250 ms \cite{jain2015comparative}, not modelling the delay for an artificial agent gives them an unfair advantage over humans.
+
+Many related fields also consider the problem of delays.
+In \emph{control theory} for example, \cite{chung1995time, dugard1998stability, niculescu2001delay, gu2003survey, richard2003time, fridman2014introduction} where the delay has intricate effects on the stability of the system \cite{kolmanovskii1999delay}.
+In particular, this field has considered the problem of congestion control where data packets are sent to a network from many sources \cite{jacobson1988congestion}.
+In this problem, delay naturally arises as the packets take different routes from different sources \cite{witsenhausen1971separation, altman1999congestion,ait2003stability}.
+In \emph{online learning}, receiving delayed feedback can slow the learning process \cite{joulani2013online,pike2018bandits,lancewicki2021stochastic}.
+In \emph{real-time} \gls{rl}, the interaction between the agent and its environment is no longer synchronous--when the environment ``waits'' for the agent to select an action--but instead becomes asynchronous.
+Practically, the agent must compute its next action while the environment keeps evolving, and it is not guaranteed that once computed, the action will remain relevant for the new state of the environment.
+Interestingly, this subfield has been shown to be equivalent to delayed \gls{rl} \cite[Theorem~1]{ramstedt2019real}.
+The interest in this field \cite{hester2013texplore,caarls2015parallel,travnik2018reactive,ramstedt2019real,xiao2020thinking} is therefore an argument for more interest in delay. 
+
+For all these reasons, we believe that delay is a research direction that is central to the practical application of \gls{rl}. Furthermore, theoretical questions raised by the introduction of a delay in the traditional framework are also of interest, as they are related to many subfields of \gls{rl}, such as \glsfirst{pomdp} or real-time \gls{rl}.
+
+
+ 

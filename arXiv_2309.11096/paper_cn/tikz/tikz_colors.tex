@@ -1,0 +1,105 @@
+
+
+
+%=============================================
+% Colors
+%---------------------------------------------
+\definecolor{rouge1}{RGB}{226,0,38}  % red P
+\definecolor{orange1}{RGB}{243,154,38}  % orange P
+\definecolor{jaune}{RGB}{254,205,27}  % jaune P
+\definecolor{blanc}{RGB}{255,255,255} % blanc P
+\definecolor{rouge2}{RGB}{230,68,57}  % red S
+\definecolor{orange2}{RGB}{236,117,40}  % orange S
+\definecolor{taupe}{RGB}{134,113,127} % taupe S
+\definecolor{gris}{RGB}{91,94,111} % gris S
+\definecolor{bleu1}{RGB}{38,109,131} % bleu S
+\definecolor{bleu2}{RGB}{28,50,114} % bleu S
+\definecolor{vert1}{RGB}{133,146,66} % vert S
+\definecolor{vert3}{RGB}{20,200,66} % vert S
+\definecolor{vert2}{RGB}{157,193,7} % vert S
+\definecolor{darkyellow}{RGB}{233,165,0}  % orange S
+\definecolor{darkblue}{rgb}{0,0,139}
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.6,0.6,0.6}
+\definecolor{blue900}{HTML}{0D47A1}
+\definecolor{blue800}{HTML}{1565C0}
+\definecolor{green1}{RGB}{217,255,250}
+\definecolor{orange1}{RGB}{250,245,217}
+\definecolor{crimson}{rgb}{0.86, 0.08, 0.24}
+\definecolor{myblue}{rgb}{0.0, 0.44, 1.0}
+\definecolor{amber2}{rgb}{1.0, 0.49, 0.0}
+\colorlet{redp}{red!20} % vert S
+\colorlet{greenp}{vert3!20} % vert S\usepackage[framemethod=tikz]{mdframed}
+\colorlet{bluep}{blue!12} % vert S
+\colorlet{blueg}{blue!70!green!90!white}
+\definecolor{yellowp}{rgb}{0.93, 0.93, 0.42}
+\colorlet{orangep}{orange!40}
+
+
+% Vibrant color scheme from TensorBoard https://personal.sron.nl/~pault/#sec:qualitative
+\definecolor{vibrantBlue}{RGB}{0, 119, 187}
+\definecolor{vibrantCyan}{RGB}{51, 187, 238}
+\definecolor{vibrantTeal}{RGB}{0, 153, 136}
+\definecolor{vibrantOrange}{RGB}{238, 119, 51}
+\definecolor{vibrantRed}{RGB}{204, 51, 17}
+\definecolor{vibrantMagenta}{RGB}{238, 51, 119}
+\definecolor{vibrantGrey}{RGB}{187, 187, 187}
+
+
+%=============================================
+% Colors Delays
+%---------------------------------------------
+\definecolor{delayedcolor}{RGB}{0, 119, 187} % vibrantBlue
+\definecolor{undelayedcolor}{RGB}{204, 51, 17} % vibrantRed
+
+
+
+
+%=============================================
+% Colors Plots
+%---------------------------------------------
+% How to create styles:
+% https://tex.stackexchange.com/questions/374693/creating-and-using-styles-in-pgfplots
+% Example of styles in section 4.7:
+% https://ctan.mirror.garr.it/mirrors/ctan/graphics/pgf/contrib/pgfplots/doc/pgfplots.pdf
+\pgfplotsset{
+    compat=1.15,
+    Plotstyle/.style={grid=both,},
+    % DIDA
+    DIDA/.style={vibrantBlue, mark=triangle*, mark options={fill=vibrantBlue!80,draw=vibrantBlue}, thick,},
+    DIDAci/.style={vibrantBlue!40, opacity=0.3,},
+    % BCDIDA
+    BCDIDA/.style={vibrantBlue, mark=pentagon*, mark options={fill=vibrantBlue}, thick,},
+    BCDIDAci/.style={vibrantBlue!30, opacity=0.3,},
+    % MDIDA
+    MDIDA/.style={vibrantBlue!90, mark=*, mark options={fill=vibrantBlue!70,draw=vibrantBlue!90}, thick,},
+    MDIDAci/.style={vibrantBlue!30, opacity=0.3,},
+    % D-TRPO
+    DTRPO/.style={vibrantOrange, mark=triangle*, mark options={fill=vibrantOrange!80,draw=vibrantOrange}, thick,},
+    DTRPOci/.style={vibrantOrange!40, opacity=0.3,},
+    % L2-TRPO
+    LTRPO/.style={vibrantOrange!90, mark=square*, mark options={fill=vibrantOrange!70,draw=vibrantOrange!90}, thick,},
+    LTRPOci/.style={vibrantOrange!30, opacity=0.3,},
+    % A-TRPO
+    ATRPO/.style={vibrantOrange!80, mark=diamond*, mark options={fill=vibrantOrange!60,draw=vibrantOrange!80}, thick,},
+    ATRPOci/.style={vibrantOrange!20, opacity=0.3,},
+    % M-TRPO
+    MTRPO/.style={vibrantOrange!70, mark=*, mark options={fill=vibrantOrange!50,draw=vibrantOrange!70}, thick,},
+    MTRPOci/.style={vibrantOrange!10, opacity=0.3,},
+    % A-SAC
+    ASAC/.style={vibrantMagenta, mark=diamond*, mark options={fill=vibrantMagenta!80,draw=vibrantMagenta}, thick,},
+    ASACci/.style={vibrantMagenta!40, opacity=0.3,},
+    % M-SAC
+    MSAC/.style={vibrantMagenta!90, mark=*, mark options={fill=vibrantMagenta!70,draw=vibrantMagenta!90}, thick,},
+    MSACci/.style={vibrantMagenta!30, opacity=0.3,},
+    % SARSA
+    SARSA/.style={vibrantGrey, mark=*, mark options={fill=vibrantGrey!80,draw=vibrantGrey}, thick,},
+    SARSAci/.style={vibrantGrey!40, opacity=0.3,},
+    % dSARSA
+    dSARSA/.style={vibrantGrey!90, mark=pentagon*, mark options={fill=vibrantGrey!70,draw=vibrantGrey!90}, thick,},
+    dSARSAci/.style={vibrantGrey!30, opacity=0.3,},
+    General/.style={grid=both, grid style={line width=.1pt, draw=gray!10},
+        Series/.style={black, mark=|, thick,},
+        Histogram/.style={black, mark=|, fill=black!30, area legend, ybar interval, mark=no,},
+    },
+}

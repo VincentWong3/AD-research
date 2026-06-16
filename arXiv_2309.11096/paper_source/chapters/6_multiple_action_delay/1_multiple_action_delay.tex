@@ -1,0 +1,152 @@
+\section{Formalisation of the Problem}
+\label{subsec:formalisation_mtdmdp}
+
+\subsection{Definitions}
+
+In the preliminaries, we have seen two models for mixtures of transition probabilities, the \gls{mtd} of \Cref{def:mixture_transition_distribution} and the \gls{mtdg} of \Cref{def:multimatrix_mixture_transistion_distribution}.
+From these models, we will build delayed processes where the transition is defined as a mixture of transition probabilities. 
+There can be various ways to define such a model, and we will explore four of them in the following.
+We use the term \gls{mtdmdp} to refer to these processes as a whole.
+Let us now introduce the first model.
+
+\begin{defi}[\Gls{ismmdp}]
+    From an \gls{mdp} $\markovdecisionprocess$ with transition $p$ and a delay $\delay$, the \gls{ismmdp} transition process is defined as follows,
+    \begin{align*}
+        \probability(S_{t+1}=s_{t+1}\vert& S_{t}=s_{t},A_{t}=a_{t},\dots,A_{t-\delaymax}=a_{t-\delaymax})
+        \\
+        &=\sum_{g=0}^\delaymax \lambda_g \probability(S_{t+1}=s_{t+1}\vert S_{t}=s_{t},A_{t}=a_{t-g})
+        \\
+        &= \sum_{g=0}^\delaymax \lambda_g p(s_{t+1}\vert s_{t},a_{t-g}).
+    \end{align*}
+    Its reward reads,
+    \begin{align*}
+        R(s_{t},a_{t},\dots,a_{t-\delaymax}) = \sum_{g=0}^\delaymax \lambda_g \rewardfunction(s_{t},a_{t-g}).
+    \end{align*}
+\end{defi}
+
+
+\begin{remark}
+    The classic constant $\delay$-delayed \gls{dmdp} falls in this category, by setting $\lambda_0=\dots=\lambda_{\delay-1}=0$ and $\lambda_\delay=1$.
+\end{remark}
+
+This first definition is based on the assumption that whatever delayed action is, it will be applied to the current state. 
+Therefore, the action is applied to the \emph{instantaneous} state instead of the \emph{past} state.
+This corresponds to the letter "I" in the name.
+The second important letter is "S" because the model is built on the regular \gls{mtd} model, which considers a \emph{single} transition matrix.
+We now consider another model based on the \gls{mtd} but using past states for the application of the actions, hence the "P" in its name.
+
+\begin{defi}[\Gls{psmmdp}]
+    From an \gls{mdp} $\markovdecisionprocess$ with transition $p$ and a delay $\delay$, the \gls{psmmdp} transition process is defined as follows,
+    \begin{align*}
+        \probability(S_{t+1}=s_{t+1}\vert& S_{t}=s_{t},A_{t}=a_{t},\dots,S_{t-\delaymax}=s_{t-\delaymax},A_{t-\delay}=a_{t-\delaymax})
+        \\
+        &=\sum_{g=0}^\delaymax \lambda_g \probability(S_{t+1}=s_t\vert S_{t}=s_{t-g},A_{t}=a_{t-g})
+        \\
+        &= \sum_{g=0}^\delaymax \lambda_g \transitionfunction(s_t\vert s_{t-g},a_{t-g}).
+    \end{align*}
+    Its reward reads,
+    \begin{align*}
+        R(s_{t},a_{t},\dots,s_{t-\delaymax},a_{t-\delaymax}) = \sum_{g=0}^\delaymax \lambda_g \rewardfunction(s_{t-g},a_{t-g}).
+    \end{align*}
+\end{defi}
+
+Note how the transitions and rewards are conditioned on a past state $s_{t-g}$. 
+We now define the last two models, using the \gls{mtdg} model, which adds more degrees of freedom. 
+Since they depend on \emph{multiple} transition matrices, we use the letter "M" in their name.
+
+\begin{defi}[\Gls{immmdp}]
+    For a delay $\delaymax$ and \glspl{mdp} $(\markovdecisionprocess_g)_{g\in[\![1,\delaymax]\!]}$ with respective transitions $(p_g)_{g\in[\![1,\delaymax]\!]}$, the \gls{immmdp} transition process is defined as follows,
+    \begin{align*}
+        \probability(S_{t+1}=s_{t+1}\vert& S_{t}=s_{t},A_{t}=a_{t},\dots,A_{t-\delaymax}=a_{t-\delaymax})
+        \\
+        &=\sum_{g=0}^\delaymax \lambda_g \probability(S_t=s_t\vert S_{t}=s_{t},A_{t-g}=a_{t-g})
+        \\
+        &= \sum_{g=0}^\delaymax \lambda_g \transitionfunction_g(s_{t+1}\vert s_{t},a_{t-g}).
+    \end{align*}
+    Its reward reads,
+    \begin{align*}
+        R(s_{t},a_{t},\dots,a_{t-\delaymax}) = \sum_{g=0}^\delaymax \lambda_g \rewardfunction(s_{t},a_{t-g}).
+    \end{align*}
+\end{defi}
+
+\newpage
+\begin{defi}[\Gls{pmmmdp}]
+\label{def:pmmmdp}
+    For a delay $\delaymax$ and \glspl{mdp} $(\markovdecisionprocess_g)_{g\in[\![1,\delaymax]\!]}$ with respective transitions $(p_g)_{g\in[\![1,\delaymax]\!]}$, the \gls{pmmmdp} transition process is defined as follows,
+    \begin{align*}
+        \probability(S_{t+1}=s_{t+1}\vert& S_{t}=s_{t},A_{t}=a_{t},\dots,S_{t-\delaymax}=s_{t-\delaymax},A_{t-\delay}=a_{t-\delaymax})
+        \\
+        &=\sum_{g=0}^\delaymax \lambda_g \probability(S_{t+1}=s_{t+1}\vert S_{t-g}=s_{t-g},A_{t-g}=a_{t-g})
+        \\
+        &= \sum_{g=0}^\delaymax \lambda_g \transitionfunction_g(s_{t+1}\vert s_{t-g},a_{t-g}).
+    \end{align*}
+    Its reward reads,
+    \begin{align*}
+        R(s_{t},a_{t},\dots,s_{t-\delaymax},a_{t-\delaymax}) = \sum_{g=0}^\delaymax \lambda_g \rewardfunction(s_{t-g},a_{t-g}).
+    \end{align*}
+\end{defi}
+
+Note that the initial state distribution has not been defined. 
+One possibility--which we adopt in this chapter--is to initialise the process as a constantly $\delaymax$-delayed \gls{dmdp}: the first $\delaymax$ actions are sampled uniformly at random in the action space. 
+\Cref{tab:mtdmdp_properties} summarises the properties of each process.
+
+\begin{table}[t]
+\centering 
+    \begin{tabular}{cc|c|c|}
+        \cline{3-4}
+        &&\multicolumn{2}{c|}{\textbf{State used  for the transition}}\\
+        \cline{3-4}
+        & & Past & Instantaneous  \\
+        \hline
+        \multicolumn{1}{|c|}{\multirow{2}{*}{\makecell{\textbf{Transition}\\\textbf{matrices}}}}&Single&\gls{psmmdp}&\gls{ismmdp}\\
+        \cline{2-4}
+        \multicolumn{1}{|c|}{}&Multiple&\gls{pmmmdp}&\gls{immmdp}\\
+        \hline
+    \end{tabular}
+    \caption{The main property of each of the four processes derived from the \gls{mtd} and \gls{mtdg} models applied to \glspl{mdp}.}
+    \label{tab:mtdmdp_properties}
+ \end{table}
+
+
+\subsection{Objective and Assumptions}
+Note that we do not assume that the agent is aware of which action has been applied to the environment at each step, placing ourselves in the anonymous framework. 
+Concerning the objective within the framework of \gls{mtdmdp}, we will study the expected discounted return with infinite horizon or the average reward criterion.
+In particular, we will be interested in the effect of the choice of a delay vector $\boldsymbol\lambda=(\lambda_0,\dots,\lambda_\delaymax)$ on the performance of an agent. 
+Concerning the information structure (see \Cref{subsec:control_theory}), as for classic constant delay $\delay$, we consider that an agent has access to the history $h_t = (h^s_t,h^r_t,h^a_t)$ at time $t$, composed of $h^s_t = (s_i)_{0\le i\le t-\delay}$ the history of states, $h^r_t = (r_i)_{0\le i\le t-\delay}$ the one of rewards and $h^a_t = (r_i)_{0\le i\le t}$ the one of actions. 
+
+In the theoretical analysis, we will assume finite state and action spaces to simplify the problem and leverage the results from theoretical \gls{rl}. 
+
+ 
+\subsection{Notations}
+We will consider the state distribution as defined in \Cref{subsec:def_state_distrib} for the expected discounted return and the average reward objectives. 
+Because some results can apply to both with similar computations, we may drop the "AVG" or "$\gamma$" under-script in these cases for simplicity. 
+Moreover, we will use the notation $\augmentedstatespace=\statespace\times\actionspace^{\delaymax}$ for the augmented state space of \gls{ismmdp} and \gls{immmdp}, similar to that of constantly delayed \gls{dmdp}. 
+For \gls{psmmdp} and \gls{pmmmdp}, we define the augmented state space as $\orderdstatespace=\statespace^{\delaymax}\times\actionspace^{\delaymax}$. 
+Due to their similarity to constant delay \gls{dmdp} one can easily show that a policy in \gls{ismmdp} and \gls{immmdp} belongs to the set $\delayedpolicyspace$~(see \Cref{subsubsec:theory_augmented_space} for reference). 
+\gls{psmmdp} and \gls{pmmmdp} consider the past state in their transition model, therefore they do not add more recent information to their augmented state than what is already available in the augmented state of \gls{ismmdp} and \gls{immmdp}. 
+This means that the policies over the former are history-dependent from the point of view of the latter and also belong to $\delayedpolicyspace$. 
+We note their policy set $\higherorderpolicyspace \subset \delayedpolicyspace$
+To prevent confusion, we will note $\orderdpolicy$ a policy for \gls{psmmdp} and \gls{pmmmdp}.
+Lastly, we will now define the notation for the state and action distributions in a \gls{mtdmdp}. 
+Consider $s\in\statespace$, $a\in\actionspace$, $x\in\augmentedstatespace$, $\widebar x\in\orderdstatespace$, $\pi\in\Pi$ and $\delayedpolicy,\orderdpolicy\in\delayedpolicyspace$.
+Then, the distributions for the undelayed policy $\pi$ are written,
+\begin{enumerate}
+    \item $\discountedstateoccupancydistribution[][\pi](s)$ for the state distribution in an \gls{mdp} under policy $\pi$;
+    \item $\discountedstateoccupancydistribution[][\pi](s,a)$ is the state-action distribution in an \gls{mdp} under policy $\pi$;
+\end{enumerate} 
+for \gls{ismmdp} and \gls{immmdp}, the distributions read,\footnote{As one can see, we have made the choice to not indicate explicitly the input space in the notation in order to keep them readable. The input space is clear from the quantity at which the distribution is evaluated.}
+\begin{enumerate}
+\setcounter{enumi}{2}
+    \item $\delayeddiscountedstateoccupancydistribution[][\delayedpolicy](x)$ is the distribution over $\augmentedstatespace$ in \gls{ismmdp} and \gls{immmdp} under policy $\delayedpolicy$;
+    \item $\delayeddiscountedstateoccupancydistribution[][\delayedpolicy](x,a)$ is the distribution over $\augmentedstatespace\times\actionspace$ in \gls{ismmdp} and \gls{immmdp} under policy $\delayedpolicy$.
+    \item $\delayeddiscountedstateoccupancydistribution[][\delayedpolicy](s)$ is the distribution over $\statespace$ in \gls{ismmdp} and \gls{immmdp} under policy $\delayedpolicy$;
+    \item $\delayeddiscountedstateoccupancydistribution[][\delayedpolicy](s,a)$ is the distribution over $\statespace\times\actionspace$ in \gls{ismmdp} and \gls{immmdp} under policy $\delayedpolicy$.
+\end{enumerate} 
+and similarly, for \gls{psmmdp} and \gls{pmmmdp}, the distributions read
+\begin{enumerate}
+\setcounter{enumi}{6}
+    \item $\delayeddiscountedstateoccupancydistribution[][\orderdpolicy](\widebar x)$ is the distribution over $\orderdstatespace$ in \gls{psmmdp} and \gls{pmmmdp} under policy $\orderdpolicy$;
+    \item $\delayeddiscountedstateoccupancydistribution[][\orderdpolicy](\widebar x,a)$ is the distribution over $\orderdstatespace\times\actionspace$ in \gls{psmmdp} and \gls{pmmmdp} under policy $\orderdpolicy$.
+    \item $\delayeddiscountedstateoccupancydistribution[][\orderdpolicy](s)$ is the distribution over $\statespace$ in \gls{psmmdp} and \gls{pmmmdp} under policy $\orderdpolicy$;
+    \item $\delayeddiscountedstateoccupancydistribution[][\orderdpolicy](s,a)$ is the distribution over $\statespace\times\actionspace$ in \gls{psmmdp} and \gls{pmmmdp} under policy $\orderdpolicy$.
+\end{enumerate} 

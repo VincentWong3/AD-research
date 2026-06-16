@@ -1,0 +1,75 @@
+\chapter{Non-stationary Reinforcement Learning for Delays}
+\label{chap:lifelong}
+
+
+\section{Introduction}
+In this chapter, we explore a memoryless approach to the problem of constant delay in state observation or action execution.
+Compared to the augmented approach, in the memoryless one, the process loses its Markovian property; the dynamics depend on an unobserved variable, the sequence of actions. 
+This is akin to processes that are non-stationary from the agent's point of view, due to partial observability, while the underlying process itself is stationary \cite[Section~2.1]{khetarpal2020towards}. 
+Therefore, we take a step in this direction and design a non-stationary policy which can account for the unobserved part of the state and adapt its behaviour throughout the episode.
+This approach is also motivated by the fact that there exists \glspl{dmdp} where the best stationary memoryless policy is sub-optimal \cite[Proposition~5.2]{derman2021acting} compared to the best memoryless policy.
+Moreover, the optimal memoryless policy is guaranteed to be in the set of non-stationary policies using only the last observed state as input and not its preceding history \cite[Theorem~5.1]{derman2021acting}. 
+This set of policies is referred to as ``Markovian'' in \cite{derman2021acting} even though they are not aware of the current unobserved state but only use the last observed state.
+
+Regarding the non-stationarity itself, dynamics that vary through time are common in many \gls{rl} settings such as lifelong \gls{rl}, continual \gls{rl}, non-stationary \gls{rl} and transfer learning. 
+In fact, these settings are often confused together. 
+To better grasp their differences, we will quickly present them following the taxonomy of \cite{khetarpal2020towards}. 
+\\
+\noindent\textbf{Non-stationary \gls{rl} \cite{bowerman1974nonstationary}.}~\indent It can be thought of as an umbrella name for many sub-problems as it is not clear from the term what exact type of non-stationarity is considered.
+The following frameworks can be thought of as sub-fields of non-stationary \gls{rl}.
+\\
+\noindent\textbf{Transfer learning \cite{taylor2009transfer}.}~\indent In transfer learning, an agent is trained on a set of tasks and is then placed in a new set of tasks where it should learn as fast as possible, leveraging previous knowledge.
+Non-stationarity usually arises between episodes as the task changes from one episode to the next.
+\\ 
+\noindent\textbf{Lifelong learning \cite{chen2018lifelong}.}~\indent Used interchangeably with \emph{continual learning}, it considers the interaction between an agent and its environment in a never-ending trajectory. 
+The agent cannot restart the environment, nor is it certain that it will experience some parts of the environment ever again. 
+These peculiarities come with many problems.
+First, the agent must learn in an online manner, using the information gathered so far to optimise some measure of the performance in the future. 
+Second, because the agent is learning and its policy changes, the distribution of visited states will be non-stationary. 
+On top of that, the environment itself might change. 
+These are, therefore, two sources of non-stationarity.
+Third, the agent should use its memory of the past intelligently. 
+Discarding useless information for computational and memory purposes but remembering useful policies if a similar situation happens. 
+This is a phenomenon called \emph{catastrophic forgetting}~\cite{mccloskey1989catastrophic,french1999catastrophic}.
+
+Finally, \cite{khetarpal2020towards} mention other related areas such as domain adaptation, multi-task \gls{rl} or meta-learning, but they are not strictly non-stationary processes and are thus outside the scope of this chapter. 
+We give a more in-depth review of the types of non-stationarity in \Cref{subsec:nature_ns} and related works in \Cref{subsec:related_worls_lifelong}.
+
+
+
+
+In the case of delay, the non-stationary arises inside an episode, and the same non-stationarity is repeated across episodes.
+Moreover, the non-stationarity is likely to be smooth as the unobserved sequence of actions slowly evolves at each step.
+We will therefore focus on the setting of lifelong learning with \emph{smooth} non-stationarity.
+These assumptions are not limiting as this setting is very common. 
+Consider financial trading where the non-stationarity is clear, and the agent cannot, of course, restart the environment.
+Moreover, as we have already said, delays are ubiquitous in finance, and, as we will see in the experiments, 
+trading is an interesting benchmark for delays.
+
+To address the problem of lifelong learning, we take a parameter-based approach (\Cref{sec:lifelong_param_po});
+a hyper-policy selects the policy to be queried at time $t$. 
+This allows us to divide the problem into first learning the dynamics of the non-stationarity at the hyper-policy level and second learning a rule for the action selection at the policy level.
+This scheme is interesting for an application to delays, as the policy depends only on the last observed state and therefore belongs to the set of Markovian policies (as intended by \cite[Theorem~5.1]{derman2021acting}) where the optimal policy can be found.
+We train this hyper-policy to optimise for the future return, which is estimated through \glsfirst{mis} based on past data (\Cref{subsec:mis_lifelong}).
+An analysis of the bias of this estimator is provided in \Cref{subsec:bias_analysis}.
+As we shall see later, directly optimising this objective might be harmful.
+Therefore, it is augmented with two additional terms.
+First, an estimate of past performance is added.
+Although optimising for past performance is clearly not the final intention, this term ensures that the hyper-policy remembers behaviours learnt on past samples, thus mitigating catastrophic forgetting. 
+Finally, in order to prevent overfitting, a penalty on the hyper-policy for excessive non-stationarity is added. 
+A highly non-stationary hyper-policy would likely not generalise well in the future.
+Therefore, as more non-stationary hyper-policy would increase the variance of the \gls{mis} estimators, we add a penalisation for this variance.
+To avoid estimating the variance, which would imply adding more uncertainty to the objective, we derive a differentiable upper bound of it (\Cref{subsec:variance_analysis}).
+This bound involves a divergence between past and future hyper-policies.
+We propose a policy gradient optimisation of this objective, which we name POLIS, for Policy Optimisation in Lifelong learning through Importance Sampling \Cref{subsec:surrogate_objective}.
+
+After the derivation of POLIS in the general case of lifelong learning, we focus on the delay and explain how it applies to \gls{dmdp} in \Cref{subsec:extension_delay_polis}.
+
+To conclude the chapter, we provide an experimental evaluation of POLIS for both undelayed and delayed tasks in \Cref{sec:experiments_lifelong}.
+These experiments show the ability of POLIS to learn about the underlying non-stationary process and leverage it for higher returns in the future, including when this non-stationarity is due to a delay.
+
+
+\input{chapters/5_memoryless_ns/1_nature_ns}
+\input{chapters/5_memoryless_ns/3_polis}
+\input{chapters/5_memoryless_ns/4_experiments}
+\input{chapters/5_memoryless_ns/5_conclusion}

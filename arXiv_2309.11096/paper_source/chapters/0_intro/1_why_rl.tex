@@ -1,0 +1,27 @@
+\section{The Reinforcement Learning Paradigm}
+
+The main goal of \gls{rl} is to conceive of an \emph{agent} that can learn to maximise some notion of utility by interacting with its \emph{environment}. 
+The interaction is modelled as a sequential decision problem. 
+At each step, the agent can apply an \emph{action} in the environment.
+As a consequence of this action and external factors, the environment changes to a new \emph{state} and provides the agent with a reinforcement signal.
+This signal, called \emph{reward}, gives feedback on the quality of the action. 
+The agent's goal is to maximise the cumulative sum of rewards-- or \emph{return}.
+The sequential process followed by the environment, involving transition dynamics and rewards, is modelled by a \glsfirst{mdp}. 
+To maximise its rewards, the agent must autonomously balance between exploration and exploitation.  
+It must explore new areas of the \gls{mdp} to avoid missing some opportunities but should also consider exploiting known profitable parts of the \gls{mdp} to maximise its utility. 
+The framework of \gls{rl} is inspired by discoveries from psychology on the human learning process. 
+It is general enough to include many problems and in particular the other subfields of \gls{ml} that are \emph{supervised} and \emph{unsupervised learning}. 
+It is also specific enough to yield meaningful theoretical results that guide the design of algorithms.
+
+Empirically, the soundness of the framework is supported by the breakthrough that it has allowed. 
+A limited sample of these achievements is:
+robotic locomotion \cite{haarnoja2018learning};
+autonomous driving \cite{kiran2021deep};
+playing complex video games at master level \cite{vinyals2019grandmaster}; designing computer chips that perform more and consume less energy \cite{mirhoseini2021graph};
+controlling the shape of a plasma in a tokamak \cite{degrave2022magnetic}.
+
+
+However, most of these applications require that the original \gls{rl} framework be slightly extended to account for partial observability of the state, for example. 
+Another limitation of the original framework could be the presence of delay in the dynamical system. 
+In the following section, we explain why taking delay into account is the key to achieving great empirical results.
+For so fast-paced \gls{ml} and \gls{rl} research can be, we propose to the reader to take the time to delve into the problem of delays.

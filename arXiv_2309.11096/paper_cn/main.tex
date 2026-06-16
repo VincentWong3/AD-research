@@ -1,0 +1,206 @@
+
+%=============================================
+% Printing format
+%---------------------------------------------
+% For printing in a4
+\documentclass[a4,10pt,twoside,openright,italian,english]{book}% twoside!
+
+% For printing with the A5 format
+%\documentclass[10pt,twoside,openright,english,italian]{book}% twoside!
+
+
+%=============================================
+% Packages
+%---------------------------------------------
+\usepackage{importpackages}
+\usepackage{notations}
+\usepackage{phdthesis}
+
+
+%=============================================
+% Tikz
+%---------------------------------------------
+\input{tikz/tikz_colors}
+\input{tikz/tikz_libraries}
+
+
+%=============================================
+% Make Glossary
+%---------------------------------------------
+\newglossary[alg]{acronyms}{not}{ntn}{Acronyms}
+\newglossary[slg]{notations}{abb}{abr}{Notations}
+\makeglossaries
+\lstset{tabsize=2,basicstyle=\footnotesize,breaklines=true}
+\usepackage{glossary}
+
+\usepackage[greek,italian,main=english,]{babel}
+\usepackage{ulem}
+\normalem
+
+
+%=============================================
+% Setup for Hyperlinks
+%---------------------------------------------
+\hypersetup{pdftitle={Delays in Reinforcement Learning}, pdfauthor={Pierre Liotet}}
+
+%\nobibliography*
+
+
+%=============================================
+% Metadata
+%---------------------------------------------
+\department {Dipartimento di Elettronica, Informazione e Bioingegneria}
+\phdprogram{Doctoral Programme in Information Technology}
+
+\author{Pierre Liotet}
+\title{强化学习中的延迟}
+\supervisor{Marcello Restelli}
+\tutor{Nicola Gatti}
+\chair{Luigi Piroddi}
+\titleimage{img/logopoli.pdf}
+\phdcycle{2023 -- Cycle XXXV}
+
+
+%=============================================
+% Set paper size
+%---------------------------------------------
+\usepackage[twoside=true]{geometry}
+%For printing with the weird format
+%\geometry{
+%	paperwidth=17cm,
+%	paperheight=24cm,
+%	margin=2cm,
+%	top=2.3cm,
+%	bindingoffset=0.4cm
+%}
+% For printing in a4
+\geometry{a4paper,
+  margin=3cm,
+  top=3.8cm,
+  bindingoffset=0.4cm
+}
+
+%Uncomment this for final prints: this just enables printing on a4 paper
+\usepackage[cam,center,a4,pdflatex,axes]{crop}
+
+
+% Chinese support (auto-injected)
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK SC}[ItalicFont=AR PL UKai TW MBE]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans CJK SC}
+\raggedbottom
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\refname}{参考文献}
+\begin{document}
+\raggedbottom
+\selectlanguage{english}
+\maketitle
+
+%=============================================
+% Acknowledgement
+%---------------------------------------------
+\input{chapters/1_acknowledgement}
+
+\cleardoublepage
+\newpage
+
+\pagestyle{fancy}
+% change numbering into Roman numbers for the introductory part
+\setcounter{page}{1}
+\pagenumbering{Roman}
+
+
+%=============================================
+% Abstract
+%---------------------------------------------
+\input{chapters/0_abstract}
+
+
+%=============================================
+% Summary
+%---------------------------------------------
+\selectlanguage{english}
+%\input{chapters/summary}
+\selectlanguage{english}
+
+
+%=============================================
+% Table of Content
+%---------------------------------------------
+\tableofcontents
+\cleardoublepage
+\newpage
+
+% Now lets go back to normal numbering
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\cleardoublepage
+\input{chapters/0_intro/0_intro}
+\cleardoublepage
+\input{chapters/1_preliminaries/0_intro}
+\cleardoublepage
+\input{chapters/2_delays_intro/0_intro}
+\cleardoublepage
+\input{chapters/3_belief-based/0_intro}
+\cleardoublepage
+\input{chapters/4_imitation/0_intro}
+\cleardoublepage
+\input{chapters/5_memoryless_ns/0_intro}
+\cleardoublepage
+\input{chapters/6_multiple_action_delay/0_intro}
+\cleardoublepage
+\input{chapters/7_conclusion/0_discussion_conclusion}
+
+
+%=============================================
+% Appendix
+%---------------------------------------------
+\appendix
+\cleardoublepage
+\input{appendix/proof/0_intro}
+
+
+%=============================================
+% Glossary
+%---------------------------------------------
+\cleardoublepage
+\printglossaries 
+%\printglossary[type=acronyms,title={Acronyms},]
+%\cleardoublepage
+%\printglossary[type=notations,title={Notations},]
+
+
+%=============================================
+% List of Figures and Tables
+%---------------------------------------------
+\cleardoublepage
+\listoffigures
+\listoftables
+
+
+%=============================================
+% Notations
+%---------------------------------------------
+%\cleardoublepage
+%\printglossary
+%\printglossary[type=\acronymtype,title=Notations]
+
+
+%=============================================
+% Bibliography
+%---------------------------------------------
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{\bibname}
+\small
+\bibliographystyle{alpha}
+\bibliography{bibliography}
+%\input{bibliography}
+
+\end{document}
+
+

@@ -1,0 +1,79 @@
+\section{其他预备知识}
+\label{sec:futher_prelim}
+本节介绍论文中将遇到的其他统计和 \gls{ml} 概念。
+
+
+\subsection{重要性采样}
+\label{subsec:importance_sampling}
+
+重要性采样（\Glspl{is}）\cite{mcbook} 是一种统计工具，用于在只能访问由另一个分布 $Q$（\emph{行为}分布）收集的样本时，估计某个函数 $f:X\mapsto \realnumbers$ 关于\emph{目标}分布 $P$ 的期望 $\mu = \expectedvalue_{x \sim P}[f(x)]$。记 $p$ 和 $q$ 分别为 $P$ 和 $Q$ 的密度函数。若 $P$ 关于 $Q$ 绝对连续（记作 $P \ll Q$），则重要性采样按以下方式构建 $\mu$ 的无偏估计量：
+\begin{align*}
+    \widehat{\mu} = \frac{1}{N}\sum_{i=1}^{N} \frac{p(x_{i})}{q(x_{i})}f(x_{i})
+\end{align*}
+其中 $\{x_{i}\}_{i=1}^{N} \sim Q$。
+
+进一步，多重重要性采样（\glspl{mis}）考虑一组行为分布 $(Q_j)_{j\in[\![1,J]\!]}$ 而非单一分布 $Q$。记 $(q_j)_{j\in[\![1,J]\!]}$ 为 $(Q_j)_{j\in[\![1,J]\!]}$ 的密度函数。设 $N$ 为总样本数，$N_j$ 为由 $Q_j$ 采样的样本数，满足 $\textstyle N=\sum\nolimits_{j=1}^{J} N_j$。若对于所有 $j\in[\![1,J]\!]$ 有 $P \ll Q_j$，则无偏的 \gls{mis} 估计量为：
+\begin{align*}
+	\widehat{\mu} = \sum_{j=1}^J \frac{1}{N_j}\sum_{i=1}^{N_j} \beta_j(x_{ij})\frac{p(x_{ij})}{q_j(x_{ij})}f(x_{ij}),
+\end{align*}
+其中 $\{x_{ij}\}_{i=1}^{N_j} \sim Q_j$，且 $(\beta_j(x))_{j\in[\![1,J]\!]}$ 是 $X$ 上的单位分割。该分割的选择是自由的，但常见的选择是\emph{平衡启发式}（BH）\cite{veach1995monte}，其设置为：
+\begin{align*}
+    \beta_j(x)=\frac{N_j q_j(x)}{\sum_{k=1}^J N_k q_k(x)}.
+\end{align*}
+BH 可视为将估计量还原为经典的重要性采样估计量，其中样本可视为来自混合分布：
+\begin{align*}
+    \Phi = \sum_{k=1}^J\frac{N_k}{N}Q_k.
+\end{align*}
+
+
+\subsection{散度}
+统计学中的散度定义了概率分布之间距离的某种度量。本节定义本文中将使用的两种散度。
+
+\noindent\textbf{KL散度（Kullback-Leibler 散度）~\cite[Section~2.3]{cover1991information}.}\indent
+对于同一概率空间上的两个概率分布 $P$ 和 $Q$，且 $P \ll Q$，它们之间的 KL 散度定义为：
+\begin{align*}
+    \kullbackleiblerdivergence(P\Vert Q)=\int_{\Omega} p(\omega) \log \frac{p(\omega)}{q(\omega)} \de \omega.
+\end{align*}
+
+\noindent\textbf{\Renyi 散度~\cite{renyi1961measures}.}\indent 对于满足 $P \ll Q$ 的两个概率分布 $P$ 和 $Q$，$\alpha$-\Renyi 散度对 $\alpha \in [0,\infty]$ 定义为：
+\begin{align}
+\label{eq:renyi_div}
+	\renyidivergence[\alpha](P\Vert Q) = \frac{1}{\alpha-1}\log \int_{\Omega} p(\omega)^\alpha q(\omega)^{1-\alpha} \de \omega.
+\end{align}
+记 $\exponentialrenyidivergence[\alpha](P\Vert Q) = \exp\{\renyidivergence[\alpha](P\Vert Q)\}$ 为指数 $\alpha$-\Renyi 散度。\Renyi 散度的意义在于它与重要性权重的 $\alpha$ 矩相关：
+\begin{align*}
+    \expectedvalue_{x\sim Q}\left[\left(\frac{p(x)}{q(x)}\right)^{\alpha}\right] = \exponentialrenyidivergence[\alpha](P\Vert Q)^{\alpha-1}.
+\end{align*}
+注意，1-\Renyi 散度虽未由 \Cref{eq:renyi_div} 直接定义，但可通过连续性得到 \cite{van2014renyi}，对应于 KL 散度。本文始终考虑 2-\Renyi 散度，为简洁起见，省略指数符号 $\renyidivergence[2]=\renyidivergence$。
+
+
+\subsection{神经网络}
+\gls{nn}（神经网络）是一种参数化函数 $f$，由仿射映射与逐点非线性函数的堆叠构成。后者在神经网络逼近复杂函数的能力中起核心作用，称为\emph{激活函数}。常见的激活函数包括 sigmoid 或修正线性单元（ReLU）。多年来，神经网络架构层出不穷，从简单的\emph{全连接}网络（也称为密集网络、线性网络或前馈网络）到结构更复杂、层数和参数更多的深度神经网络 \cite{goodfellow2016deep}。全连接网络由参数矩阵 $W\in\realnumbers^{n\times m}$（称为\emph{权重}）和激活函数 $\sigma$ 组成。当应用于输入 $x\in\realnumbers^m$ 时，网络输出 $y=\sigma(Wx)\in\realnumbers^n$。若仅应用一组线性函数和非线性函数的组合，则称为一个\emph{层}。多个这样的层堆叠起来可得到另一个网络。另一种普遍存在的层类型是\emph{卷积}。卷积通过在输入的一维、二维甚至更多维度上递归地将核应用于输入的子集来扫描输入。核的大小称为\emph{感受野}。由于核是固定的，该操作类似于数学中卷积的定义，故由此得名。卷积相对于全连接层的巨大优势在于权重的数量减少和输入的结构化映射，这解释了卷积在实证上的巨大成功 \cite{krizhevsky2017imagenet}。当应用于\emph{时间序列}（按时间索引的序列）时，卷积可以保持因果性，称为\emph{时间卷积} \cite{oord2016wavenet, liotet2020deep}。下文深入介绍两种更复杂的网络，它们将在本文后续中使用。
+
+\subsubsection{Transformer}
+\label{subsubsec:transformer}
+\emph{Transformer} \cite{vaswani2017attention} 是为序贯到序贯任务（即编码一个序列然后解码为另一个序列）而引入的网络。Transformer 利用注意力机制 \cite{bahdanau2014neural} 与前馈层相结合来编码或解码序列。除了性能更优之外，Transformer 相对于以往序贯到序贯任务方法的一个主要优势在于其计算成本。以往方法依赖于\emph{循环神经网络}，后者顺序处理输入并执行\emph{随时间反向传播}，这大大降低了处理速度。Transformers 的另一个有用性质是它们可以保持输入序列的因果性。在结束这一简短介绍之前，关注 Transformer 中的一个特定层——\emph{位置编码}，它在后文将特别有用。位置编码是 Transformer 的早期层，允许向序列中元素的位置添加信息。它将该元素索引的向量表示计算为该索引的一组正弦变换。这种表示的一个有趣性质是，无论索引值多大，其输出都是正弦函数，因此有界。此外，向量表示的规模可由网络设计者控制。
+
+\subsubsection{基于流的模型}
+\label{subsubsec:maf}
+
+基于流的模型是一种\emph{生成模型}，如生成对抗网络（GAN）\cite{goodfellow2014generative}。生成模型是在数据集 $\mathcal{D}$ 上训练的 \glspl{nn}，用于生成具有与 $\mathcal{D}$ 相同统计特性的新数据点。然而，与 GAN 和大多数生成模型不同，基于流的模型不仅学习生成模型，还学习用于生成 $\mathcal{D}$ 的原始概率 $p$。这一性质，加上基于流方法出色的实证结果 \cite{oord2016wavenet,kingma2018glow}，是本文中使用它们的原因。
+
+具体而言，将介绍 \gls{maf}（掩码自回归流）\cite{papamakarios2017masked} 网络，它结合了\emph{归一化流} \cite{rezende2015variational} 和\emph{自回归密度估计} \cite{uria2016neural} 两种思想。MAF 所基于的自回归密度估计方法（如掩码自编码器分布估计器 MADE）\cite{germain2015made} 的思想是递归地逐维生成样本。实际上，为了从概率分布 $p$ 中采样向量 $\vectorialform{x}\in\realnumbers^n$，自回归密度估计将 $p(x)=\prod\nolimits_{i=1}^{n}p(x_i\vert x_{1:i-1})$ 重写，每个条件概率 $p(x_i\vert x_{1:i-1})$ 可由 \gls{nn} 近似。而归一化流通过学习将某个可逆函数 $f$ 应用于从基分布 $\rho$ 中采样的向量 $\vectorialform{u}\in\realnumbers^m$，来生成样本 $\vectorialform{x}\sim p$。该基分布通常很简单，如正态分布。所得概率可表示为：
+\begin{align}
+\label{eq:p_inverted_maf}
+    p(\vectorialform{x}) = \rho(f^{-1}(\vectorialform{x})) \left\lvert \det\left(\frac{\partial f^{-1}}{\partial \vectorialform{x}}\right)\right\rvert.
+\end{align}
+MAF 结合了这些方法，按以下方式逐维生成样本 $\vectorialform{x}$：
+\begin{align}
+\label{eq:sampling_maf}
+    x_i = u_i \exp(\alpha_i) + \mu_i
+\end{align}
+其中 $\mu_i=f_{\mu_i}(x_{1:i-1})$ 和 $\alpha_i=f_{\alpha_i}(x_{1:i-1})$ 由神经网络建模，$u_i\sim\mathcal{N}(0,1)$。
+
+如前所述，MAF 学习数据点 $\vectorialform{x}$ 的密度，可使用 \Cref{eq:p_inverted_maf} 访问该密度。由于生成过程的递归结构，该方程中的逆函数具有简单的表达式：$\textstyle\exp\left(\sum\nolimits_{i=1}^n\alpha_i\right)$ \cite{papamakarios2017masked}。归一化流层可以堆叠以近似更复杂的概率分布；同样的思想适用于 MAF。
+
+将 $p_{\vectorialform{\theta}}$ 记为其学习到的概率，MAF 网络通过最小化 KL 散度 $\kullbackleiblerdivergence(p,p_{\vectorialform{\theta}})$ 来训练，该散度使用训练集 $\mathcal{D}$ 中的样本进行估计。实践中，网络通过以下目标进行训练：
+\begin{align*}
+    \underset{\vectorialform{\theta}}{\text{maximise}}   \sum_{\vectorialform{x}\in\mathcal{D}}\log p_{\vectorialform{\theta}} (\vectorialform{x}).
+\end{align*}

@@ -1,0 +1,118 @@
+\section{Non-stationary Reinforcement Learning}
+
+In this section, we formalise the notion of non-stationarity. 
+We then present related approaches to dealing with it, particularly in the context of lifelong learning.   
+
+
+\subsection{The Non-stationarity in Reinforcement Learning}
+\label{subsec:nature_ns}
+\subsubsection{Nature of Non-stationarity}
+In \gls{rl}, 4 elements of the \gls{mdp} out of the five defining the process can induce non-stationarity. 
+Obviously, the reward and transition functions might depend on time. 
+More occasionally, the state space or the action space itself can vary over time. 
+A further difference can be made between processes whose non-stationarity is present in between episodes and those where it can happen inside an episode. 
+We refer to the first as \emph{inter-episode} non-stationarity. 
+It can be thought of as a set of tasks from which a task is selected at each episode. 
+We refer to the second type as \emph{intra-episode} non-stationarity. 
+In this case, the notion of task is less clear as the dynamics of the \gls{mdp}  can change at each decision step. 
+Therefore, the estimation and analysis of past data must be even more careful.
+Lastly, it is usually considered that the non-stationarity can be either \emph{smooth} when the dynamics evolve with some regularity through time or \emph{abrupt} when the dynamics typically change less often but with a clearer shift in behaviour. 
+
+Concerning the peculiar case of delay-induced non-stationarity, due to the previously mentioned partial observability induced by the memoryless approach, the transition dynamics and the reward will be the
+source of non-stationarity. 
+Of course, the state and action spaces will remain stationary. 
+The non-stationarity is by nature intra-episode, as the dynamics will depend on the unobserved buffer of actions inside the augmented state.
+Finally, the non-stationarity will be smooth, as the augmented state's action buffer shares many actions with the following augmented state.
+Note that, as the process is divided into discrete time steps, even smooth non-stationarity can be seen as abrupt in between time steps. 
+We will explain more formally how we define the smoothness of a discrete process in \Cref{subsec:bias_analysis}.
+
+
+\subsubsection{Drivers of Non-stationarity}
+The non-stationarity mentioned in the previous section might have different causes. We present three of them, following the taxonomy of \cite{khetarpal2020towards}.\\
+\noindent\textbf{Multi-task Setting.}\indent Arguably the most common setting in the non-stationary \gls{rl} literature, this setting considers a set $(\markovdecisionprocess_i)_{i\in\naturalnumbers}$ of stationary \glspl{mdp}--or tasks--where the environment might regularly switch from one task to another during the learning and testing phases.
+\\ 
+\noindent\textbf{Passive Non-stationarity.}\indent This setting considers a type non-stationarity that occurs irrespective of the agent's actions.
+\\
+\noindent\textbf{Active Non-stationarity.}\indent Unlike in the previous setting, here, the agent may affect the non-stationarity of the environment.
+
+The delay induces an active non-stationarity since it is the agent that chooses the actions in the replay buffer, and it is the partial knowledge induced by ignoring these actions that cause the non-stationarity.
+
+\subsubsection{Formalisation of Lifelong Reinforcement Learning}
+In this sub-section, we formalise the framework of lifelong \gls{rl} that we will be interested in. 
+It is based on a non-stationary \gls{mdp} $\markovdecisionprocess$ with transition functions $(\transitionfunction_t)_{t \in \naturalnumbers}$ and reward functions 
+$(\rewardfunction_t)_{t \in \naturalnumbers}$ of expected values $(\expectedrewardfunction_t)_{t \in \naturalnumbers}$.
+These functions define the transition and the reward at each decision step $t \in \naturalnumbers$. 
+We assume that $\lVert r_t\rVert_{\infty} \le \maximumreward < \infty $ for any $t\in\naturalnumbers$ and consider a discount factor $\gamma$ in $[0,1]$.
+We then define a non-stationary policy $\pi = (\pi_t)_{t \in \naturalnumbers}$ that defines the policy that the agent follows at each decision step $t\in\naturalnumbers$. 
+
+The goal in lifelong \gls{rl} differs from the one in traditional \gls{rl} since the underlying process cannot be reinitialised.
+The environment is initialised once and for all, and the agent cannot collect more than a single trajectory of experience. 
+For example, consider the problem of trading, where it is clear that the exact same market conditions will never be met twice. 
+Without an accurate market simulator, the agent cannot go back in time and try another strategy. 
+On the contrary, an example of a traditional \gls{rl} setting is chess. 
+The agent can play several games, always starting from the same initial state distribution, and it can therefore gather more information about similar environment conditions. 
+In lifelong \gls{rl}, the expected future return, therefore, depends on the agent's current state. 
+This leads to the following objective called \emph{$\beta$-steps ahead expected return}.
+Let $T \in \naturalnumbers$ be the current time and let $\beta \in \naturalnumbers$, the {$\beta$-steps ahead expected return} is defined as:
+\begin{align}\label{eq:beta_steps_ahead_return}
+	\expectedreturn[T,\beta][](\pi) =\sum_{t = T+1}^{T+\beta} \widehat{\gamma}^t \expectedvalue_t^\pi [\expectedrewardfunction_{t}(s_t,a_t)],
+\end{align}
+where $\widehat{\gamma}^t = \gamma^{t-T-1}$ and $\mathbb{E}_t^\pi$ is the expectation under the state-action distribution induced by the non-stationary policy $\pi$ after $t$ steps.
+For ease of notation, in the following, we remove the dependence on the pair $(s_t,a_t)$ of the reward from the notation. 
+
+Finally, as for classic \glspl{mdp}, we say that a policy $\optimalpolicy$ is $\beta$-step ahead optimal at time $T$ if 
+\begin{align*}
+    \optimalpolicy\in \argmax_{\pi \in \Pi^{\text{HR}}} \expectedreturn[T,\beta][](\pi),
+\end{align*}
+where $\Pi^{\text{HR}}$ is the set of non-stationary policies as defined in \Cref{subsec:policies}.
+
+We could draw a parallel and say that the goal of classical \gls{rl} is to maximise $\expectedreturn[0,H][]$ where $H$ is the (possibly infinite) horizon. 
+However, in this case, the agent might restart the process multiple times to collect different episodes of this same process.
+Instead, a lifelong learning agent is interested in maximising 
+$\expectedreturn[T,\infty][]$ after having experienced exactly $T$ transitions of a single episode. 
+
+
+\subsection{Related Works in Reinforcement Learning for Non-stationarity}
+\label{subsec:related_worls_lifelong}
+
+Adapting \gls{rl} to non-stationary \glspl{mdp} has been widely studied in the literature~\cite{garcia2000solving, ghate2013linear, lesner2015nonstationary}. 
+In order to adapt to new tasks, the agent must learn about the structure of the overall problem. 
+For instance, the agent can decompose the problem into smaller sub-problems using function composition \cite{griffiths2019subtasks} or learn a low-dimensional abstract representation of the environments \cite{zhang2018decoupling, Francois-Lavet2019abstract}.
+Another related approach is to focus not on task-specific dynamics but rather on task-agnostic underlying dynamics of the problem in order to learn an efficient general policy. 
+This can be achieved by building auxiliary tasks such as reward prediction \cite{jaderberg2017rew-pred} or by inverse dynamics prediction \cite{Shelhamer2017dyn-pred}.
+
+Although stationary by nature, meta \gls{rl} can be adapted to non-stationary processes. 
+Solutions by meta \gls{rl} can be interesting, as they use previous experience to learn new skills efficiently.
+Essentially, adapting these algorithms to non-stationary processes consists of casting back the problem to a stationary one.  
+For instance, the sequence of tasks can be modelled as a Markov chain \cite{al-shedivat2018continuous}, an experience replay buffer of tasks can be used to make the process ``more stationary'' \cite{riemer2018learning} as is done usually in \gls{rl} \cite{mnih2013playing} or a latent model of the succession of tasks can be learnt \cite{poiani2021meta}.
+
+The previous works usually apply to inter-episode non-stationarity. 
+We will now study the problem of intra-episode non-stationarity, where dynamics can change inside an episode, such as in lifelong \gls{rl}. 
+In finite-horizon settings, with some modifications, theoretical \gls{rl} solutions can provide guarantees even in the face of a changing environment \cite{hallak2015contextual,ortner2020uclr2}.
+In the infinite-horizon setting, \ie lifelong learning, different statistical tools borrowed from the stochastic processes and time series literature can be used.
+Change detection can be used under the assumption of abrupt changes in dynamics \cite{daSilva2006context, hadoux2014sequential}. 
+Hidden-state models can be used to describe the sequence of tasks when it is assumed that the environment might switch between a known number of stationary dynamics \cite{choi2000hidden}. 
+If the number of stationary dynamics is unknown, a solution is to learn a factored representation of the policy \cite{mendez2020lifelong}. 
+In the proposed solution, the first factor of the policy is  
+shared on all tasks and is therefore trained to perform well on the distribution of tasks observed thus far. The second factor is task-specific and adapts the policy to the current task. 
+Thanks to this structure, the algorithm, LPG-FTW, can adapt quickly to new tasks while avoiding catastrophic forgetting.
+More in-depth reviews can be found in  \cite{padakandla2021survey} for non-stationary in \gls{rl} and in \cite{khetarpal2020towards} for lifelong/continual \gls{rl}.
+
+We finish this overview by studying more deeply an approach that is more similar to our POLIS algorithm, highlighting the similarities and disparities between them. 
+\cite{chandak2020optimizing} take the rather direct but efficient approach of directly optimising for the future predicted performance. 
+For a given set of policy parameters $\boldsymbol\theta\in\Theta$, the past performance of a policy $\pi_{\boldsymbol\theta}$ is estimated by importance sampling.
+These past performances are then used inside a regression algorithm, which can be leveraged to predict future performances.
+If all these steps are differentiable, then optimising the future predicted performance over $\Theta$ by gradient ascent is possible. 
+The authors propose two practical algorithms, Pro-OLS and Pro-WLS, which forecast performance using ordinary least-squares regression and weighted least-squares, respectively. 
+The latter builds on the link between weighted least-squares regression and weighted importance sampling \cite{hachiya2012importance,mahmood2014weighted} in order to reduce the variance of the estimates due to importance sampling at the expense of adding some bias.
+We will now delve into the differences with respect to our approach.
+\\
+\noindent\textbf{Setting.}\indent A major difference is that \cite{chandak2020optimizing} designed a solution for episodic RL with inter-episode non-stationarity. We consider instead a truly lifelong framework with intra-episode non-stationarity.
+\\
+\noindent\textbf{Objective.}\indent We also use importance sampling to estimate future performance, although our objectives differ greatly. 
+We add a new discounting parameter to control the bias due to non-stationarity, and we add another two terms to the objective, an estimator of the past performance and a variance regularisation term.
+\\
+\noindent\textbf{Anytime.}\indent Our approach can be retrained at any time during the lifelong episode. Should a significant shift in dynamics be detected, our policy optimisation can be applied immediately in order to adapt to these new dynamics. 
+The algorithm can also be updated less often when the non-stationarity is highly foreseeable from the past. This makes our algorithm an anytime algorithm. In contrast, \cite{chandak2020optimizing}'s approach can train the policy in between episodes but keeps it constant inside an episode.
+\\
+\noindent\textbf{Parameter-based.}\indent We consider the parameter-based policy optimisation setting compared to \cite{chandak2020optimizing}'s action-based policy optimisation setting.\\

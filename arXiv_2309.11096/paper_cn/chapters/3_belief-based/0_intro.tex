@@ -1,0 +1,27 @@
+\chapter{基于信念的方法}
+\label{chap:belief_based}
+
+\section{引言}
+本章考虑常值状态观测延迟或动作执行延迟。
+在基于模型的方法框架下，本文提出计算当前状态信念（belief）的表征（representation），并将其作为策略的输入。
+先前的基于模型方法计算当前状态信念的不同统计量，例如其期望值\cite{walsh2009learning,firoiu2018human,derman2021acting}，或通过从概率模型采样进行规划\cite{chen2021delay}。
+相反，本文考虑学习一种完整编码分布的信念表征。
+显然，访问信念比仅访问其部分统计量为策略提供更丰富的信息，因为这些统计量可以从信念计算得出。
+若能高效地学习基于信念的最优策略，该方法有望获得更高回报。
+
+为学习信念表征，本文设计一种\gls{nn}，可训练将信念（可能为无限维）编码为可控有限维向量（\Cref{subsec:belief_net}）。
+该网络可作为任何\gls{rl}算法的输入预处理模块。
+在实验中，本文将其接入\gls{trpo}~\cite{schulman2015trust}。
+由此得到 Delayed-TRPO (D-TRPO)。
+该方法在确定性和随机环境中均取得令人满意的结果（\Cref{sec:exp_belief}）。
+本文提出一个简单技巧，利用 D-TRPO 在特定延迟下学习的策略，将其应用于更小延迟的任务（\Cref{subsec:multi_delay_once_belief}）。
+该技巧在多个环境中成功通过测试。
+除上述算法贡献外，本文还对设定进行理论分析，并探讨基于模型的方法如何与\gls{pomdp}关联（\Cref{subsec:delay_complexity}）。
+不幸的是，本文证明在某些环境中基于模型的方法相对于最优延迟策略必然是次优的（\Cref{subsec:model_based_sub_optimal}）。
+最后，本文对文献中从未正式证明的一个简单事实给出形式化证明：延迟越大，最优策略的回报越低（\Cref{subsec:effect_delay_belief}）。
+
+
+\input{chapters/3_belief-based/2_dtrpo}
+\input{chapters/3_belief-based/3_theoretical_analysis}
+\input{chapters/3_belief-based/4_experiments}
+\input{chapters/3_belief-based/5_conclusion}

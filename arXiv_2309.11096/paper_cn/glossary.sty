@@ -1,0 +1,302 @@
+
+%=============================================
+% Glossary Functions
+%---------------------------------------------
+% Add function \Glsfirst to put first capital letter at every word https://tex.stackexchange.com/questions/134493/glossaries-capitalize-every-first-letter
+\makeatletter
+\let\oldmakefirstuc\makefirstuc
+\renewcommand*{\makefirstuc}[1]{%
+  \def\gls@add@space{}%
+  \mfu@capitalisewords#1 \@nil\mfu@endcap
+}
+\def\mfu@capitalisewords#1 #2\mfu@endcap{%
+  \def\mfu@cap@first{#1}%
+  \def\mfu@cap@second{#2}%
+  \gls@add@space
+  \oldmakefirstuc{#1}%
+  \def\gls@add@space{ }%
+  \ifx\mfu@cap@second\@nnil
+    \let\next@mfu@cap\mfu@noop
+  \else
+    \let\next@mfu@cap\mfu@capitalisewords
+  \fi
+  \next@mfu@cap#2\mfu@endcap
+}
+\makeatother
+
+
+
+%=============================================
+% Notations
+%---------------------------------------------
+\newglossaryentry{delay}% label 
+{% 
+    type=notations,% glossary type 
+    name={$\Delta$},% 
+    description={Random variable of the amount of delay.},
+}
+\newglossaryentry{augmentedstatespace}% label 
+{% 
+    type=notations,% glossary type 
+    name={$\mathcal{X}$},%
+    description={Augmented state space},%
+}
+\newglossaryentry{statespace}% label 
+{% 
+    type=notations,% glossary type 
+    name={$\mathcal{S}$},%
+    description={State space},%
+}
+\newglossaryentry{actionspace}% label 
+{% 
+    type=notations,% glossary type 
+    name={$\mathcal{A}$},%
+    description={Action space},%
+}
+
+
+%=============================================
+% Acronyms
+%---------------------------------------------
+\newglossaryentry{mtd}
+{
+    name={MTD},
+    description={Mixture transition distribution},
+    first={mixture transition distribution (\glsentrytext{mtd})},
+    plural={MTDs},
+    firstplural={mixture transition distributions (\glsentryplural{mtd})}
+}
+
+\newglossaryentry{mc}
+{
+    name={MC},
+    description={Markov chain},
+    first={Markov chain (\glsentrytext{mc})},
+    plural={MCs},
+    firstplural={Markov chains (\glsentryplural{mc})}
+}
+
+\newglossaryentry{mtdmdp}
+{
+    name={MTD-MDP},
+    description={Mixture transition distribution of Markov decision process},
+    first={mixture transition distribution of Markov decision process (\glsentrytext{mtdmdp})},
+    plural={MTD-MDPs},
+    firstplural={mixture transition distribution of Markov decision processes (\glsentryplural{mtdmdp})}
+}
+
+\newglossaryentry{mtdg}
+{
+    name={MTDg},
+    description={Multimatrix mixture transition distribution},
+    first={mixture transition distribution (\glsentrytext{mtdg})},
+    plural={MTDgs},
+    firstplural={multimatrix mixture transition distributions (\glsentryplural{mtdg})}
+}
+
+\newglossaryentry{sl}
+{
+    name={SL},
+    description={Supervised learning},
+    first={supervised learning (\glsentrytext{sl})},
+    plural={SL},
+    firstplural={supervised learning (\glsentryplural{sl})}
+}
+
+\newglossaryentry{rl}
+{
+    name={RL},
+    description={Reinforcement learning},
+    first={reinforcement learning (\glsentrytext{rl})},
+    plural={RL},
+    firstplural={Reinforcement learning (\glsentryplural{rl})}
+}
+
+
+\newglossaryentry{drl}
+{
+    name={DRL},
+    description={Deep reinforcement learning},
+    first={Deep reinforcement learning (\glsentrytext{drl})},
+    plural={RL},
+    firstplural={Deep reinforcement learning (\glsentryplural{drl})}
+}
+
+
+
+\newglossaryentry{ml}
+{
+    name={ML},
+    description={Machine learning},
+    first={machine learning (\glsentrytext{ml})},
+    plural={ML},
+    firstplural={Machine learning (\glsentryplural{ml})}
+}
+
+\newglossaryentry{nn}
+{
+    name={NN},
+    description={Neural networks},
+    first={neural network (\glsentrytext{nn})},
+    plural={NN},
+    firstplural={neural network (\glsentryplural{nn})}
+}
+
+\newglossaryentry{td}
+{
+    name={TD},
+    description={Temporal difference},
+    first={temporal difference (\glsentrytext{td})},
+    plural={TD},
+    firstplural={temporal difference (\glsentryplural{td})}
+}
+
+\newglossaryentry{mis}
+{
+    name={MIS},
+    description={Multiple importance sampling},
+    first={multiple importance sampling (\glsentrytext{mis})},
+    plural={MIS},
+    firstplural={\emph{multiple importance sampling} (\glsentryplural{mis})}
+}
+
+\newglossaryentry{is}
+{
+    name={IS},
+    description={Importance sampling},
+    first={importance sampling (\glsentrytext{is})},
+    plural={IS},
+    firstplural={\emph{importance sampling} (\glsentryplural{is})}
+}
+
+\newglossaryentry{mdp}
+{
+    name={MDP},
+    description={Markov decision process},
+    first={Markov decision process (\glsentrytext{mdp})},
+    plural={MDPs},
+    firstplural={Markov decision processes (\glsentryplural{mdp})}
+}
+
+\newglossaryentry{pomdp}
+{
+    name={POMDP},
+    description={Partially observable Markov decision process},
+    first={partially observable Markov decision process (\glsentrytext{pomdp})},
+    plural={POMDPs},
+    firstplural={partially observable Markov decision processes (\glsentryplural{pomdp})}
+}
+
+
+\newglossaryentry{dmdp}
+{
+    name={$\delay$MDP},
+    description={Delayed Markov decision process},
+    first={delayed Markov decision process (\glsentrytext{dmdp})},
+    plural={$\delay$MDPs},
+    firstplural={delayed Markov decision processes (\glsentryplural{dmdp})}
+}
+
+\newglossaryentry{ismmdp}
+{
+    name={ISM-MDP},
+    description={Instantaneous single-matrix mixture transition Markov decision process},
+    first={instantaneous single-matrix mixture transition Markov decision process (\glsentrytext{ismmdp})},
+    plural={ISM-MDPs},
+    firstplural={instantaneous single-matrix mixture transition Markov decision processes (\glsentryplural{ismmdp})}
+}
+
+\newglossaryentry{psmmdp}
+{
+    name={PSM-MDP},
+    description={Past single-matrix mixture transition Markov decision process},
+    first={past single-matrix mixture transition Markov decision process (\glsentrytext{psmmdp})},
+    plural={PSM-MDPs},
+    firstplural={past single-matrix mixture transition Markov decision processes (\glsentryplural{psmmdp})}
+}
+
+\newglossaryentry{immmdp}
+{
+    name={IMM-MDP},
+    description={Instantaneous multi-matrix mixture transition Markov decision process},
+    first={instantaneous multi-matrix mixture transition Markov decision process (\glsentrytext{immmdp})},
+    plural={IMM-MDPs},
+    firstplural={instantaneous single-matrix mixture transition Markov decision processes (\glsentryplural{immmdp})}
+}
+
+\newglossaryentry{pmmmdp}
+{
+    name={PMM-MDP},
+    description={Past multi-matrix mixture transition Markov decision process},
+    first={past multi-matrix mixture transition Markov decision process (\glsentrytext{pmmmdp})},
+    plural={PMM-MDPs},
+    firstplural={past multi-matrix mixture transition Markov decision processes (\glsentryplural{pmmmdp})}
+}
+
+
+\newglossaryentry{maf}
+{
+    name={MAF},
+    description={Masked-autoregressive flows },
+    first={Masked-Autoregressive Flow  (\glsentrytext{maf})},
+    plural={MAFs},
+    firstplural={Masked-Autoregressive Flows  (\glsentryplural{maf})}
+}
+
+\newglossaryentry{po}
+{
+    name={PO},
+    description={Policy optimization},
+    first={\emph{policy optimization} (\glsentrytext{po})},
+    plural={PO},
+    firstplural={policy optimization (\glsentryplural{po})}
+}
+
+\newglossaryentry{sac}
+{
+    name={SAC},
+    description={Soft actor-critic},
+    first={Soft Actor-Critic (\glsentrytext{sac})},
+    plural={SAC},
+    firstplural={Soft Actor-Critic (\glsentryplural{sac})}
+}
+
+\newglossaryentry{trpo}
+{
+    name={TRPO},
+    description={Trust region policy optimization},
+    first={Trust Region Policy Optimization (\glsentrytext{trpo})},
+    plural={TRPO},
+    firstplural={Trust Region Policy Optimization (\glsentryplural{trpo})}
+}
+
+
+\newglossaryentry{ppo}
+{
+    name={PPO},
+    description={Proximal policy optimization},
+    first={Proximal Policy Optimization (\glsentrytext{ppo})},
+    plural={PPO},
+    firstplural={Proximal Policy Optimization (\glsentryplural{ppo})}
+}
+
+\newglossaryentry{dqn}
+{
+    name={DQN},
+    description={Deep Q network},
+    first={Deep Q Network (\glsentrytext{dqn})},
+    plural={DQN},
+    firstplural={Deep Q Network (\glsentryplural{dqn})}
+}
+
+
+\newglossaryentry{fx}
+{
+    name={Forex},
+    description={Foreign exchange market},
+    first={foreign exchange market (\glsentrytext{fx})},
+    plural={Forex},
+    firstplural={foreign exchange market (\glsentryplural{fx})}
+}
+
+

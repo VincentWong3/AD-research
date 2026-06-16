@@ -1,0 +1,67 @@
+\chapter{结论}
+\label{chap:conclusion}
+
+本章为本文的总结。我们系统审视了强化学习中的延迟问题。本文的结果特别凸显了 \glspl{dmdp} 与 \glspl{mdp}、\glspl{pomdp}、高阶 \glspl{mdp} 或高阶 \glspl{mc} 之间的关系。我们的主要贡献围绕四个方向展开，在接下来的章节中加以总结。为便于读者理解，这些贡献将关联到其来源章节。最后讨论潜在的未来研究方向。
+
+\section{讨论与关键结果}
+\subsubsection{延迟的统一框架}
+本文的第一个贡献是为延迟问题提供了统一框架。基于这一目标，在 \Cref{chap:delay} 中，我们提出了一个通用的数学框架，将文献中遇到的不同延迟过程统一起来。该框架称为 \gls{dmdp}，它基于一个底层 \gls{mdp}，并在其上添加定义延迟的过程。该定义将常值延迟、非整数延迟、随机延迟或马尔可夫延迟作为特例包含在内。随后，介绍了文献和实践中遇到的主要延迟类型（\Cref{sec:nature_delays}），并根据它们影响的变量——状态、动作或奖励——以及它们遵循的过程——常值、随机、状态依赖过程等——加以组织。最后，在 \Cref{sec:related_works} 中，深入讨论了强化学习及相关领域（如实时强化学习和老虎机）中的延迟问题，特别关注状态观测延迟和动作执行延迟。针对后者，将文献中的算法归纳为三类：增广状态方法、无记忆方法和基于模型的方法。
+
+\subsubsection{延迟的理论理解}
+关于延迟状态观测或延迟动作执行对 \gls{mdp} 影响的首个理论结果，是证明了常值延迟 \gls{dmdp} 的一个核心性质：延迟越长，性能越低（\Cref{th:perf_delay_vector_all_weight}）。此外，还证明了较长的常值延迟意味着回报或平均奖励的方差更小（\Cref{pp:var_ismmdp}）。这两个结果的结合在 \Cref{fig:evolution_delay} 中得到了很好的说明。
+
+在 \Cref{chap:multi_action_delay} 中，探索了一个更通用的框架，称为多动作延迟（multiple action delay）。该框架利用 \gls{mc} 文献中的 \gls{mtd} 和 \gls{mtdg} 模型，将其应用于 \glspl{mdp} 以获得所谓的 \glspl{mtdmdp}。定义了四种这样的 \glspl{mtdmdp}：\glspl{ismmdp}、\glspl{immmdp}、\glspl{psmmdp} 和 \glspl{pmmmdp}，它们在应用 \gls{mtd} 和 \gls{mtdg} 模型的方式上有所不同。首先证明了状态增广可以将这些问题还原回 \gls{mdp}（\Cref{prop:equ_mdp_im_mtdmdp} 及其后的命题）。然后，专注于学习策略以优化这些模型中的期望折扣回报和平均奖励。对于 \glspl{psmmdp} 和 \glspl{pmmmdp}，证明延迟基本上无效（\Cref{th:psmmdp_same} 和 \Cref{th:pmmmdp_same}）。事实上，无论将无延迟策略应用于这些过程还是底层无延迟 \gls{mdp}，它都产生相同的平均奖励。因此，我们研究了更有趣的 \glspl{ismmdp}，因为它们将常值延迟 \gls{dmdp} 作为特例包含在内。分析了延迟向量 $\boldsymbol\lambda$ 对这些模型的影响，推测累积延迟分布是排列潜在最优回报或平均奖励的关键（\Cref{conj:delay_cumulativ_distrib}）。为这一主张提供了论据，并证明了均值奖励不能替代猜想中的累积延迟分布。在结束理论分析时，考察了底层 \gls{mdp} 的某些性质如何传递给建立在其上的 \gls{ismmdp}。证明单链 \gls{mdp} 并不蕴含单链 \gls{ismmdp}（\Cref{pp:unichain_ismmdp}），而连通 \gls{mdp} 蕴含连通的 \gls{ismmdp}（\Cref{pp:communicating_ismmdp}）。利用这些结果，得出结论：UCRL 不能直接应用于 \gls{ismmdp}，而 UCRL2 可以。实验分析结束本章，强调了理论的启示并研究了 $\boldsymbol\lambda$ 对期望折扣回报和平均奖励的影响。
+
+将焦点转向延迟强化学习算法，我们证明了基于模型的方法可能产生次优策略（\Cref{pp:counter_example_belief_based}）。尽管如此，在 \Cref{th:perf_diff_bound} 中，为平滑 \glspl{mdp} 中的基于模型方法提供了性能下界保证，包括非整数延迟情况。值得注意的是，这些界与理论上界匹配至一个乘法因子（\Cref{th:lb_tight}）。这些结果表明延迟对性能损失的影响至多是加性的，这与老虎机文献的结果一致。最后，将保证扩展到基于模型策略在常值延迟上训练但在随机延迟上测试的情况，为匿名动作执行延迟产生了强化学习中的首个性能界（\Cref{thm:stoch_mdp_dida_bound}）。
+
+
+\subsubsection{延迟强化学习算法}
+在 \Cref{chap:belief_based} 中，引入了新的基于模型的方法——信念表示网络（belief representation network）。其核心思想分两步学习信念的向量表示。首先，Transformer 网络处理增广状态，为直到无延迟状态的每个未来状态生成信念的向量表示。其次，掩码自回归流网络利用该表示拟合未来状态的分布，以确保该表示确实编码了信念。与学习当前未观测状态某些统计量的先前基于模型方法相比，信念知识包含更多信息，使更复杂的策略成为可能。该信念表示可以作为状态的替代直接插入任何强化学习算法，正如我们将 D-TRPO 方法与 \gls{trpo} 结合所做的那样。实验证明该思想是有效的，并展示了多个延迟可以在单次训练中学习，从而降低了考虑延迟的成本（\Cref{subsec:results_belief}）。进一步的实验突显了 D-TRPO 适应广泛问题的能力，特别是随机 \glspl{dmdp}。有趣的是，实验表明 A-SAC 基线——一种增广方法——在处理延迟方面非常高效（\Cref{subsec:results_belief}）。最后，展示了 D-TRPO 针对某个延迟学习的策略可以轻松应用于更小的延迟（\Cref{subsec:multi_delay_once_belief}）。
+
+在 \Cref{chap:imitation_undelayed} 中，设计了一种简单而有效的算法 DIDA，该算法在给定增广状态知识的情况下模仿无延迟专家。利用模仿学习文献，证明了 \textsc{DAgger} 是执行模仿步骤的合适算法。尽管 DIDA 无法访问当前状态且不能总是完美模仿专家，但 \Cref{th:perf_diff_bound} 为 DIDA 在具有常值延迟的平滑 \glspl{mdp} 中提供了性能下界保证。该结果也适用于非整数延迟，而 \Cref{thm:stoch_mdp_dida_bound} 为 DIDA 在随机延迟上提供了保证。这意味着 DIDA 适用于广泛的应用场景。这种通用性得到了广泛实验研究的确认。在多种任务中，DIDA 在包括 A-SAC 在内的大量基线中取得了最先进的性能。值得注意的是，DIDA 比这些基线更具样本效率，且计算成本不高。然而，DIDA 需要知道或训练一个无延迟专家，这在某些问题中可能是一个限制。
+
+在 \Cref{chap:lifelong} 中，探索了无记忆策略的解决方案。由于智能体对部分状态不可见，对其而言，动态本质上是非平稳的。基于这一观察，设计了一种能够适应非平稳动态的算法。具体地，非平稳性出现在回合内部，使问题更类似于终身学习（lifelong）设定。该算法名为 POLIS，其核心思想是在超策略（hyper-policy）层面处理非平稳性。超策略以时间为输入，输出在该时间点待查询策略的参数。这样，策略保持平稳，而非平稳性在超策略内部被考虑。为优化其超策略，POLIS 通过多重重要性采样利用过去数据构建未来的估计器，如 \Cref{subsec:mis_lifelong} 所述。在平滑环境中，估计器偏差有界且可通过参数 $\omega$ 控制（\Cref{lem:bias_bound}）。除估计的未来回报外，目标函数中还包含两项。首先，为防止灾难性遗忘，将超策略的过去表现加入目标函数。这样，智能体被激励保持对过去高效行为的记忆。其次，为避免通过学习过度非平稳的超策略而过拟合过去，使用估计器方差的概率上界对目标函数进行正则化（\Cref{th:bound_surrogate_objective}）。最后，在 \Cref{subsec:extension_delay_polis} 中，详细说明了如何通过对估计器进行简单修改将 POLIS 应用于延迟过程。实验结果表明，POLIS 能够适应非平稳动态，并在不需要时避免过度的非平稳性。应用于延迟环境时，POLIS 展现出稳健的性能，且随着延迟增加性能自然下降。
+
+\subsubsection{广泛的实验评估}
+我们在广泛的任务和延迟上进行了实验评估，为延迟强化学习算法的特性和能力提供了有用的信息。这些任务包括 Pendulum 环境中的经典控制、迷宫中的路径规划、Mujoco 中的机器人运动等确定性环境（\Cref{chap:belief_based}、\Cref{chap:imitation_undelayed}、\Cref{chap:multi_action_delay}）。还包括 Pendulum 的不同变体，涉及随机延迟（\Cref{chap:belief_based}、\Cref{chap:imitation_undelayed}）、非整数延迟（\Cref{chap:imitation_undelayed}）或多动作延迟（\Cref{chap:multi_action_delay}）。还考虑了更现实的环境，如外汇交易（\Cref{chap:imitation_undelayed}、\Cref{chap:lifelong}）和水资源管理（\Cref{chap:lifelong}）。
+
+在这些任务上，我们研究了自己的算法以及文献中的许多基线，包括增广状态 \gls{trpo}（A-TRPO）、无记忆 \gls{trpo}（M-TRPO）、增广状态 \gls{sac}（A-SAC）、无记忆 \gls{sac}（M-SAC）、SARSA、dSARSA、FQI、Pro-WLS、LPG-FTW 和 UCRL2。
+
+\section{未来研究方向}
+在结束本文之前，回顾前面各章提出的一些未来方向。对于基于模型的方法（如 D-TRPO），一个有价值的未来方向可能是利用环境模型进行更长期规划的优化。例如，这可用于增强 actor-critic 方法中的值函数估计。对于 DIDA，最大的限制是需要无延迟专家。未来的工作可以考虑从延迟策略收集的数据集中离线学习无延迟专家。这样，与环境的交互将始终在延迟情况下进行。对于 POLIS，可以考虑随机延迟以引入更多的非平稳性来源。在这种情况下，无记忆策略的优势在于其输入是常值的，且维度 $\cardinal{\statespace}$"小"。最后，对于 \glspl{mtdmdp}，未来的方向可以是利用 \gls{mtd} 模型参数估计技术 \cite{berchtold2002mixture} 或奖励结构 \cite{romano2022multi} 来增强理论强化学习的保证。
+
+希望本文在提供状态观测和动作执行延迟的全局概览以及加深对其理解方面有所助益。我期待强化学习的未来发展——无论在理论上还是应用中——当然，我将特别关注这些发展中延迟问题的处理方式。
+
+\section{结语}
+鉴于延迟对性能具有重要的实际影响，以及存在处理延迟的直接机制，我强烈建议读者将延迟考量纳入其强化学习应用中。
+
+
+%=============================================
+% For notations
+%---------------------------------------------
+
+\begin{align*}
+    \vphantom{
+        \text{
+            \gls{delay}
+        }
+    }
+\end{align*}
+\begin{align*}
+    \vphantom{
+        \text{
+            \gls{augmentedstatespace}
+        }
+    }
+    \vphantom{
+        \text{
+            \gls{actionspace}
+        }
+    }
+    \vphantom{
+        \text{
+            \gls{statespace}
+        }
+    }
+\end{align*}
+
