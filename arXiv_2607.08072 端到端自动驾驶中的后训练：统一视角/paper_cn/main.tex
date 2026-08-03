@@ -1,0 +1,507 @@
+% 原源码第1行 \pdfoutput=1 仅适用于 pdfLaTeX；XeLaTeX 无此原语且总是输出 PDF，故移除
+\documentclass[runningheads]{llncs}
+\PassOptionsToPackage{table}{xcolor}
+
+\usepackage{eccv}
+
+
+
+\usepackage{eccvabbrv}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\usepackage{amsmath,amssymb}
+\usepackage[numbers,square,comma]{natbib}
+\usepackage{pdflscape} 
+\newcommand{\ls}[1]{{\sf\color{orange} [LS: #1]}} 
+
+
+% xelatex 编译兼容：axessibility 的 accsupp 分支使用了 pdfTeX 专用原语
+% （XeTeX 原生处理 Unicode，这些原语无需生效）
+\ifdefined\pdfcompresslevel\else\newcount\pdfcompresslevel\fi
+\ifdefined\pdfoptionpdfminorversion\else\newcount\pdfoptionpdfminorversion\fi
+\ifdefined\pdfgentounicode\else\newcount\pdfgentounicode\fi
+\ifdefined\pdfglyphtounicode\else\def\pdfglyphtounicode#1#2{}\fi
+\usepackage[accsupp]{axessibility}
+
+\usepackage[pagebackref,breaklinks,colorlinks,citecolor=eccvblue]{hyperref}
+
+\usepackage{orcidlink}
+
+
+\usepackage{xcolor, colortbl}
+\definecolor{groupbg}{HTML}{E8EEF7}
+\definecolor{dashgray}{HTML}{A8A8A8}
+\newcommand{\best}[1]{\textbf{#1}}
+\newcommand{\sbest}[1]{\underline{#1}}
+\newcommand{\nr}{\textcolor{dashgray}{--}}
+\definecolor{arrowclr}{HTML}{049BE5}  
+\newcommand{\up}{\,\textcolor{arrowclr}{$\uparrow$}}
+\newcommand{\dn}{\,\textcolor{arrowclr}{$\downarrow$}}
+
+% Chinese support (auto-injected)
+\usepackage{xeCJK}
+\setCJKmainfont{Noto Serif CJK SC}[ItalicFont=AR PL UKai TW MBE]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans CJK SC}
+\raggedbottom
+\renewcommand{\figurename}{图}
+\renewcommand{\tablename}{表}
+\renewcommand{\abstractname}{摘要}
+\renewcommand{\refname}{参考文献}
+\begin{document}
+
+\title{端到端自动驾驶中的后训练：统一视角}
+
+\titlerunning{端到端自动驾驶中的后训练：统一视角}
+
+\author{Ruining Yang\inst{1}\thanks{同等贡献。邮箱：\texttt{yang.ruini@northeastern.edu, wang.muxin@northeastern.edu}} 
+\and Muxing Wang\inst{1}$^{\star}$
+\and Yixiao Chen\inst{1}
+\and Tongfei Guo\inst{1}
+\and Yi Xu\inst{1}
+\and \\
+Can Cui\inst{2}
+\and Zichong Yang\inst{2}
+\and Yitian Zhang\inst{1}
+\and Ziran Wang\inst{2}
+\and Yun Fu\inst{1}
+\and Lili Su\inst{1}
+}
+
+\authorrunning{R. Yang, M. Wang et al.}
+
+\institute{Northeastern University, Boston, USA \and
+Purdue University, West Lafayette, USA}
+
+
+\maketitle
+
+
+\begin{abstract}
+
+将多模态输入直接映射为未来轨迹/操作的端到端（End-to-End, E2E）模型，已成为自动驾驶（Autonomous Driving）领域日益突出的研究范式，涵盖视觉-语言-动作（Vision-Language-Action, VLA）模型与轨迹生成式规划器（Trajectory-generative Planner）。
+与经典机器学习应用不同，自动驾驶车辆运行在安全关键（Safety-critical）、交互密集（Interaction-intensive）的环境中，传统开环（Open-loop）模仿专家示范（Expert Demonstration）不足以保证可靠性。
+具体而言，小的执行误差会随时间累积，而恢复行为（Recovery Behavior）在训练数据中稀缺；安全、驾驶舒适性等长视界（Long-horizon）目标同样无法被逐点标签（Pointwise Label）捕捉。
+这些局限促使研究转向后训练（Post-training）技术——在纯模仿之外进一步精化驾驶策略。
+本综述界定后训练的范围，并按监督形式将现有文献组织为四大类，为自动驾驶后训练提供统一视角。
+对每一类，本文讨论其能力、局限与开放挑战，旨在促进对该新兴领域的系统理解，并激发可靠、高效的后训练研究。
+相关论文合集见 \url{https://github.com/RYNing/Awesome-Post-Training-In-Autonomous-Driving-Papers}。
+
+
+
+\keywords{自动驾驶（Autonomous Driving） \and 后训练（Post-training） \and 强化学习（Reinforcement Learning） \and 蒸馏（Distillation） \and 基于偏好的对齐（Preference Alignment）}
+\end{abstract}
+
+\section{引言}
+\label{sec:intro}
+
+端到端模型已成为自动驾驶领域日益突出的研究范式：单个网络接收多模态输入（如相机图像、导航指令（Navigation Command）和车辆自身状态），直接输出指导自车（Ego Vehicle）操作（Maneuver）的未来轨迹~\cite{hu2023planning,jiang2023vad,ma2025leapvad}。
+其日益普及源于联合优化感知、预测与规划的潜力：减少对手工设计中间接口的依赖，学习更丰富的跨模态表示，并对复杂驾驶场景表现出更强的适应性。
+
+
+具有代表性的端到端驾驶模型已从早期行为克隆（Behavioral Cloning）方法——将前置相机原始像素与高层导航指令（如左转/右转）直接映射为底层控制~\cite{bojarski2016end,codevilla2018end}——演进为预测未来轨迹的轨迹生成式规划器~\cite{chitta2022transfuser,jia2023think,hdp2026,plannerrft2026,driveanchor2026,eponav2_2026}，以及利用先进多模态表示与语言推理提升场景理解和决策的VLA模型~\cite{alpamayo2025,autodriver2_2025,autodrivep3_2026,reasoningvla2025}。尽管架构各异，这些方法大多依赖模仿学习（Imitation Learning，即基于离线训练数据的监督学习），从示范中生成模仿专家驾驶行为的粗略动作或轨迹。 
+
+
+
+
+与经典机器学习应用~\cite{yao2026bipartite,yang2026tp}不同，自动驾驶车辆运行在安全关键、交互密集的环境中，传统开环模仿不足以保证可靠的驾驶行为。 
+在闭环（Closed-loop）执行中，模型的动作会影响未来观测，即使很小的误差也可能随时间累积；例如，如图~\ref{fig:fig1} 所示，微小的车道居中偏差可能逐渐累积，最终使车辆驶出可行驶区域。  
+此外，驾驶质量的许多重要方面无法被逐点模仿损失充分捕捉：两条轨迹相对专家示范可能具有相近的位移误差（Displacement Error），但一条可能包含不必要的急刹车与急加速，另一条则平滑流畅。这些局限凸显了对离线示范之外监督的需求，本综述称之为{\em 后训练}。 
+
+
+
+
+
+
+
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{fig1.pdf}
+    \caption{
+    自动驾驶策略的两阶段训练范式：阶段1通过模仿学习建立初始驾驶能力，阶段2通过后训练进一步提升策略。}
+    \label{fig:fig1}
+    \vspace{-0.4cm}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+驾驶专用反馈与评估的近期进展使后训练在自动驾驶中日益可行：基于规则的驾驶分数~\cite{navsim2024}、视觉语言模型（Vision-Language Model, VLM）评论家（Critic）~\cite{drivecritic2025}、人工接管日志~\cite{spanvla2026}、世界模型（World Model）~\cite{explorevla2026,dreamerad2026}，以及闭环~\cite{bench2drive2024,omnidreams2026}或伪闭环（Pseudo-closed-loop）仿真器~\cite{navsimv2_2025}，提供了超越专家示范的安全、舒适性、行驶进度、交互与规则合规评估途径。
+这些进展催生了快速增长但较为零散的文献，本综述旨在围绕后训练精化流程加以组织。第~\ref{sec:pipeline} 节首先定义后训练，阐明其与初始模仿学习及从零学习的区别；第~\ref{sec:distill}--\ref{sec:testtime} 节综述后训练方法的四大类别：蒸馏（Distillation）、基于偏好的对齐（Preference-based Alignment）、强化学习（Reinforcement Learning, RL）与测试时精化（Test-time Refinement）；第~\ref{sec:evaluation} 节讨论评估协议与挑战；第~\ref{sec:future} 节概述开放问题与未来方向。
+
+
+
+现有综述大多覆盖端到端驾驶 \cite{yang2025survey,xu2026survey}、VLA模型 \cite{hu2025vision,jiang2025survey}、基础模型（Foundation Model）\cite{gao2025survey}与闭环训练 \cite{karkus2025beyond}，但后训练很少被作为独立阶段加以讨论。本文的贡献有三点：
+
+
+
+
+\begin{itemize}
+\item \textbf{统一定义与分类。}本文将后训练界定为一个独立阶段，将其与初始训练和从零学习区分开来，并按监督形式将文献组织为蒸馏、基于偏好的对齐、强化学习和测试时精化四大类。
+\item \textbf{对四类监督的系统综述。}对每一类，本文考察监督如何构建、训练数据或采样轨迹（Rollout）如何收集，以及策略或其输出如何改进。
+\item \textbf{评估挑战与开放问题讨论。}本文总结后训练策略评估的主要困难，包括基准饱和（Benchmark Saturation）、粗粒度闭环指标、有限的实车评估与推理成本，并展望未来方向。
+\end{itemize}
+
+
+
+
+
+\section{后训练：定义与分类}
+\label{sec:pipeline}
+本节定义后训练，并给出其主要方法类别的统一分类。为便于阐述，本文以{\em 模仿学习}泛指在离线示范上的初始监督训练（实际训练流程可能包含额外组件~\cite{chitta2022transfuser,hu2023planning,jiang2023vad}），并将后训练定义为在初始训练阶段之后、使用超出该阶段的监督对预训练模型进行的任何后续精化。
+
+\vspace{0.5em}
+\noindent{\bf 模仿学习。}
+给定离线数据集 \(\mathcal{D}_{\text{IL}}=\{(o_i,y_i)\}_{i=1}^{N}\)，其中 \(o_i\) 表示驾驶观测，\(y_i\) 表示对应的专家目标（如动作或未来轨迹），初始策略 \(\pi_{\theta_0}\) 通过求解以下问题以监督方式训练：
+\vspace{-0.3em}
+\begin{align}
+\label{eq: imitation learning}    
+\min_{\theta}~ \frac{1}{N} \sum_{(o_i, y_i)\in \mathcal{D}_{\text{IL}}} \mathcal{L}_{\mathrm{IL}}(y_i,\pi_\theta(o_i)),
+\end{align} 
+\vskip -0.3\baselineskip 
+\noindent 
+其中 $\mathcal{L}_{\mathrm{IL}}$ 为衡量模型预测与对应专家目标差异的损失。本文将训练所得策略 \(\pi_{\theta_0}\) 称为模仿学习策略。
+
+
+对于传统模型架构（即不含基础模型骨干网络（Backbone）的架构），\(y_i\) 通常表示为连续路点（Waypoint）或轨迹，策略以轨迹回归损失（Trajectory Regression Loss）优化~\cite{zheng2025diffusion,liao2025diffusiondrive}。
+对于含基础模型骨干网络的端到端模型，\(y_i\) 通常表示为专家动作或轨迹词元（Token），策略以词元级（Token-level）交叉熵损失（Cross-entropy Loss）优化~\cite{mao2023gpt,hwang2024emma,autovla2025}。此外，采用基础模型骨干网络时，式~\eqref{eq: imitation learning} 中的目标通常不从头优化，而是通过少样本微调（Few-shot Fine-tuning）或其他参数高效适配（Parameter-efficient Adaptation）技术将预训练模型适配到驾驶领域。
+
+
+\vspace{0.5em}
+\noindent{\bf 后训练。}
+后训练是对模仿学习策略施加的任何后续精化阶段，旨在通过缓解误差累积、提升安全性、舒适性及其他驾驶品质来改进闭环行为。然而，这些目标通常无法归结为适合标准优化工具的通用且完全确定的优化问题，而是借助异构形式的监督来传达，如特权教师策略（Teacher Policy）、偏好比较、奖励（Reward）信号或测试时反馈。
+
+尽管形式多样，大量后训练方法可经由一个共同的抽象来理解：
+\vspace{-0.2em}
+\begin{align}
+\label{eq: 1-3 post-training}
+   \min_{\theta \in B(\theta_0)}\; \mathbb{E}_{(\tilde{o},\,\text{signal}) \sim \mathcal{D}_{\text{PT}}}\Bigl[ \mathcal{L}_{\text{PT}}\bigl(\pi_\theta(\tilde{o}),\; \text{signal}\bigr) \Bigr] + \lambda\,\Omega(\theta),
+\end{align}
+\vskip -0.3\baselineskip 
+
+\noindent 其中 $B(\theta_0)$ 表示模仿策略 $\theta_0$ 周围预先设定的邻域，策略在其中进行精化；
+$\tilde{o}$ 为后训练观测（可能不同于 $\mathcal{D}_{\text{IL}}$ 中的观测），经过精心设计或选择以反映期望的后训练目标（如驾驶舒适性与安全性）；
+$\text{signal}$ 表示监督信号，其具体形式因后训练方法而异。
+    通常：\\
+    -- \textit{(1) 基于蒸馏的后训练（第~\ref{sec:distill} 节）}利用特权教师策略提供稠密的行为引导，如缓解误差复合（Error Compounding）的恢复示范。形式上，信号可为教师策略 $\pi_{\text{teacher}}(\tilde{o})$ 或教师动作 $\hat{y}(\tilde{o})$；\\
+    -- \textit{(2) 基于偏好的后训练（第~\ref{sec:preference} 节）}利用候选行为间的相对比较来指明更受偏好的行为。形式上，信号为优样本-劣样本对 $(y^w, y^l)$；\\
+    -- \textit{(3) 强化学习（第~\ref{sec:rl} 节）}将更丰富的引导编码为赋予采样行为的标量奖励。形式上，信号为 $r(\tilde{o},y)\in \mathbb{R}$。
+
+    \vspace{0.3em} 
+    
+    \noindent 后训练损失 $\mathcal{L}_{\text{PT}}$ 同样各不相同（如蒸馏用KL 散度（KL Divergence）、偏好用直接偏好优化（DPO）损失、强化学习用策略梯度（Policy Gradient）/替代损失），但这些差异主要反映优化形式而非监督来源。通常还会加入额外正则项 $\lambda \Omega(\theta)$，其中 $\lambda$ 为正则化系数，
+    $\Omega(\theta)$ 为与信号无关的正则化器（如到参考策略的距离 $\text{KL}(\pi_\theta \| \pi_{\text{ref}})$）。
+
+
+\vspace{0.5em}
+\noindent -- \textit{(4) 测试时后训练（第~\ref{sec:testtime} 节）：}与式~\eqref{eq: 1-3 post-training} 不同，该类方法不更新策略参数，而是通过测试时选择或验证精化固定策略 $\pi_{\theta_0}$。形式上：
+\begin{align}
+\label{eq:test_time_selection}
+    y^* \;=\; \text{argmax}_{y \in \mathcal{Y}_{\text{cand}}(o)} \; v(o,y),
+\end{align}
+其中 $o$ 为驾驶观测，$\mathcal{Y}_{\text{cand}}(o)$ 为从固定策略 $\pi_{\theta_0}$ 采样得到的候选输出集，$v(o,y)$ 为评估候选 $y$ 质量的验证器分数，$y^*$ 为测试时精化后选定的最终输出。
+
+
+
+
+
+
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{fig2.pdf}
+    \caption{自动驾驶主要后训练类别概览。}
+    \label{fig:fig2}
+    \vspace{-0.4cm}
+\end{figure}
+
+
+
+
+\section{蒸馏}
+\label{sec:distill}
+
+蒸馏使用来自更强教师的稠密目标精化 $\pi_{\theta_0}$，教师可以是专家规划器、更大的VLM或策略自身的缓慢更新副本。
+
+
+形式上，蒸馏以教师提供的信号作为后训练监督，实例化式~(\ref{eq: 1-3 post-training})。令 $\mathcal{D}_{\mathrm{dis}}$ 表示用于蒸馏的后训练观测集，$s_T(\tilde{o})$ 表示观测 $\tilde{o}$ 的教师信号（Teacher Signal），如策略分布 $\pi_{\text{teacher}}(\cdot
+\mid\tilde{o})$ 或教师目标 $\hat y(\tilde o)$。
+学生（Student）策略随后通过下式优化：
+\begin{equation}
+\min_{\theta \in \mathcal{B}(\theta_0)}
+\mathbb{E}_{\tilde{o}\sim \mathcal{D}_{\mathrm{dis}}}
+\left[
+\ell_{\mathrm{dis}}
+\left(
+\pi_\theta(\tilde{o}), s_T(\tilde{o})
+\right)
+\right]
++
+\lambda\Omega(\theta),
+\label{eq:distillation_post_training}
+\end{equation}
+其中 $\ell_{\mathrm{dis}}$ 衡量学生输出与教师信号之间的差异，$\Omega(\theta)$ 可选地将策略向稳定参考正则化。例如，$\ell_{\mathrm{dis}}$ 可以是用于分布匹配的KL 散度，或用于逐点教师标签的回归/交叉熵损失。
+
+CRAFT \cite{craft2026} 以策略自身为教师：用Kullback--Leibler（KL）项将更新向指数滑动平均（Exponential Moving Average, EMA）副本正则化，使策略在奖励驱动的精化过程中保持贴近稳定参考；本文聚焦其蒸馏组件，其反事实（Counterfactual）奖励设计在第~\ref{sec:reward} 节讨论。PaIR-Drive \cite{pairdrive2026} 以专家示范为教师信号，并行运行模仿分支与强化学习分支。RAPID \cite{rapid2024} 从强化学习教师中蒸馏，并结合在线策略适配。此外，更大的模型也可充当教师：VLM-AD~\cite{vlmad2026} 通过辅助头（Auxiliary Head）将VLM生成的推理与动作标注蒸馏进端到端策略；CoPhy \cite{cophy2026} 将语言对齐模型的推理蒸馏进动作策略；Found-RL \cite{foundrl2026} 将基础模型蒸馏与强化学习结合，把高层驾驶知识迁移到快速策略中。
+
+数据问题关注如何构建接收教师标签的后训练观测 \(\tilde{o}\)。对闭环驾驶，当 \(\tilde{o}\) 对应学生在采样轨迹中访问过的状态（而非仅来自固定专家数据集的状态）时，教师目标最为有用，这直接应对闭环执行中的分布偏移（Distribution Shift）与误差累积。该思想可追溯至DAgger式模仿：学生执行动作，教师为访问过的状态打标签，学生再在其自身状态分布上重新训练。CRAFT 和 PaIR-Drive 遵循这一模式，将教师信号作用于策略自身的采样轨迹，而非固定专家数据集。
+
+在大多数系统中，教师信号并不单独更新策略，而是约束并稳定奖励驱动的强化学习更新，例如添加KL项使策略贴近教师，或由教师生成并标注采样轨迹。与基于奖励的排序相比，这种更稠密的监督使模型无需复杂奖励设计即可在接近闭环分布的状态上学习；教师则充当稳定参考，防止策略漂移并丧失在监督微调（SFT）中习得的能力。
+
+
+\section{基于偏好的对齐}
+\label{sec:preference}
+
+基于偏好的对齐通过行为间的相对比较来监督策略，这类比较在实践中更易获取。在自动驾驶的许多场景中，关键问题不是轨迹是否可行，而是在多个可行选项中哪一个更合适。
+
+该类别与基于人类反馈的强化学习（RLHF）密切相关，但通常避免训练显式奖励模型（Reward Model），而是直接从偏好对（Preference Pair）优化策略。
+形式上，基于偏好的对齐以相对比较作为后训练监督，实例化式~(\ref{eq: 1-3 post-training})。令 $\mathcal{D}_{\mathrm{pref}}=\{(\tilde{o}_i,y_i^w,y_i^l)\}_{i=1}^{M}$ 表示偏好数据集，其中在观测 $\tilde{o}_i$ 下 $y_i^w$ 优于 $y_i^l$。通用偏好目标为
+\begin{equation}
+\min_{\theta \in \mathcal{B}(\theta_0)}
+\mathbb{E}_{(\tilde{o},y^w,y^l)\sim \mathcal{D}_{\mathrm{pref}}}
+\left[
+\ell_{\mathrm{pref}}
+\left(
+\pi_\theta; \tilde{o}, y^w, y^l
+\right)
+\right]
++
+\lambda\Omega(\theta),
+\label{eq:preference_post_training}
+\end{equation}
+其中，当劣行为 $y^l$ 被赋予高于优行为 $y^w$ 的偏好分数时，$\ell_{\mathrm{pref}}$ 对策略施加惩罚；$\Omega(\theta)$ 可选地将策略向参考策略正则化，$\lambda\ge 0$ 控制正则化强度。
+
+DPO~\cite{rafailov2023dpo} 是代表性方法：利用优样本与劣样本（Preferred/Rejected Sample）之间的相对排序更新策略。参照DPO，$\ell_{\mathrm{pref}}$ 可实例化为
+\[
+-\log \sigma
+\left(
+\beta
+\left[
+\log
+\frac{\pi_\theta(y^w\mid\tilde{o})}
+{\pi_{\mathrm{ref}}(y^w\mid\tilde{o})}
+-
+\log
+\frac{\pi_\theta(y^l\mid\tilde{o})}
+{\pi_{\mathrm{ref}}(y^l\mid\tilde{o})}
+\right]
+\right),
+\]
+其中 $\sigma(\cdot)$ 为sigmoid函数，$\pi_{\mathrm{ref}}$ 通常为模仿学习或SFT策略，$\beta$ 控制偏好更新的强度。基于该思想的驾驶方法主要差异在于偏好对的构建方式，以及损失对驾驶特定目标的适配方式。
+
+
+
+在这一类别中，偏好对既是监督又是数据，因此其构建是核心设计选择。DriveDPO~\cite{drivedpo2025} 提出Safety DPO，将模仿相似度与基于规则的安全分数结合，使模型学习贴近人类驾驶的轨迹，同时避开看似拟人实则不安全的行为。VL-DPO~\cite{vldpo2026} 使用VLM从驾驶采样轨迹中自动生成偏好对，减少人工标注需求。CSN~\cite{csn2026} 将Plackett--Luce DPO与负对数似然正则化结合，使VLA策略能从多个候选轨迹的排序中学习类人驾驶偏好。CPO++~\cite{cpopp2026} 在偏好优化过程中向推理与感知注入反事实扰动（Counterfactual Perturbation），降低伪相关（Spurious Correlation）产生错误偏好的可能性。其他方法则从更专门的监督来源构建偏好对：TakeAD~\cite{takead2025} 从专家接管（Takeover）和脱开（Disengagement）事件构建偏好对，进一步优化模仿策略以获得更好的闭环行为；Drive My Way~\cite{drivemyway2026} 将VLA策略与个人驾驶习惯及自然语言意图对齐，实现个性化驾驶。
+
+偏好对齐的效果关键取决于所选轨迹对的信息量，以及其比较在多大程度上反映真实世界的人类偏好。若被比较的轨迹无法暴露有意义的驾驶行为权衡（如舒适性或安全性目标），精化后策略的提升可能有限。
+
+\section{强化学习后训练}
+\label{sec:rl}
+
+
+
+
+驾驶领域的强化学习后训练受大语言模型（Large Language Model, LLM）后训练文献的启发，包括基于奖励模型的RLHF~\cite{ouyang2022instructgpt}、DPO~\cite{rafailov2023dpo}，以及分组相对策略优化（Group Relative Policy Optimization, GRPO）~\cite{shao2024deepseekmath,deepseek_r1_2025}等组内相对（Group-relative）方法。然而，驾驶并非这些目标的直接迁移：驾驶质量本质上是多维、长视界且高度依赖上下文的，反映碰撞避免、可行驶区域合规（Drivable-area Compliance）、乘客舒适性与行驶进度之间的复杂权衡。
+ 
+
+在基于RL的后训练中，监督来自分配给采样驾驶行为的奖励。这些奖励可来自基于规则的指标、学习得到的评论家、世界模型、反事实比较或推理一致性检查。
+
+形式上，令 $\tau$ 表示采样到的驾驶行为（如轨迹、动作序列或推理-动作输出），$R(\tau)$ 表示赋予它的标量奖励或回报。通用的正则化RL目标可写为
+\begin{equation}
+\min_{\theta \in \mathcal{B}(\theta_0)}
+-
+\mathbb{E}_{\tau\sim p_{\pi_\theta}(\tau)}
+\left[
+R(\tau)
+\right]
++
+\lambda\Omega(\theta),
+\label{eq:rl_post_training}
+\end{equation}
+其中 $p_{\pi_\theta}(\tau)$ 表示当前策略 $\pi_\theta$ 诱导的采样分布或采样轨迹分布，$\Omega(\theta)$ 可选地将更新后的策略向参考策略正则化，$\lambda\ge 0$ 控制正则化强度。当奖励定义在多个时间步上时，$R(\tau)$ 可聚合逐步奖励，如 $R(\tau)=\sum_t \gamma^t r_t$，其中 $r_t$ 为第 $t$ 步奖励，$\gamma$ 为折扣因子。
+
+其效用取决于训练所用的采样轨迹，因此采样轨迹生成、探索、数据多样性与失败场景构建是RL后训练的核心。最后的设计选择是如何将这些采样轨迹上的奖励转化为策略更新，这取决于策略输出空间，如词元序列、连续轨迹、扩散输出或混合推理-动作策略。
+
+
+在操作层面，RL后训练在预训练或驾驶专用SFT之后精化一个胜任的基础策略，有时随后进行测试时扩展。本节围绕该阶段的主要设计选择组织：第~\ref{sec:reward} 节综述奖励如何作为监督信号构建；第~\ref{sec:exploration} 节讨论如何通过探索、数据多样性和负样本（Negative Sample）/恢复案例构建来收集信息丰富的训练数据与采样轨迹；第~\ref{sec:algorithms} 节综述优化算法如何在不同的策略空间中将奖励与采样轨迹转化为策略更新。
+
+
+
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{fig3_rl.pdf}
+    \vspace{-0cm}
+    \caption{自动驾驶后训练RL设计空间概览。}
+    \label{fig:fig3}
+    \vspace{-0.5cm}
+\end{figure}
+
+\subsection{作为监督构建的奖励设计}
+\label{sec:reward}
+在基于RL的后训练中，奖励通过指明哪些采样行为应被强化来提供监督。与逐点轨迹标签不同，驾驶奖励须同时捕捉多种品质，包括安全、行驶进度、舒适性、规则合规与交互。因此，本小节按奖励信号的构建方式组织。
+
+\textbf{基于规则与指标推导的奖励。}
+基于规则的奖励将可观测的采样轨迹属性（如碰撞、偏离道路、碰撞时间（Time-to-Collision, TTC）、进度与平滑性）转化为标量信号。其计算成本低、易于复现，广泛应用于标准基准测试（Benchmark）。一种常见形式是直接使用基准分数，如NAVSIM的预测驾驶模型分数（Predictive Driver Model Score, PDMS）~\cite{navsim2024}及其扩展版EPDMS（Extended PDMS）~\cite{navsimv2_2025}，将碰撞避免、可行驶区域合规、TTC、舒适性与进度合并为单一奖励。另一种形式是手工设计加权组件，如AutoDrive-R\textsuperscript{2}~\cite{autodriver2_2025}的空间、动态与时间奖励，FeaXDrive~\cite{feaxdrive2026}的曲率可行性奖励，以及PanoEnv~\cite{panoenv2026}的几何感知三维空间理解奖励。这类奖励可解释性强，但固定规则常遗漏交互语义，如变道是否自然、让行时机是否恰当。因此它们常与学习得到的奖励或引导信号结合，例如SARAD~\cite{sarad2026} 将碰撞预测奖励与LLM引导配对。
+
+\textbf{学习得到的奖励模型。}
+学习得到的奖励模型为难以写成固定规则的品质提供监督，利用学习得到的评论家、VLM评估器、偏好模型、验证器或不确定性信号为候选行为打分。在VLA系统中，VLM评论家尤为自然：DriveMind~\cite{drivemind2025} 使用VLM进行语义锚定，CoPhy~\cite{cophy2026} 增加语言对齐评分器，DriveCritic~\cite{drivecritic2025} 从成对人工偏好中训练VLM评估器，VDRive~\cite{vdrive2025} 在演员-评论家（Actor–Critic）框架中使用学习得到的评论家。该类别还包括基于奖励模型的RLHF：先用反馈训练显式奖励模型，再进行策略优化。Sun 等人~\cite{sun2024rlhf} 将身体与生理反馈同近端策略优化（Proximal Policy Optimization, PPO）结合，Zhuang 等人~\cite{neurocog2026} 使用基于脑电（EEG）信号的反馈。学习得到的奖励也可表现为验证器或不确定性信号：LaViPlan~\cite{laviplan2025} 将可验证奖励强化学习（Reinforcement Learning with Verifiable Rewards, RLVR）适配到分级轨迹评估，ExploreVLA~\cite{explorevla2026} 奖励世界模型的不确定性，IRL-VLA~\cite{jiang2025irl} 先从基于EPDMS的指标标签学习轻量级奖励世界模型（Reward World Model, RWM），再将其用于基于PPO的VLA微调。
+
+\textbf{世界模型耦合奖励。}
+世界模型耦合奖励利用预测的未来状态评估动作，因为变道、让行或制动决策的质量取决于场景如何演化。CoPhy~\cite{cophy2026} 从鸟瞰图（BEV）采样轨迹和认知评分器推导物理奖励，DreamerAD~\cite{dreamerad2026} 在隐空间（Latent Space）中计算稠密奖励，FLARE~\cite{flare2026} 用未来感知的VLM隐特征为轨迹打分，OmniDreams~\cite{omnidreams2026} 和MAPLE~\cite{maple2026} 等生成式模型则评估自车行为、生成未来与其他智能体之间的交互。这些方法的共同之处在于：借助未来感知表示从预测未来中提取行为相关信号，将世界模型与奖励计算耦合。
+
+
+\textbf{反事实与对比奖励。}
+反事实与对比奖励将轨迹与邻近备选方案比较，在失败罕见或微小动作变化导致不同结果时提供更稠密的监督。CRAFT~\cite{craft2026} 将反事实优势（Counterfactual Advantage）作为稀疏闭环优势的稠密代理，把信号分解为代理项与经交互关键事件校正的锚定残差。类似构造也出现在SafeAlign-VLA的安全对（第~\ref{sec:exploration} 节）和CPO++的反事实扰动（第~\ref{sec:preference} 节）中。
+
+\textbf{推理质量与一致性奖励。}
+对VLA策略，奖励不仅监督最终轨迹，还监督其背后的推理过程。Alpamayo-R1~\cite{alpamayo2025} 惩罚与执行动作不匹配的解释，因为动作正确但推理不一致可能只是偶然有效。Drive-R1~\cite{li2026drive} 使用GRPO奖励，综合轨迹精度、元动作正确性、重复惩罚与格式合规。OmniDrive-R1~\cite{zhang2026omnidrive} 进一步针对视觉定位（Visual Grounding），使用基于CLIP的感兴趣区域（Region-of-Interest, ROI）定位奖励。其他工作沿推理链分配奖励：AutoDrive-P\textsuperscript{3}~\cite{autodrivep3_2026} 分别奖励感知、预测与规划，ELF-VLA~\cite{elfvla2026} 使用失败诊断反馈，AutoDrive-R\textsuperscript{2}~\cite{autodriver2_2025}、ThinkDrive~\cite{thinkdrive2026} 和MindDriver~\cite{minddriver2026} 将思维链（Chain-of-Thought, CoT）推理与RL精化耦合。另有工作学习何时调用CoT，如AdaThinkDrive~\cite{adathinkdrive2025} 和AutoVLA~\cite{autovla2025}。相比之下，NoRD~\cite{nord2026} 表明Dr.~GRPO 也可在不显式推理的情况下应用于VLA驾驶。
+
+
+
+
+\subsection{采样轨迹收集与信息丰富的数据}
+\label{sec:exploration}
+
+\textbf{信息丰富的采样轨迹组。}
+RL后训练不仅依赖奖励，也依赖训练所用的采样轨迹。在GRPO等组内相对方法中，学习来自采样组内的奖励差异：若所有候选的奖励相近，优势值变小，更新提供的信息很少。这在驾驶中尤为常见：SFT策略往往贴近示范，因此重排序无法恢复从未采样到的轨迹~\cite{dial2026}；同时，常规场景的奖励常趋饱和，使长尾（Long-tail）、交互密集和安全关键案例更具信息价值。
+
+因此，有用的采样轨迹组需具备两个性质。其一，策略必须能够采样不同的操作，因为RL无法改进从未出现的行为。DIAL~\cite{dial2026} 用无分类器引导（Classifier-free Guidance）使流式头（Flow Head）以意图标签为条件，DriveAnchor~\cite{driveanchor2026} 使用轨迹锚点词表，ReflectDrive~\cite{reflectdrive2025} 使用离散动作码本（Codebook）。这些方法将多样性构建进输出空间，而非仅依赖随机采样。其二，采样候选必须在质量上存在差异。PaIR-Drive~\cite{pairdrive2026} 在操作上使用树结构采样器，SCORP~\cite{scorp2026} 则利用组内奖励方差门控更新。Best-of-$N$ 还提供有用的诊断：若随 $N$ 增大性能迅速饱和，瓶颈更可能来自采样分布而非重排序器~\cite{dial2026}。
+
+\textbf{负样本与恢复数据构建。}
+获取信息丰富训练数据的另一途径是聚焦负样本和恢复案例。这类案例在专家日志中稀少，朴素探索难以触及，但通过暴露策略无法处理的情况提供强学习信号。SafeAlign-VLA~\cite{safealignvla2026} 从风险场景构建正负对用于基于锚点的GRPO。SpanVLA~\cite{spanvla2026} 添加负样本与恢复样本，使模型既学会避免不安全行为，也学会纠正错误。TakeVLA~\cite{takevla2026} 用场景梦境强化微调（Reinforcement Fine-Tuning, RFT）挖掘人工接管数据。Counterfactual-VLA~\cite{peng2026counterfactual} 使用采样轨迹-过滤-标注流程，挖掘高价值采样场景并标注反事实推理轨迹以修正动作。ELF-VLA~\cite{elfvla2026} 将全零长尾奖励转化为针对规划、推理与执行的失败诊断反馈。
+
+\textbf{世界模型采样轨迹。}
+世界模型可评估不同动作下想象出的后续演化，而非仅依赖日志记录的未来。ExploreVLA~\cite{explorevla2026} 利用世界模型的不确定性鼓励探索不确定状态。MAPLE~\cite{maple2026} 运行多智能体隐空间采样轨迹，构建数据中缺失的交互案例。CoPhy~\cite{cophy2026} 和OmniDreams~\cite{omnidreams2026} 也使用预测未来同时支持奖励计算与采样轨迹生成。当生成的未来保留了训练所需的关键驾驶结果——如其他智能体是否反应、自车是否有碰撞风险、交互成功还是失败——这些方法最为有用。
+
+\subsection{策略优化算法}
+\label{sec:algorithms}
+奖励分配至采样轨迹后，优化算法将其转化为策略更新。这一选择取决于信用分配（Credit Assignment）单元与策略输出空间，如词元序列、连续轨迹、基于流的生成器（Flow-based Generator）、扩散策略（Diffusion Policy）或演员-评论家架构。
+
+\textbf{词元序列策略的组内相对优化。}
+许多驾驶后训练方法将策略输出表示为自回归（Autoregressive）词元序列，包括动作词元、轨迹词元、CoT推理和输出格式。GRPO式目标契合该设定：对同一查询采样多个补全，为每个补全分配任务特定奖励，并在不依赖独立价值网络（Value Network）的情况下计算组内归一化优势（Advantage）。同一优化模板既支持面向规划的轨迹质量奖励（如AlphaDrive \cite{alphadrive2025}），也支持词元化动作或轨迹策略（如AutoVLA \cite{autovla2025} 和NoRD \cite{nord2026}）；还支持面向推理的CoT一致性、过程结构或视觉定位奖励（如AutoDrive-P$^3$ \cite{autodrivep3_2026}、Drive-R1 \cite{li2026drive} 和OmniDrive-R1 \cite{zhang2026omnidrive}）。
+
+\textbf{组感知的GRPO变体。}
+由于组内相对优势取决于比较哪些候选，若干方法修改组的构建方式或组统计量的用法，而非仅修改奖励。DIAL \cite{dial2026} 使用多意图GRPO构建覆盖所有预定义意图类的意图均衡候选组；SCORP \cite{scorp2026} 使用方差门控GRPO，根据组内奖励方差门控采样组或调整归一化方式，以减少优势坍缩与梯度不稳定；SafeAlign-VLA \cite{safealignvla2026} 在正负风险场景候选上使用基于锚点的GRPO，使比较集显式聚焦安全；DriveAgent-R1 \cite{zheng2025driveagent} 进一步通过模式划分GRPO（Mode-Partitioned GRPO）将该思想适配到混合推理策略，将纯文本与工具增强响应强制纳入同一归一化组，使更新同时比较推理模式内部与跨模式。
+
+\textbf{超越自回归解码的序列级组内相对优化。}
+Flow-GRPO \cite{liu2026flow} 将组内相对策略优化适配到流匹配（Flow-matching）生成器，其中轨迹样本通过去噪过程（Denoising Process）而非从左到右的词元解码生成。WAM-Diff \cite{xu2025wam} 使用分组序列策略优化（Group Sequence Policy Optimization, GSPO）框架，以掩码扩散策略精化未来轨迹的完整序列。
+ 
+
+\textbf{基于价值与基于奖励模型的策略梯度。}
+并非所有RL后训练方法都使用组内相对目标。当学习得到的奖励模型或评论家可用时，PPO或演员-评论家更新更为自然。
+IRL-VLA \cite{jiang2025irl} 学习RWM，然后使用PPO在学习得到的奖励反馈下微调VLA策略。VDRive \cite{vdrive2025} 在演员-评论家框架中训练其扩散策略头，用学习得到的评论家引导策略优化。
+
+
+\section{测试时精化}
+\label{sec:testtime}
+
+测试时精化指在推理阶段不更新模型参数而改进模型输出。它不重新训练策略，而是保持策略 $\pi_{\theta_0}$ 固定，在其生成的输出上进行精化。依据式~(\ref{eq:test_time_selection})，给定观测 $o$，可从固定策略采样候选集 $\mathcal{Y}_{\mathrm{cand}}(o)=\{y_i\}_{i=1}^{K}$（$y_i\sim\pi_{\theta_0}(\cdot\mid o)$），由验证器（Verifier）或重排序器（Reranker）$v(o,y)$ 选出最终输出 $y^*$。
+
+
+
+最常见的方式是先生成多个候选轨迹，再用评分模型选出最优者。DriveCritic \cite{drivecritic2025} 中与人类对齐的评估器可在推理时用作重排序器。然而，Best-of-$N$ 仅在采样候选已包含好轨迹时有用：若基础策略只能生成低质量候选，重排序器也只能在较差选项中挑选，性能迅速饱和~\cite{dial2026}。因此，测试时精化更适合理解为其他后训练方法的补充：它能帮助强策略选出更好的输出，却无法真正学习策略从未生成过的行为。
+
+
+另一类方法是自我反思（Self-reflection）：模型先生成初始决策，再检查其中是否存在不安全或不合理的部分并尝试修正。ReflectDrive \cite{reflectdrive2025} 用离散动作码本表示驾驶行为，通过搜索并替换不安全的动作词元改进输出。AutoDrive-R\textsuperscript{2} \cite{autodriver2_2025} 将自我反思融入其推理策略。C-CoT \cite{ccot2026} 进一步在推理时引入反事实思维链推理，使VLM在风险场景中做最终决策前考虑不同选择可能产生的结果。Seong 等人~\cite{grbo2025} 将交互行为模型的RL后训练与测试时扩展结合，结果表明测试时精化可以补充而非替代参数更新类方法。
+
+\textbf{车载效率约束。}与语言模型中的测试时扩展相比，自动驾驶中的测试时精化探索较少。一个重要原因是车载延迟（On-vehicle Latency）约束严格，推理无法承受任意额外计算。因此，如何在有限计算预算下更有效地进行候选生成、搜索与重排序，是该方向的关键问题。Fast-dDrive \cite{fastddrive2026} 中的块扩散解码（Block-diffusion Decoding）正是沿此方向的面向效率的设计。
+
+
+
+\section{评估协议}
+\label{sec:evaluation}
+
+\input{benchmark-table-2}
+
+\subsection{开环评估}
+\label{sec:eval:openloop}
+
+自动驾驶后训练的评估协议涵盖从录制数据上的开环测试到完全闭环仿真。开环评估在固定场景上测试模型，其动作不影响未来状态。常用基准包括nuScenes~\cite{nuscenes2020} 和用于端到端驾驶的Waymo开放数据集（Waymo Open Dataset for End-to-End Driving, WOD-E2E）~\cite{wode2e2025}。典型指标包括平均位移误差（Average Displacement Error, ADE）与最终位移误差（Final Displacement Error, FDE）、碰撞率（Collision Rate），以及WOD-E2E中的评分者反馈分数（Rater Feedback Score, RFS）。开环评估成本低、可复现，适合衡量模型拟合记录轨迹或人工偏好标注的程度。
+
+表~\ref{tab:openloop} 汇总了后训练策略在nuScenes和WOD-E2E上报告的开环结果。然而，开环评估无法反映策略动作如何改变未来状态，因而无法衡量误差累积、多智能体交互或恢复能力。这对以改善闭环行为为目标的后训练尤为不利。因此，开环分数应视为辅助指标，而非驾驶质量的最终证据。Zhao 等人~\cite{bridgesim2026} 进一步表明，开环与闭环之间的差距源于观测域偏移与目标不匹配，标准开环协议可能掩盖闭环失败。
+
+
+
+\subsection{伪闭环与闭环评估}
+\label{sec:eval:closedloop}
+
+闭环评估与后训练最为契合，因为策略的动作会影响未来状态。实践中，常见基准的闭环程度各不相同。NAVSIM v1~\cite{navsim2024} 是单次、非反应式仿真（One-shot, Non-reactive Simulation）：策略从记录观测中规划一次，规划结果展开数秒。由于策略不接收反馈、场景不做反应，它最宜视为带仿真指标的开环评估。其PDMS分数综合碰撞、可行驶区域、自车进度、舒适性与TTC。NAVSIM v2~\cite{navsimv2_2025} 通过两阶段伪仿真协议更接近闭环评估，其中合成的后续观测取决于第一阶段的行为。其EPDMS指标在PDMS基础上扩展了行驶方向合规、交通信号灯合规（Traffic-light Compliance）、车道保持（Lane Keeping）及额外舒适性项；更难的navhard划分即在该协议下评估。
+
+
+
+Bench2Drive~\cite{bench2drive2024} 是完全闭环的：它基于CARLA构建，包含反应式多智能体交通，报告驾驶分数（Driving Score, DS）与成功率（Success Rate, SR），更适合评估长视界误差与交互行为。近期工作还将闭环测试拓展到游戏引擎之外：AlpaSim~\cite{alpasim2025} 使用神经渲染（Neural Rendering）进行照片级真实（Photorealistic）的传感器仿真（Sensor Simulation），支持在逼真的传感器流上进行闭环测试。此外，nuReasoning~\cite{nureasoning2026} 聚焦长尾推理场景，其nuReasoning规划分数（nuReasoning Planning Score, NPS）遵循NAVSIM式安全门控分数，并与5秒ADE一同报告。表~\ref{tab:benchmark} 汇集了NAVSIM和Bench2Drive上的结果，并按策略是否使用基础模型骨干网络分组。
+
+\input{benchmark-table-1}
+\vspace{-0.5cm}
+
+\subsection{当前评估的主要挑战}
+\label{sec:eval:challenges}
+
+闭环评估比开环评估更契合后训练的目标，但现有协议仍存在若干局限。
+
+\textbf{基准饱和。}NAVSIM已成为许多近期工作的默认评估平台。如表~\ref{tab:benchmark} 所示，PDMS与EPDMS分数现已集中在很窄的范围内，单一总分难以区分真正的方法进展与随机波动。尽管PDMS已包含碰撞、可行驶区域合规、TTC、舒适性与进度等子分数，许多方法在常规场景的这些组件上表现相近，微小的分数差异往往难以解读。因此，更具判别力的评估应聚焦更难的数据分布，如navhard这类长尾、安全关键、交互密集的划分，其中组件级差异更可能保持可见。
+
+\textbf{实车评估稀缺且难以比较。}实车测试（Real-vehicle Testing）需要车辆平台、安全驾驶员（Safety Driver）与测试许可（Test Permit），大多数学术团队难以获得。尽管如此，一些近期工作已开始超越基准评估：例如，Alpamayo-R1~\cite{alpamayo2025} 报告部署延迟，HDP~\cite{hdp2026} 报告真实道路测试，DriveAnchor~\cite{driveanchor2026} 和RAD-2~\cite{rad2_2026} 报告实车验证，VLM-AutoDrive~\cite{vlmautodrive2026} 在真实行车记录仪视频上评估安全关键事件检测。然而，由于车辆平台、传感器、场景与指标各异，这些结果仍难以跨论文比较。
+
+
+\textbf{推理成本报告不足。}若模型无法满足实时车载约束，后训练的收益便难以落地，但许多论文仍忽略推理成本。与实车测试不同，推理成本无需车辆即可测量：延迟、参数量与吞吐量可在车载级硬件上评测，如Alpamayo-R1的99 ms端到端延迟、DriveAnchor的2.06 ms推理时间，以及BPF~\cite{bpf2026} 通过在RL中剪枝使Jetson AGX Orin解码吞吐量最高提升27\%。这些结果表明，车载效率应与闭环性能一并报告。
+
+
+
+\section{开放问题与未来方向}
+\label{sec:future}
+
+自动驾驶后训练仍处于早期阶段，其最重要的开放问题横跨四大类别，而非属于其中任何单一类别。
+
+\textbf{奖励与探索的耦合设计问题。}
+大多数基于RL的后训练方法组合多种奖励来源，如基于规则的分数、学习得到的评论家、世界模型采样轨迹与推理一致性项。然而，这些奖励的组合方式研究不足：权重通常手工调优，门控规则并不总是被报告，组合分数可能通过利用易得分组件而非提升整体驾驶质量来改善，也可能掩盖安全、行驶进度、舒适性与规则合规之间的权衡。因此，分数提升应在组件层面分析。
+
+奖励设计还与探索紧密相关。只有采样轨迹呈现有意义的质量差异时，奖励才能引导学习。若组内所有候选得分相近，组内相对优势会变小甚至消失，更新提供的信息甚少。因此，目标不是为多样性而多样性，而是与奖励相关的多样性：采样行为应以奖励能够可靠区分的维度存在差异。协同设计奖励与探索，使奖励反映驾驶质量、采样轨迹组保持信息丰富，是基于RL后训练的核心开放问题。
+
+\textbf{世界模型信号是否与行为相关？}
+世界模型日益被用作奖励提供者（第~\ref{sec:reward} 节）和探索引擎（第~\ref{sec:exploration} 节）。其对后训练的价值不仅在于视觉逼真度，更在于反事实反馈：世界模型能够估计在日志数据中未执行的动作下会发生什么，从而为后训练提供静态监督无法给出的基于结果的信号。
+
+然而，许多世界模型在像素或传感器层面运行，而后训练需要的是安全、进度、交互与规则合规等行为级信号。对策略学习而言，关键要求因此并非仅像素级保真，而是行为级保真：模型应保留影响驾驶奖励的因素，如碰撞、智能体反应、路线进度与违反交规。世界模型奖励与基于规则或学习得到的评论家信号结合时可能最为有用：前者提供反事实的未来状态，显式奖励项则将优化锚定到驾驶目标。
+
+
+\textbf{从一次性精化到数据反馈闭环。}
+后训练依赖于初始模型训练后可获得的数据与反馈信号。在自动驾驶中，最有用的信号往往不是普通记录轨迹，而是暴露模型弱点的案例：接管、脱开、险情、违规、恢复行为与困难交互。TakeAD~\cite{takead2025}、TakeVLA~\cite{takevla2026} 和SpanVLA~\cite{spanvla2026} 等近期工作已开始利用这类现场信号或面向恢复的数据改进后训练。
+
+然而，这些信号大多仍被离线使用，作为单次后训练阶段的固定数据集。缺失的是更系统的反馈闭环：已部署或已评估的策略应暴露失败，这些失败应转化为可用的监督、偏好、奖励或恢复目标，精化后的策略随后应在同类型的困难案例上重新评估。构建这样的数据反馈闭环，可能是使后训练成为持续改进过程而非一次性精化步骤的关键。
+
+\textbf{超越基于GRPO的优化。}
+当前自动驾驶的基于RL后训练方法大多采用基于GRPO的优化，主要效仿大语言模型对齐的近期实践。虽然这是有用的起点，但驾驶拥有更具结构性的学习信号：轨迹受时间、安全、交互与物理可行性塑造。因此，未来方法可能需要更具驾驶感知的更新：不必为整条采样轨迹分配单一标量奖励，而可在关键时刻（如变道、让行、制动或近碰撞事件）周围使用更局部的反馈；也可将安全、进度与舒适性约束分离，因为一个维度的提升可能掩盖另一维度的退化。
+
+更广泛地看，后训练不必只依赖RL。蒸馏可从规划器、更强的VLM或修正后的采样轨迹提供稠密教师目标，尤其适用于失败与恢复案例；当期望行为难以用逐点标签表达时，基于偏好的对齐可比较备选轨迹。关键问题不是哪类算法最好，而是哪种学习信号最匹配每个驾驶问题。
+
+
+\section{结论}
+\label{sec:conclusion}
+
+本文给出了自动驾驶后训练的统一视角：后训练是在初始策略获得之后施加的阶段，其目标是闭环行为而非离线拟合。按监督形式组织文献得到四大类别：蒸馏、基于偏好的对齐、强化学习与测试时精化。在最成熟的强化学习类别中，核心设计问题在于奖励构建与探索而非优化器；随着闭环基准趋于饱和，评估正成为瓶颈。希望本综述提供连贯的参考，其分类与开放问题有助于组织未来工作。
+
+
+
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+
+\end{document}
+
+
+

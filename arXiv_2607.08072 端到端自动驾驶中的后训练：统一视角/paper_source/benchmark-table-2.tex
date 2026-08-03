@@ -1,0 +1,39 @@
+
+
+
+\begin{table}[t]
+\centering
+\caption{Open-loop results on nuScenes and WOD-E2E. L2/ADE: displacement error; Col.: collision rate; RFS: human rater feedback score.}
+\vspace{-0.2cm}
+\label{tab:openloop}
+\scriptsize
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}l cc ccc C{4.0cm}@{}}
+\toprule
+\multicolumn{1}{@{}c}{\multirow{2}{*}{\textbf{Method}}}
+& \multicolumn{2}{c}{\textbf{nuScenes}}
+& \multicolumn{3}{c}{\textbf{Waymo E2E (WOD-E2E)}}
+& \multicolumn{1}{c@{}}{\multirow{2}{*}{\textbf{Backbone}}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-6}
+& {L2\dn} & {Col.\dn} & {RFS\up} & {ADE 5s\dn} & {ADE 3s\dn} & \\
+\midrule
+AutoDrive-R2 \cite{autodriver2_2025}  & \best{0.19}  & 0.07 & \nr   & \nr   & \nr   & Qwen2.5-VL-7B \\
+Reasoning-VLA \cite{reasoningvla2025} & 0.23 & 0.08 & \nr   & \nr   & \nr   & Qwen2.5-VL-7B \\
+VDRive \cite{vdrive2025}              & 0.29 & 0.18 & \nr   & \nr   & \nr   & InternVL3-8B \\
+VLA-World \cite{vlaworld2026}         & 0.30 & 0.10 & \nr   & \nr   & \nr   & Qwen2-VL-2B \\
+Drive-R1 \cite{li2026drive}           & 0.31 & 0.09 & \nr   & \nr   & \nr   & InternVL2-4B \\
+LLaViDA \cite{llavida2025}            & 0.31 & 0.10 & \nr   & \nr   & \nr   & LLaVA-NeXT-8B \\
+Fast-dDrive \cite{fastddrive2026}     & 0.32 & \nr  & 7.823 & 2.907 & 1.254 & Qwen2.5-VL-3B \\
+AutoDrive-P3 \cite{autodrivep3_2026}  & 0.33 & \best{0.06} & \nr   & \nr   & \nr   & Qwen2.5-VL-3B \\
+MindDriver \cite{minddriver2026}      & 0.33 & 0.12 & \nr   & \nr   & \nr   & Qwen2.5-VL-3B \\
+LaST-VLA \cite{lastvla2026}           & 0.38 & 0.18 & \nr   & \nr   & \nr   & InternVL3-8B \\
+AutoVLA \cite{autovla2025}            & 0.40 & 0.20 & 7.557 & 2.958 & 1.351 & Qwen2.5-VL-3B \\
+ExploreVLA \cite{explorevla2026}      & 0.44 & 0.10 & \nr   & \nr   & \nr   & Show-o-1.3B \\
+Poutine \cite{poutine2025}            & \nr  & \nr  & \best{7.990} & \best{2.740} & \best{1.210} & Qwen2.5-VL-3B \\
+NoRD \cite{nord2026}                  & \nr  & \nr  & 7.709 & 2.893 & 1.250 & Qwen2.5-VL-3B \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
