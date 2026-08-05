@@ -42,3 +42,4 @@
 
 - 每个论文文件夹只保留编译好的成品 PDF，不保留中间文件（LaTeX 源码、图片、日志等）
 - 文件夹名与 PDF 文件名统一使用论文名
+- 新增翻译请遵守 [CONTRIBUTING.md](CONTRIBUTING.md) 归档规范
