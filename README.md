@@ -22,15 +22,15 @@
 | [ST-P3](ST-P3/) | 端到端自动驾驶 | ECCV 2022 | 21 |
 | [SparseAD](SparseAD/) | 端到端自动驾驶 | ECCV 2024 | 34 |
 | [VADv2](VADv2/) | 端到端自动驾驶 | ICLR 2026 | 14 |
+| [BridgeSim](BridgeSim/) | 端到端自动驾驶 | arXiv 2604.10856 | 23 |
+| [DiT](DiT/) | 扩散模型 (Diffusion Transformer) | ICCV 2023 | 25 |
+| [Diffusion Planner](Diffusion%20Planner/) | 自动驾驶规划 (扩散模型) | ICLR 2025 | 20 |
 | [Depth Anything 3](Depth%20Anything%203/) | 单目深度估计 | arXiv 2511.10647 | 31 |
-| [基于Transformer的可扩展扩散模型](基于Transformer的可扩展扩散模型/) | 扩散模型 (DiT) | ICCV 2023 | 25 |
 | [Transformer 是贝叶斯网络](Transformer%20是贝叶斯网络/) | 理论 | arXiv 2603.17063 | 28 |
 | [Transformer 注意力的贝叶斯几何](Transformer%20注意力的贝叶斯几何/) | 理论 | arXiv 2512.22471 | 27 |
 | [强化学习中的延迟](强化学习中的延迟/) | 强化学习 | arXiv 2309.11096 | 158 |
 | [重新审视基于模仿的自动驾驶规划器](重新审视基于模仿的自动驾驶规划器/) | 自动驾驶规划 | arXiv 2309.10443 | 7 |
-| [揭示端到端自动驾驶中的开环-闭环（OL-CL）差距](揭示端到端自动驾驶中的开环-闭环（OL-CL）差距/) | 端到端自动驾驶 | arXiv 2604.10856 | 23 |
 | [端到端自动驾驶中的后训练：统一视角](端到端自动驾驶中的后训练：统一视角/) | 端到端自动驾驶 | arXiv 2607.08072 | 20 |
-| [基于扩散的自动驾驶规划与灵活引导](基于扩散的自动驾驶规划与灵活引导/) | 自动驾驶规划 (扩散模型) | ICLR 2025 | 20 |
 
 ## 翻译方法
 
@@ -42,5 +42,5 @@
 ## 仓库规范
 
 - 每个论文文件夹只保留编译好的成品 PDF，不保留中间文件（LaTeX 源码、图片、日志等）
-- 文件夹名与 PDF 文件名统一使用论文名
+- 经典论文用其代号命名文件夹（如 BEVFormer、VAD、DiT、BridgeSim、Diffusion Planner），无代号的用论文名
 - 新增翻译请遵守 [CONTRIBUTING.md](CONTRIBUTING.md) 归档规范
