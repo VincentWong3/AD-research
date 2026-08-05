@@ -1,7 +1,0 @@
-\section{结论}
-
-本章提出将动作执行的常值延迟框架进行扩展。具体而言，考虑了动作效果可能分散在多个未来步骤中的可能性。利用高阶 \gls{mc} 的既有文献，提出了将 \gls{mtd} 和 \gls{mtdg} 模型适配到 \glspl{mdp} 以获得 \glspl{mtdmdp}。选择此方法是因为 \glspl{mtd} 具有强大的建模能力和低参数维度。这种高阶 \glspl{mdp} 的新模型恰好提供了观察一个动作在多个未来时间步上效果的可能性。根据是基于 \gls{mtd} 还是 \gls{mtdg}，以及动作应用于哪个状态，提出了四种过程变体。这些过程分别是 \glspl{ismmdp}、\glspl{immmdp}、\glspl{psmmdp} 和 \glspl{pmmmdp}。
-
-随后对其性质进行了理论分析。首先，证明了 \glspl{mtdmdp} 可以通过状态增广还原回 \glspl{mdp}，与常值延迟情况类似。然后重点研究了这些模型的最优策略学习问题。针对 \glspl{psmmdp} 和 \glspl{pmmmdp}，证明了无延迟策略在这些过程中产生的平均奖励与底层无延迟 \gls{mdp} 中相同。接着，研究了更有趣的 \gls{ismmdp} 模型，它将常值延迟作为特例包含在内。首先研究了该模型的特殊性，突出了延迟向量 $\boldsymbol\lambda$ 的选择如何影响智能体的平均奖励和状态分布。针对 $\boldsymbol\lambda$ 对上述准则的影响提出了一个猜想并给出支持性论据。然后，针对常值延迟 \gls{dmdp} 研究了延迟对这些量的方差的影响。最后，研究了底层 \gls{mdp} 的性质如何传递给 \gls{ismmdp}。这些结果有助于排除理论 \gls{rl} 文献中不能直接应用于 \gls{ismmdp} 的算法。对于可以应用的算法 UCRL2，提供了不同 $\boldsymbol\lambda$ 取值的实验以展示其对平均奖励的影响。基于相同思路，还提供了以期望折扣回报为目标函数的另一实验，以凸显 $\boldsymbol\lambda$ 在此情况下的影响。
-
-最后，\gls{immmdp} 留待未来工作处理。考虑其他未来方向，一种可能性是利用 \gls{mtd} 模型参数估计的特殊性来改进应用于 \gls{mtdmdp} 的理论 \gls{rl} 算法 \cite{berchtold2002mixture}。此外，我们的设定让人联想到 \cite{romano2022multi}，该研究考虑了时间划分奖励（temporally-partitioned rewards），可视为多奖励延迟的一种形式。研究这些设定之间的联系可能为理论方法带来更好的保证。

@@ -1,15 +1,14 @@
 # AD-Research
 
-自动驾驶领域经典论文的中文翻译，基于 Claude Code + arxiv-paper-translator-v2 翻译流水线。
+深度学习/自动驾驶领域经典论文的中文翻译，基于 arxiv-paper-translator-v2 翻译流水线。
 
-每篇论文包含：
-- `*_中文.pdf` — 编译好的中文翻译 PDF
-- `latex_source/` — 翻译后的 LaTeX 源码，可重新编译
+每篇论文一个文件夹，只保留成品：
+- `<论文名>_中文.pdf` — 编译好的中文翻译 PDF（XeLaTeX 排版）
 
 ## 已翻译论文
 
-| 论文 | 领域 | 会议 | 页数 |
-|------|------|------|------|
+| 论文 | 领域 | 会议/来源 | 页数 |
+|------|------|-----------|------|
 | [VAD](VAD/) | 端到端自动驾驶 | CVPR 2023 | 10 |
 | [UniAD](UniAD/) | 端到端自动驾驶 | CVPR 2023 | 22 |
 | [DETR3D](DETR3D/) | 3D目标检测 | CoRL 2021 | 12 |
@@ -18,6 +17,19 @@
 | [MOTR](MOTR/) | 多目标跟踪 | ECCV 2022 | 14 |
 | [MTR](MTR/) | 运动预测 | NeurIPS 2022 | 17 |
 | [ANYmal](ANYmal/) | 四足机器人 | Science Robotics 2020 | 20 |
+| [BEVFormer](BEVFormer/) | BEV感知 | ECCV 2022 | 18 |
+| [BEVFormerV2](BEVFormerV2/) | BEV感知 | CVPR 2023 | 12 |
+| [ST-P3](ST-P3/) | 端到端自动驾驶 | ECCV 2022 | 21 |
+| [SparseAD](SparseAD/) | 端到端自动驾驶 | ECCV 2024 | 34 |
+| [VADv2](VADv2/) | 端到端自动驾驶 | ICLR 2026 | 14 |
+| [Depth Anything 3](Depth%20Anything%203/) | 单目深度估计 | arXiv 2511.10647 | 31 |
+| [基于Transformer的可扩展扩散模型](基于Transformer的可扩展扩散模型/) | 扩散模型 (DiT) | ICCV 2023 | 25 |
+| [Transformer 是贝叶斯网络](Transformer%20是贝叶斯网络/) | 理论 | arXiv 2603.17063 | 28 |
+| [Transformer 注意力的贝叶斯几何](Transformer%20注意力的贝叶斯几何/) | 理论 | arXiv 2512.22471 | 27 |
+| [强化学习中的延迟](强化学习中的延迟/) | 强化学习 | arXiv 2309.11096 | 158 |
+| [重新审视基于模仿的自动驾驶规划器](重新审视基于模仿的自动驾驶规划器/) | 自动驾驶规划 | arXiv 2309.10443 | 7 |
+| [揭示端到端自动驾驶中的开环-闭环（OL-CL）差距](揭示端到端自动驾驶中的开环-闭环（OL-CL）差距/) | 端到端自动驾驶 | arXiv 2604.10856 | 23 |
+| [端到端自动驾驶中的后训练：统一视角](端到端自动驾驶中的后训练：统一视角/) | 端到端自动驾驶 | arXiv 2607.08072 | 20 |
 
 ## 翻译方法
 
@@ -26,4 +38,7 @@
 - 独立审查 subagent 做准确性校对
 - XeLaTeX 编译生成中文 PDF
 
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
+## 仓库规范
+
+- 每个论文文件夹只保留编译好的成品 PDF，不保留中间文件（LaTeX 源码、图片、日志等）
+- 文件夹名与 PDF 文件名统一使用论文名
