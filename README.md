@@ -24,6 +24,7 @@
 | [VADv2](VADv2/) | 端到端自动驾驶 | ICLR 2026 | 14 |
 | [BridgeSim](BridgeSim/) | 端到端自动驾驶 | arXiv 2604.10856 | 23 |
 | [DiT](DiT/) | 扩散模型 (Diffusion Transformer) | ICCV 2023 | 25 |
+| [基于潜扩散模型的高分辨率图像合成](基于潜扩散模型的高分辨率图像合成/) | 扩散模型 (潜扩散/LDM) | CVPR 2022 | 44 |
 | [Diffusion Planner](Diffusion%20Planner/) | 自动驾驶规划 (扩散模型) | ICLR 2025 | 20 |
 | [Depth Anything 3](Depth%20Anything%203/) | 单目深度估计 | arXiv 2511.10647 | 31 |
 | [Transformer 是贝叶斯网络](Transformer%20是贝叶斯网络/) | 理论 | arXiv 2603.17063 | 28 |
