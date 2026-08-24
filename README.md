@@ -27,6 +27,7 @@
 | [去噪扩散概率模型](去噪扩散概率模型/) | 扩散模型 (DDPM) | NeurIPS 2020 | 25 |
 | [基于潜扩散模型的高分辨率图像合成](基于潜扩散模型的高分辨率图像合成/) | 扩散模型 (潜扩散/LDM) | CVPR 2022 | 44 |
 | [Diffusion Planner](Diffusion%20Planner/) | 自动驾驶规划 (扩散模型) | ICLR 2025 | 20 |
+| [DiffusionDrive](DiffusionDrive/) | 端到端自动驾驶 (扩散模型) | CVPR 2025 | 14 |
 | [Depth Anything 3](Depth%20Anything%203/) | 单目深度估计 | arXiv 2511.10647 | 31 |
 | [Transformer 是贝叶斯网络](Transformer%20是贝叶斯网络/) | 理论 | arXiv 2603.17063 | 28 |
 | [Transformer 注意力的贝叶斯几何](Transformer%20注意力的贝叶斯几何/) | 理论 | arXiv 2512.22471 | 27 |
